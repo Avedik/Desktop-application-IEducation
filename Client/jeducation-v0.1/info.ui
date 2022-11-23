@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>info</class>
+ <widget class="QDialog" name="info">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>751</width>
+     <height>531</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Bahnschrift</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>jeducation
+десктоп приложение, главной идеей которого является 
+командное изучение определенного материала из предложенных.
+
+в комнате собираются участники, 
+которым на выбор дается материал и определенное время для того,
+чтобы проанализировать его, и создать вопросы.
+
+по истечении времени на экране появляется вопрос,
+ на который отвечает один из участников.
+правильность ответа оценивается общим голосованием, 
+которое проводится параллельно с обсуждением в чате. 
+
+после подводится итог, выбирается самая важная информация по материалу, 
+которая попадает в профиль каждому.
+тема усвоена, цель достигнута.
+
+2022, ЮФУ</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>530</y>
+     <width>141</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Понятно, да?</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>info</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>712</x>
+     <y>563</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>754</x>
+     <y>584</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
