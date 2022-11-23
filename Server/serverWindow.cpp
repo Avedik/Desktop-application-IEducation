@@ -1,11 +1,11 @@
-#include "chatserver.h"
-#include "serverwindow.h"
+#include "server.h"
+#include "serverWindow.h"
 #include "ui_serverwindow.h"
 #include <QMessageBox>
 
-ServerWindow::ServerWindow(QWidget *parent): QWidget(parent)
-    , ui(new Ui::ServerWindow)
-    , m_Server(new Server(this))
+ServerWindow::ServerWindow(QWidget* parent) : QWidget(parent)
+, ui(new Ui::ServerWindow)
+, m_Server(new Server(this))
 {
     ui->setupUi(this);
 
@@ -23,22 +23,23 @@ void ServerWindow::StartServer()
     if (!m_Server->isListening()) {
         bool fatal = false;
         if (!m_Server->listen(QHostAddress::Any, 1967)) {
-            QMessageBox::critical(this, tr("ÐžÑˆÐ¸Ð±ÐºÐ°"), tr("ÐÐµÐ²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ Ð·Ð°Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ ÑÐµÑ€Ð²ÐµÑ€"));
+            QMessageBox::critical(this, tr("Îøèáêà"), tr("Íåâîçìîæíî çàïóñòèòü ñåðâåð"));
             fatal = true;
         }
 
         if (!fatal) {
-            logMessage(QStringLiteral("Ð¡ÐµÑ€Ð²ÐµÑ€ Ð·Ð°Ð¿ÑƒÑ‰ÐµÐ½"));
-            ui->startStopButton->setText(tr("ÐžÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ ÑÐµÑ€Ð²ÐµÑ€"));
+            logMessage(QStringLiteral("Ñåðâåð çàïóùåí"));
+            ui->startStopButton->setText(tr("Îñòàíîâèòü ñåðâåð"));
         }
-    } else {
+    }
+    else {
         m_Server->stopServer();
-        ui->startStopButton->setText(tr("Ð—Ð°Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ ÑÐµÑ€Ð²ÐµÑ€"));
-        logMessage(QStringLiteral("Ð¡ÐµÑ€Ð²ÐµÑ€ Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½"));
+        ui->startStopButton->setText(tr("Çàïóñòèòü ñåðâåð"));
+        logMessage(QStringLiteral("Ñåðâåð îñòàíîâëåí"));
     }
 }
 
-void ServerWindow::logMessage(const QString &message)
+void ServerWindow::logMessage(const QString& message)
 {
     ui->logEditor->appendPlainText(message + QLatin1Char('\n'));
 }
