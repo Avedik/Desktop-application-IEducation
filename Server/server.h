@@ -1,5 +1,5 @@
-#ifndef CHATSERVER_H
-#define CHATSERVER_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #include <QTcpServer>
 #include <QVector>
@@ -7,11 +7,11 @@
 //Класс для управления потоками
 class QThread;
 class ServerWorker;
-class ChatServer : public QTcpServer
+class Server : public QTcpServer
 {
 private:
     Q_OBJECT  //Выполняет некоторые функции в QT. Если убрать, сервер может работать некорректно
-    Q_DISABLE_COPY(ChatServer) //Запрещает использовать копирующие конструкторы и операторы присвоения
+    Q_DISABLE_COPY(Server) //Запрещает использовать копирующие конструкторы и операторы присвоения
 
     ///Формирование json запроса о человеке, который вышел
     void jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &doc);
@@ -32,8 +32,8 @@ private slots:
     void userError(ServerWorker *sender);
 
 public:
-    ///Конструктор ChatServer
-    explicit ChatServer(QObject *parent = nullptr);
+    ///Конструктор Server
+    explicit Server(QObject *parent = nullptr);
 
 public slots:
     ///Функция для остановки сервера
