@@ -2,24 +2,24 @@
 #define SERVERWINDOW_H
 
 #include <QWidget>
+class Server;
 
-namespace UI {
+namespace Ui {
   class ServerWindow;
 }
 
-class Server;
-
 class ServerWindow : public QWidget
 {
+    //! РџРѕР·РІРѕР»СЏРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РјРµС…Р°РЅРёР·Рј СЃРёРіРЅР°Р»РѕРІ Рё СЃР»РѕС‚РѕРІ РІ QT
     Q_OBJECT
 
-    /// <summary>
-    /// Отключает использование конструкторов копии 
-    /// и операторов присваивания для ServerWindow
-    /// </summary>
+    /*!
+     * РћС‚РєР»СЋС‡Р°РµС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРѕРІ РєРѕРїРёРё
+     * Рё РѕРїРµСЂР°С‚РѕСЂРѕРІ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ РґР»СЏ ServerWindow
+     */
     Q_DISABLE_COPY(ServerWindow)
 
-    UI::ServerWindow *ui;
+    Ui::ServerWindow *ui;
     Server *m_Server;
 
 public:
@@ -27,12 +27,9 @@ public:
     ~ServerWindow();
 
 private slots:
-    /// <summary>
-    /// Регистрирует сообщение в журнале
-    /// </summary>
-    /// <param name="msg">сообщение</param>
     void logMessage(const QString& msg);
 
+    //! Р РµРіРёСЃС‚СЂРёСЂСѓРµС‚ СЃРѕРѕР±С‰РµРЅРёРµ РІ Р¶СѓСЂРЅР°Р»Рµ
     void toggleStartServer();
 };
 
