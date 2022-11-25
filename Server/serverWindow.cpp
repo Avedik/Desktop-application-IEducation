@@ -23,19 +23,19 @@ void ServerWindow::StartServer()
     if (!m_Server->isListening()) {
         bool fatal = false;
         if (!m_Server->listen(QHostAddress::Any, 1967)) {
-            QMessageBox::critical(this, tr("Ошибка"), tr("Невозможно запустить сервер"));
+            QMessageBox::critical(this, tr("РћС€РёР±РєР°"), tr("РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РїСѓСЃС‚РёС‚СЊ СЃРµСЂРІРµСЂ"));
             fatal = true;
         }
 
         if (!fatal) {
-            logMessage(QStringLiteral("Сервер запущен"));
-            ui->startStopButton->setText(tr("Остановить сервер"));
+            logMessage(QStringLiteral("РЎРµСЂРІРµСЂ Р·Р°РїСѓС‰РµРЅ"));
+            ui->startStopButton->setText(tr("РћСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРµСЂРІРµСЂ"));
         }
     }
     else {
         m_Server->stopServer();
-        ui->startStopButton->setText(tr("Запустить сервер"));
-        logMessage(QStringLiteral("Сервер остановлен"));
+        ui->startStopButton->setText(tr("Р—Р°РїСѓСЃС‚РёС‚СЊ СЃРµСЂРІРµСЂ"));
+        logMessage(QStringLiteral("РЎРµСЂРІРµСЂ РѕСЃС‚Р°РЅРѕРІР»РµРЅ"));
     }
 }
 
