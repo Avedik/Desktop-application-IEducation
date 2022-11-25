@@ -1,6 +1,6 @@
 #include "server.h"
 #include "serverWindow.h"
-#include "ui_serverwindow.h"
+#include "ui_window.h"
 #include <QMessageBox>
 
 ServerWindow::ServerWindow(QWidget* parent) : QWidget(parent)

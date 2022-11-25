@@ -13,10 +13,8 @@ class ServerWindow : public QWidget
     //! Позволяет использовать механизм сигналов и слотов в QT
     Q_OBJECT
 
-    /*!
-     * Отключает использование конструкторов копии
-     * и операторов присваивания для ServerWindow
-     */
+    //! Отключает использование конструкторов копии
+    //! и операторов присваивания для ServerWindow
     Q_DISABLE_COPY(ServerWindow)
 
     Ui::ServerWindow *ui;
@@ -27,10 +25,10 @@ public:
     ~ServerWindow();
 
 private slots:
+    //! Регистрирует сообщение в журнале
     void logMessage(const QString& msg);
 
-    //! Регистрирует сообщение в журнале
-    void toggleStartServer();
+    void StartServer();
 };
 
 #endif // SERVERWINDOW_H
