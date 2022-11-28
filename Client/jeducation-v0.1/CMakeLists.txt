@@ -27,6 +27,10 @@ set(PROJECT_SOURCES
         info.cpp
         info.h
         info.ui
+        learning.cpp
+        learning.h
+        learning.ui
+        picture.qrc
         ${TS_FILES}
 )
 

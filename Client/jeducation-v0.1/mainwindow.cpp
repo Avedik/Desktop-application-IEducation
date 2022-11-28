@@ -21,7 +21,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    //hide();
     window = new ChooseMode(this);
     window -> show();
 }

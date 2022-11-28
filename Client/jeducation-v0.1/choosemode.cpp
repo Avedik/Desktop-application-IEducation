@@ -1,5 +1,6 @@
 #include "choosemode.h"
 #include "ui_choosemode.h"
+#include "learning.h"
 
 ChooseMode::ChooseMode(QWidget *parent) :
     QDialog(parent),
@@ -12,3 +13,10 @@ ChooseMode::~ChooseMode()
 {
     delete ui;
 }
+
+void ChooseMode::on_pushButton_clicked()
+{
+    mode1 = new learning(this);
+    mode1 -> show();
+}
+

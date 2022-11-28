@@ -2,6 +2,7 @@
 #define CHOOSEMODE_H
 
 #include <QDialog>
+#include "learning.h"
 
 namespace Ui {
 class ChooseMode;
@@ -15,8 +16,12 @@ public:
     explicit ChooseMode(QWidget *parent = nullptr);
     ~ChooseMode();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::ChooseMode *ui;
+    learning *mode1;
 };
 
 #endif // CHOOSEMODE_H

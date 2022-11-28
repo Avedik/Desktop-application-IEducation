@@ -101,7 +101,7 @@
       <widget class="QPushButton" name="pushButton">
        <property name="minimumSize">
         <size>
-         <width>400</width>
+         <width>500</width>
          <height>120</height>
         </size>
        </property>
@@ -118,7 +118,7 @@ border:20px;
 border-radius:15;</string>
        </property>
        <property name="text">
-        <string>Мозговой штурм</string>
+        <string>Изучение учебного материала</string>
        </property>
       </widget>
      </item>
@@ -226,11 +226,11 @@ border-radius:7;</string>
    <hints>
     <hint type="sourcelabel">
      <x>712</x>
-     <y>550</y>
+     <y>543</y>
     </hint>
     <hint type="destinationlabel">
-     <x>626</x>
-     <y>481</y>
+     <x>687</x>
+     <y>493</y>
     </hint>
    </hints>
   </connection>
