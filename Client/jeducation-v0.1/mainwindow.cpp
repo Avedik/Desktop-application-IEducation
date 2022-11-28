@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <iostream>
 #include "info.h"
+#include <QPixmap>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -21,6 +22,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
+    //this->close();
     window = new ChooseMode(this);
     window -> show();
 }
