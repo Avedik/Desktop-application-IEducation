@@ -11,17 +11,20 @@ CONFIG += c++17
 SOURCES += \
     choosemode.cpp \
     info.cpp \
+    learning.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     choosemode.h \
     info.h \
+    learning.h \
     mainwindow.h
 
 FORMS += \
     choosemode.ui \
     info.ui \
+    learning.ui \
     mainwindow.ui
 
 # Default rules for deployment.
