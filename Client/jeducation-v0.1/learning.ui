@@ -29,15 +29,35 @@
    <item row="2" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QListView" name="chatView">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(29, 29, 29);
-color: rgb(179, 179, 179);
-border:80 px;
-border-color: rgb(255, 255, 255);</string>
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="messageEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
        </property>
        <property name="text">
-        <string>чат</string>
+        <string notr="true">Ваше сообщение...</string>
+       </property>
+       <property name="cursorPosition">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="sendButton">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 241);</string>
+       </property>
+       <property name="text">
+        <string>Отправить</string>
        </property>
       </widget>
      </item>
@@ -91,7 +111,7 @@ background-color: rgb(29, 29, 29);</string>
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="connectButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -115,7 +135,7 @@ background-color: rgb(29, 29, 29);</string>
 color: rgb(29, 29, 29);</string>
          </property>
          <property name="text">
-          <string>Начать</string>
+          <string>Подключиться</string>
          </property>
         </widget>
        </item>
