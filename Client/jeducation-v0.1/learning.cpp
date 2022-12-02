@@ -109,7 +109,8 @@ void learning::connectedToServer()
 
         return m_Client->disconnectFromHost();
     }
-
+    
+    ui->label_3->setText(newUsername);
     attemptLogin(newUsername);
 }
 
