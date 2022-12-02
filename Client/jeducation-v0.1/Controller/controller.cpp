@@ -30,8 +30,8 @@ void Controller::login(const QString &userName)
         QDataStream clientStream(m_clientSocket);
         clientStream.setVersion(QDataStream::Qt_5_7);
         QJsonObject message;
-        message[QStringLiteral("type")] = QStringLiteral("login");
-        message[QStringLiteral("username")] = userName;
+        message[QStringLiteral("тип")] = QStringLiteral("логин");
+        message[QStringLiteral("имя пользователя")] = userName;
         clientStream << QJsonDocument(message).toJson(QJsonDocument::Compact);
     }
 }
@@ -43,8 +43,8 @@ void Controller::sendMessage(const QString &text)
     QDataStream clientStream(m_clientSocket);
     clientStream.setVersion(QDataStream::Qt_5_7);
     QJsonObject message;
-    message[QStringLiteral("type")] = QStringLiteral("message");
-    message[QStringLiteral("text")] = text;
+    message[QStringLiteral("тип")] = QStringLiteral("сообщение");
+    message[QStringLiteral("текст")] = text;
     clientStream << QJsonDocument(message).toJson();
 }
 
@@ -55,13 +55,13 @@ void Controller::disconnectFromHost()
 
 void Controller::jsonReceived(const QJsonObject &docObj)
 {
-    const QJsonValue typeVal = docObj.value(QLatin1String("type"));
-    if (typeVal.isNull() || !typeVal.isString())
+    const QJsonValue типVal = docObj.value(QStringLiteral("тип"));
+    if (типVal.isNull() || !типVal.isString())
         return;
-    if (typeVal.toString().compare(QLatin1String("login"), Qt::CaseInsensitive) == 0) {
+    if (типVal.toString().compare(QStringLiteral("логин"), Qt::CaseInsensitive) == 0) {
         if (m_loggedIn)
             return;
-        const QJsonValue resultVal = docObj.value(QLatin1String("success"));
+        const QJsonValue resultVal = docObj.value(QStringLiteral("успешно"));
         if (resultVal.isNull() || !resultVal.isBool())
             return;
         const bool loginSuccess = resultVal.toBool();
@@ -70,26 +70,26 @@ void Controller::jsonReceived(const QJsonObject &docObj)
             return;
         }
 
-        const QJsonValue reasonVal = docObj.value(QLatin1String("reason"));
+        const QJsonValue reasonVal = docObj.value(QStringLiteral("причина"));
         emit loginError(reasonVal.toString());
-    } else if (typeVal.toString().compare(QLatin1String("message"), Qt::CaseInsensitive) == 0) {
+    } else if (типVal.toString().compare(QStringLiteral("сообщение"), Qt::CaseInsensitive) == 0) {
 
-        const QJsonValue textVal = docObj.value(QLatin1String("text"));
-        const QJsonValue senderVal = docObj.value(QLatin1String("sender"));
+        const QJsonValue textVal = docObj.value(QStringLiteral("текст"));
+        const QJsonValue senderVal = docObj.value(QStringLiteral("отправитель"));
         if (textVal.isNull() || !textVal.isString())
             return;
         if (senderVal.isNull() || !senderVal.isString())
             return;
 
         emit messageReceived(senderVal.toString(), textVal.toString());
-    } else if (typeVal.toString().compare(QLatin1String("newuser"), Qt::CaseInsensitive) == 0) {
+    } else if (типVal.toString().compare(QStringLiteral("новый пользователь"), Qt::CaseInsensitive) == 0) {
 
-        const QJsonValue usernameVal = docObj.value(QLatin1String("username"));
+        const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
         if (usernameVal.isNull() || !usernameVal.isString())
             return;
         emit userJoined(usernameVal.toString());
-    } else if (typeVal.toString().compare(QLatin1String("userdisconnected"), Qt::CaseInsensitive) == 0) {
-        const QJsonValue usernameVal = docObj.value(QLatin1String("username"));
+    } else if (типVal.toString().compare(QStringLiteral("пользователь отключился"), Qt::CaseInsensitive) == 0) {
+        const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
         if (usernameVal.isNull() || !usernameVal.isString())
             return;
         emit userLeft(usernameVal.toString());
