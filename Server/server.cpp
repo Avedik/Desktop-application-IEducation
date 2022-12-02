@@ -12,12 +12,12 @@ Server::Server(QObject *parent): QTcpServer(parent){}
 void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
 {
     Q_ASSERT(sender);
-    const QJsonValue typeVal = docObj.value(QLatin1String("тип"));
+    const QJsonValue typeVal = docObj.value(QStringLiteral("тип"));
     if (typeVal.isNull() || !typeVal.isString())
         return;
-    if (typeVal.toString().compare(QLatin1String("логин"), Qt::CaseInsensitive) != 0)
+    if (typeVal.toString().compare(QStringLiteral("логин"), Qt::CaseInsensitive) != 0)
         return;
-    const QJsonValue usernameVal = docObj.value(QLatin1String("username"));
+    const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
     if (usernameVal.isNull() || !usernameVal.isString())
         return;
     const QString newUserName = usernameVal.toString().simplified();
@@ -52,7 +52,7 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
     const QJsonValue typeVal = docObj.value(QLatin1String("тип"));
     if (typeVal.isNull() || !typeVal.isString())
         return;
-    if (typeVal.toString().compare(QLatin1String("сообщение"), Qt::CaseInsensitive) != 0)
+    if (typeVal.toString().compare(QStringLiteral("сообщение"), Qt::CaseInsensitive) != 0)
         return;
     const QJsonValue textVal = docObj.value(QLatin1String("текст"));
     if (textVal.isNull() || !textVal.isString())
@@ -86,7 +86,7 @@ void Server::broadcast(const QJsonObject &message, ServerWorker *exclude)
 void Server::jsonReceived(ServerWorker *sender, const QJsonObject &doc)
 {
     Q_ASSERT(sender);
-    emit logMessage(QLatin1String("JSON получены ") + QString::fromUtf8(QJsonDocument(doc).toJson()));
+    emit logMessage(QStringLiteral("JSON получены ") + QString::fromUtf8(QJsonDocument(doc).toJson()));
     if (sender->userName().isEmpty())
         return jsonFromLoggedOut(sender, doc);
     jsonFromLoggedIn(sender, doc);
@@ -101,7 +101,7 @@ void Server::userDisconnected(ServerWorker *sender)
         disconnectedMessage[QStringLiteral("тип")] = QStringLiteral("пользователь отключился");
         disconnectedMessage[QStringLiteral("username")] = userName;
         broadcast(disconnectedMessage, nullptr);
-        emit logMessage(userName + QLatin1String(" отключен"));
+        emit logMessage(userName + QStringLiteral(" отключен"));
     }
     sender->deleteLater();
 }
@@ -109,7 +109,7 @@ void Server::userDisconnected(ServerWorker *sender)
 void Server::userError(ServerWorker *sender)
 {
     Q_UNUSED(sender)
-    emit logMessage(QLatin1String("Ошибка от ") + sender->userName());
+    emit logMessage(QStringLiteral("Ошибка от ") + sender->userName());
 }
 
 void Server::incomingConnection(qintptr socketDescriptor)
