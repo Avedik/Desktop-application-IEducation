@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>800</width>
-    <height>0</height>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -30,6 +30,12 @@
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QLabel" name="label_4">
+       <property name="minimumSize">
+        <size>
+         <width>500</width>
+         <height>250</height>
+        </size>
+       </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(29, 29, 29);
 color: rgb(179, 179, 179);
