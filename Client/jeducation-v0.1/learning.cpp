@@ -20,10 +20,11 @@ learning::learning(QWidget *parent) :
     ui->sendButton->setEnabled(false);
     ui->messageEdit->setEnabled(false);
     ui->chatView->setEnabled(false);
-
+    setStyleSheet("QPushButton { background-color: rgb(100,100,100); }");
+    setStyleSheet(styleSheet() + "QLabel, QLineEdit, QPushButton { color: white; }");
 
     m_Model->insertColumn(0);
-
+    is_connected = false;
     ui->chatView->setModel(m_Model);
 
     connect(m_Client, &Controller::connected, this, &learning::connectedToServer);
@@ -88,6 +89,12 @@ void learning::paintingTimer()
 
 void learning::attemptConnection()
 {
+    if (is_connected)
+    {
+      is_connected = false;
+      return m_Client->disconnectFromHost();
+    }
+
     const QString hostAddress = QInputDialog::getText(
         this
         , tr("Выбор сервера")
@@ -96,9 +103,8 @@ void learning::attemptConnection()
         , QStringLiteral("127.0.0.1")
     );
     if (hostAddress.isEmpty())
-        return;
+      return;
 
-    ui->connectButton->setEnabled(false);
     m_Client->connectToServer(QHostAddress(hostAddress), 1967);
 }
 
@@ -106,10 +112,13 @@ void learning::connectedToServer()
 {
     const QString newUsername = QInputDialog::getText(this, tr("Выбор пользователя"), tr("Имя пользователя"));
     if (newUsername.isEmpty()){
-
+        is_connected = false;
         return m_Client->disconnectFromHost();
     }
     
+    is_connected = true;
+    ui->connectButton->setText(tr("Отключиться"));
+    setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(20,20,20); }");
     ui->label_3->setText(newUsername);
     attemptLogin(newUsername);
 }
@@ -181,6 +190,8 @@ void learning::disconnectedFromServer()
 {
     QMessageBox::warning(this, tr("Отсоединено"), tr("Хост прервал соединение"));
 
+    ui->connectButton->setText(tr("Подключиться"));
+    setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
     ui->sendButton->setEnabled(false);
     ui->messageEdit->setEnabled(false);
     ui->chatView->setEnabled(false);

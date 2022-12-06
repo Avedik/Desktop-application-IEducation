@@ -30,6 +30,7 @@ private:
     Controller *m_Client;
     QStandardItemModel *m_Model;
     QString m_lastUserName;
+    bool is_connected;
 
 private slots:
     void on_pushButton_clicked();
