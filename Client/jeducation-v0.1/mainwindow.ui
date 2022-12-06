@@ -267,6 +267,25 @@ border-radius:10;</string>
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(41, 114, 136, 255));
+color: rgb(29, 29, 29);
+border:2px;
+border-radius:10;</string>
+        </property>
+        <property name="text">
+         <string>РЕЙТИНГ</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -277,7 +296,7 @@ border-radius:10;</string>
      <x>0</x>
      <y>0</y>
      <width>840</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
