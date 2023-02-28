@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "choosemode.h"
 #include <QMessageBox>
 #include <iostream>
 #include "info.h"
@@ -12,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    window = new ChooseMode();
+    connect(window, &ChooseMode::firstWindow, this, &MainWindow::show);
 }
 
 MainWindow::~MainWindow()
@@ -22,9 +23,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    //this->close();
-    window = new ChooseMode(this);
-    window -> show();
+    window->show();
+    this->close();
 }
 
 

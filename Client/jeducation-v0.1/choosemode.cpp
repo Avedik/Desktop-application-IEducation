@@ -1,7 +1,7 @@
 #include "choosemode.h"
 #include "ui_choosemode.h"
 #include "learning.h"
-//#include "mainwindow.h"
+#include "mainwindow.h"
 
 ChooseMode::ChooseMode(QWidget *parent) :
     QDialog(parent),
@@ -17,6 +17,7 @@ ChooseMode::~ChooseMode()
 
 void ChooseMode::on_pushButton_clicked()
 {
+    this->close();
     mode1 = new learning(this);
     mode1 -> show();
 }
@@ -24,7 +25,7 @@ void ChooseMode::on_pushButton_clicked()
 
 void ChooseMode::on_pushButton_2_clicked()
 {
-    this -> close();
-
+    this->close();
+    emit firstWindow();
 }
 
