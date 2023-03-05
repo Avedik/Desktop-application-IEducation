@@ -2,9 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "choosemode.h"
+#include <choosemode.h>
 #include "info.h"
 #include <QPixmap>
+#include "mainwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

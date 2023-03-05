@@ -16,14 +16,18 @@ public:
     explicit ChooseMode(QWidget *parent = nullptr);
     ~ChooseMode();
 
+signals:
+    void firstWindow();
+
 private slots:
     void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+   void on_pushButton_2_clicked();
 
 private:
     Ui::ChooseMode *ui;
     learning *mode1;
+
 };
 
 #endif // CHOOSEMODE_H
