@@ -9,7 +9,7 @@
 
 int tic = 0;
 int cnt = 0;
-
+// от сглаза
 learning::learning(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::learning)
