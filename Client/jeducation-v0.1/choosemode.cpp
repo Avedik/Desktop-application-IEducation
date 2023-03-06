@@ -17,7 +17,6 @@ ChooseMode::~ChooseMode()
 
 void ChooseMode::on_pushButton_clicked()
 {
-    this->close();
     mode1 = new learning(this);
     mode1 -> show();
 }
