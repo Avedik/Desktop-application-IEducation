@@ -100,7 +100,7 @@ void learning::attemptConnection()
         , tr("Выбор сервера")
         , tr("Адрес сервера")
         , QLineEdit::Normal
-        , QStringLiteral("127.0.0.1")
+        , QStringLiteral("46.29.115.42")
     );
     if (hostAddress.isEmpty())
       return;
@@ -286,4 +286,13 @@ void learning::error(QAbstractSocket::SocketError socketError)
     m_lastUserName.clear();
 }
 
+void learning::on_chooseButton_clicked()
+{
+    QString url = QFileDialog::getOpenFileName(this, "Выбор фотографии", "../", "*.png *.jpg");
+
+    QPixmap img(url);
+    QSize sz(150,150);
+    img = img.scaled(sz, Qt::KeepAspectRatio);
+    ui->label_2->setPixmap(img);
+}
 
