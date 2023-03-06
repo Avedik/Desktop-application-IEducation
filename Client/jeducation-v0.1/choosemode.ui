@@ -19,8 +19,11 @@
   <property name="windowTitle">
    <string>JEducation v0.1</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
   <property name="styleSheet">
-   <string notr="true">background-color:#22222E;
+   <string notr="true">background-color: rgb(101, 154, 169);
 </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">

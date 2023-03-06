@@ -20,7 +20,11 @@
    <string>JEducation v0.1</string>
   </property>
   <property name="styleSheet">
+<<<<<<< HEAD
    <string notr="true">background-color: rgb(34, 34, 34);</string>
+=======
+   <string notr="true">background-color: rgb(101, 154, 169);</string>
+>>>>>>> 626d935df064c83ee4d421eb7996b2e0611789c4
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
