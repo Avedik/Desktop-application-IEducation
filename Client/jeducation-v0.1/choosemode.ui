@@ -23,8 +23,7 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(101, 154, 169);
-</string>
+   <string notr="true">background-color: rgb(125, 185, 217);</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -64,7 +63,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(197, 197, 197);</string>
+        <string notr="true">color: rgb(29, 81, 121);</string>
        </property>
        <property name="text">
         <string>Выбор режима</string>
@@ -116,9 +115,9 @@
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
-color: rgb(29, 29, 29);
 border:20px;
-border-radius:15;</string>
+border-radius:15;
+color: rgb(24, 67, 100);</string>
        </property>
        <property name="text">
         <string>Изучение учебного материала</string>
