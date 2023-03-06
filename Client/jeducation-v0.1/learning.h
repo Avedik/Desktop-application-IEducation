@@ -5,6 +5,7 @@
 #include <QTime>
 #include <QWidget>
 #include <QAbstractSocket>
+#include <QTimer>
 
 namespace Ui {
 class learning;

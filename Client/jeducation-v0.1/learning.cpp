@@ -39,7 +39,7 @@ learning::learning(QWidget *parent) :
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
     connect(ui->messageEdit, &QLineEdit::returnPressed, this, &learning::sendMessage);
 
-    time.setHMS(0,0,10);
+    time.setHMS(0,10,0);
     cnt_timer= new QTimer(this);
     cnt_timer->setInterval(1000);
     connect(cnt_timer,SIGNAL(timeout()),this,SLOT(countTimer()));
