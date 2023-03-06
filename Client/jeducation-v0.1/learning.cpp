@@ -197,6 +197,7 @@ void learning::disconnectedFromServer()
     ui->chatView->setEnabled(false);
     ui->connectButton->setEnabled(true);
     m_lastUserName.clear();
+    hide();
 }
 
 void learning::userJoined(const QString &username)
