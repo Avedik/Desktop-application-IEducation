@@ -355,7 +355,7 @@ color: rgb(179, 179, 179);
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="askButton">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -368,7 +368,7 @@ color: rgb(179, 179, 179);
        <string>Задать вопросы</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_3">
+     <widget class="QPushButton" name="answerButton">
       <property name="geometry">
        <rect>
         <x>150</x>

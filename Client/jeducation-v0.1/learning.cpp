@@ -16,6 +16,9 @@ learning::learning(QWidget *parent) :
   , m_Client(new Controller(this))
   , m_Model(new QStandardItemModel(this))
 {
+    question = new ask(this);
+    answer = new Dialog(this);
+
     ui->setupUi(this);
     ui->sendButton->setEnabled(false);
     ui->messageEdit->setEnabled(false);
@@ -31,6 +34,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::loggedIn, this, &learning::loggedIn);
     connect(m_Client, &Controller::loginError, this, &learning::loginFailed);
     connect(m_Client, &Controller::messageReceived, this, &learning::messageReceived);
+    connect(m_Client, &Controller::questionReceived, this, &learning::questionReceived);
     connect(m_Client, &Controller::disconnected, this, &learning::disconnectedFromServer);
     connect(m_Client, &Controller::error, this, &learning::error);
     connect(m_Client, &Controller::userJoined, this, &learning::userJoined);
@@ -171,6 +175,18 @@ void learning::messageReceived(const QString &sender, const QString &text)
     ui->chatView->scrollToBottom();
 }
 
+void learning::questionReceived(const QString &sender, const QString &text)
+{
+    QFormLayout *formLayout = new QFormLayout;
+    QHBoxLayout *hBox = new QHBoxLayout;
+
+    hBox->addWidget( new QLabel( sender, answer ));
+    hBox->addWidget( new QLabel( text, answer ));
+
+    formLayout->addRow( hBox );
+    answer->setLayout( formLayout );
+}
+
 void learning::sendMessage()
 {
     m_Client->sendMessage(ui->messageEdit->text());
@@ -297,9 +313,13 @@ void learning::on_chooseButton_clicked()
     ui->label_2->setPixmap(img);
 }
 
-
-void learning::on_pushButton_2_clicked()
+void learning::on_askButton_clicked()
 {
+    question->show();
+}
 
+void learning::on_answerButton_clicked()
+{
+    answer->show();
 }
 

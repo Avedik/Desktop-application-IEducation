@@ -6,6 +6,8 @@
 #include <QWidget>
 #include <QAbstractSocket>
 #include <QTimer>
+#include "dialog.h"
+#include "ask.h"
 
 namespace Ui {
 class learning;
@@ -18,6 +20,7 @@ class learning : public QDialog
 {
     Q_OBJECT
     Q_DISABLE_COPY(learning)
+    friend ask;
 
 public:
     explicit learning(QWidget *parent = nullptr);
@@ -32,6 +35,8 @@ private:
     QStandardItemModel *m_Model;
     QString m_lastUserName;
     bool is_connected;
+    Dialog *answer;
+    ask *question;
 
 private slots:
     void on_pushButton_clicked();
@@ -44,13 +49,15 @@ private slots:
     void loggedIn();
     void loginFailed(const QString &reason);
     void messageReceived(const QString &sender, const QString &text);
+    void questionReceived(const QString &sender, const QString &text);
     void sendMessage();
     void disconnectedFromServer();
     void userJoined(const QString &username);
     void userLeft(const QString &username);
     void error(QAbstractSocket::SocketError socketError);
     void on_chooseButton_clicked();
-    void on_pushButton_2_clicked();
+    void on_askButton_clicked();
+    void on_answerButton_clicked();
 };
 
 #endif // LEARNING_H

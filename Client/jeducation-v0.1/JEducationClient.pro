@@ -10,7 +10,9 @@ CONFIG += c++17
 
 SOURCES += \
     Controller/controller.cpp \
+    ask.cpp \
     choosemode.cpp \
+    dialog.cpp \
     info.cpp \
     learning.cpp \
     main.cpp \
@@ -18,13 +20,17 @@ SOURCES += \
 
 HEADERS += \
     Controller/controller.h \
+    ask.h \
     choosemode.h \
+    dialog.h \
     info.h \
     learning.h \
     mainwindow.h
 
 FORMS += \
+    ask.ui \
     choosemode.ui \
+    dialog.ui \
     info.ui \
     learning.ui \
     mainwindow.ui

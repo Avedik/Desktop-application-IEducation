@@ -15,6 +15,7 @@ public slots:
     void connectToServer(const QHostAddress &address, quint16 port);
     void login(const QString &userName);
     void sendMessage(const QString &text);
+    void sendQuestion(const QString &text);
     void disconnectFromHost();
 private slots:
     void onReadyRead();
@@ -24,6 +25,7 @@ signals:
     void loginError(const QString &reason);
     void disconnected();
     void messageReceived(const QString &sender, const QString &text);
+    void questionReceived(const QString &sender, const QString &text);
     void error(QAbstractSocket::SocketError socketError);
     void userJoined(const QString &username);
     void userLeft(const QString &username);
