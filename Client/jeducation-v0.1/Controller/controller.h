@@ -29,6 +29,7 @@ signals:
     void disconnected();
     void messageReceived(const QString &sender, const QString &text);
     void questionReceived(const QString &sender, const QString &text);
+    void answerReceived(const QString &from, const QString &to, const QString &ques, const QString &ans);
     void error(QAbstractSocket::SocketError socketError);
     void userJoined(const QString &username);
     void userLeft(const QString &username);

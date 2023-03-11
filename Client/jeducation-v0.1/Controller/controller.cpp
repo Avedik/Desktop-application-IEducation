@@ -68,6 +68,7 @@ void Controller::sendAnswer(const QString &source, const QString &question, cons
     clientStream.setVersion(QDataStream::Qt_5_7);
     QJsonObject message;
     message[QStringLiteral("тип")] = QStringLiteral("ответ");
+    message[QStringLiteral("источник")] = source;
     message[QStringLiteral("вопрос")] = question;
     message[QStringLiteral("ответ")] = answer;
     clientStream << QJsonDocument(message).toJson();
@@ -116,6 +117,20 @@ void Controller::jsonReceived(const QJsonObject &docObj)
             return;
 
         emit questionReceived(senderVal.toString(), textVal.toString());
+    } else if (типVal.toString().compare(QStringLiteral("ответ"), Qt::CaseInsensitive) == 0) {
+
+        const QJsonValue sourceVal = docObj.value(QStringLiteral("источник"));
+        const QJsonValue senderVal = docObj.value(QStringLiteral("отправитель"));
+        const QJsonValue questionVal = docObj.value(QStringLiteral("вопрос"));
+        const QJsonValue answerVal = docObj.value(QStringLiteral("ответ"));
+
+        if (sourceVal.isNull() || !sourceVal.isString()
+            || senderVal.isNull() || !senderVal.isString()
+            || questionVal.isNull() || !questionVal.isString()
+            || answerVal.isNull() || !answerVal.isString())
+            return;
+
+        emit answerReceived(sourceVal.toString(), senderVal.toString(), questionVal.toString(), answerVal.toString());
     } else if (типVal.toString().compare(QStringLiteral("новый пользователь"), Qt::CaseInsensitive) == 0) {
 
         const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));

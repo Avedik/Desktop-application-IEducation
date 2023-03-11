@@ -54,6 +54,7 @@ private slots:
     void loginFailed(const QString &reason);
     void messageReceived(const QString &sender, const QString &text);
     void questionReceived(const QString &sender, const QString &text);
+    void answerReceived(const QString &from, const QString &to, const QString &ques, const QString &ans);
     void sendMessage();
     void disconnectedFromServer();
     void userJoined(const QString &username);

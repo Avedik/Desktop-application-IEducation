@@ -1,6 +1,7 @@
 #include "learning.h"
 #include "ui_learning.h"
 #include "ui_dialog.h"
+#include "ui_other_questions.h"
 #include <QtWidgets>
 #include "Controller/controller.h"
 #include <QStandardItemModel>
@@ -36,6 +37,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::loginError, this, &learning::loginFailed);
     connect(m_Client, &Controller::messageReceived, this, &learning::messageReceived);
     connect(m_Client, &Controller::questionReceived, this, &learning::questionReceived);
+    connect(m_Client, &Controller::answerReceived, this, &learning::answerReceived);
     connect(m_Client, &Controller::disconnected, this, &learning::disconnectedFromServer);
     connect(m_Client, &Controller::error, this, &learning::error);
     connect(m_Client, &Controller::userJoined, this, &learning::userJoined);
@@ -182,6 +184,17 @@ void learning::questionReceived(const QString &sender, const QString &text)
    table->insertRow(0);
    table->setItem(0, 0, new QTableWidgetItem(sender));
    table->setItem(0, 1, new QTableWidgetItem(text));
+}
+
+void learning::answerReceived(const QString &from, const QString &to, const QString &ques, const QString &ans)
+{
+    auto table = other_quest->ui->answerTable;
+    table->insertRow(0);
+
+    table->setItem(0, 0, new QTableWidgetItem(from));
+    table->setItem(0, 1, new QTableWidgetItem(to));
+    table->setItem(0, 2, new QTableWidgetItem(ques));
+    table->setItem(0, 3, new QTableWidgetItem(ans));
 }
 
 void learning::sendMessage()
