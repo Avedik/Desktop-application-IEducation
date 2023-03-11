@@ -52,8 +52,6 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
     const QJsonValue typeVal = docObj.value(QStringLiteral("тип"));
     if (typeVal.isNull() || !typeVal.isString())
         return;
-    if (typeVal.toString().compare(QStringLiteral("сообщение"), Qt::CaseInsensitive) != 0)
-        return;
     const QJsonValue textVal = docObj.value(QStringLiteral("текст"));
     if (textVal.isNull() || !textVal.isString())
         return;
@@ -61,7 +59,7 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
     if (text.isEmpty())
         return;
     QJsonObject message;
-    message[QStringLiteral("тип")] = QStringLiteral("сообщение");
+    message[QStringLiteral("тип")] =typeVal.toString();
     message[QStringLiteral("текст")] = text;
     message[QStringLiteral("отправитель")] = sender->userName();
     broadcast(message, sender);
