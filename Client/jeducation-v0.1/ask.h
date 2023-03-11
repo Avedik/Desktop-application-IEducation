@@ -18,8 +18,6 @@ public:
 private slots:
     void on_buttonBox_accepted();
 
-    void on_ask_rejected();
-
 private:
     Ui::ask *ui;
 };

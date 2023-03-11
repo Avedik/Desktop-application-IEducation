@@ -60,6 +60,19 @@ void Controller::sendQuestion(const QString &text)
     clientStream << QJsonDocument(message).toJson();
 }
 
+void Controller::sendAnswer(const QString &source, const QString &question, const QString &answer)
+{
+    if (answer.isEmpty())
+        return;
+    QDataStream clientStream(m_clientSocket);
+    clientStream.setVersion(QDataStream::Qt_5_7);
+    QJsonObject message;
+    message[QStringLiteral("тип")] = QStringLiteral("ответ");
+    message[QStringLiteral("вопрос")] = question;
+    message[QStringLiteral("ответ")] = answer;
+    clientStream << QJsonDocument(message).toJson();
+}
+
 void Controller::disconnectFromHost()
 {
     m_clientSocket->disconnectFromHost();

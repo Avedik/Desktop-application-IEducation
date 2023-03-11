@@ -16,9 +16,12 @@ public slots:
     void login(const QString &userName);
     void sendMessage(const QString &text);
     void sendQuestion(const QString &text);
+    void sendAnswer(const QString &source, const QString &question, const QString &answer);
     void disconnectFromHost();
+
 private slots:
     void onReadyRead();
+
 signals:
     void connected();
     void loggedIn();

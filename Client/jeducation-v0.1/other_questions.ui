@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ask</class>
- <widget class="QDialog" name="ask">
+ <class>other_questions</class>
+ <widget class="QDialog" name="other_questions">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Задать вопрос</string>
+   <string>Ответы остальных участников</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>240</y>
+     <x>50</x>
+     <y>260</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -29,13 +29,13 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit">
+  <widget class="QTableWidget" name="answerTable">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>60</y>
-     <width>241</width>
-     <height>121</height>
+     <x>10</x>
+     <y>10</y>
+     <width>381</width>
+     <height>231</height>
     </rect>
    </property>
   </widget>
@@ -45,7 +45,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>ask</receiver>
+   <receiver>other_questions</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -61,7 +61,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>ask</receiver>
+   <receiver>other_questions</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

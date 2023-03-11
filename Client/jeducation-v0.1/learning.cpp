@@ -1,5 +1,6 @@
 #include "learning.h"
 #include "ui_learning.h"
+#include "ui_dialog.h"
 #include <QtWidgets>
 #include "Controller/controller.h"
 #include <QStandardItemModel>
@@ -16,8 +17,8 @@ learning::learning(QWidget *parent) :
   , m_Client(new Controller(this))
   , m_Model(new QStandardItemModel(this))
 {
-    question = new ask(this);
     answer = new Dialog(this);
+    other_quest = new other_questions(this);
 
     ui->setupUi(this);
     ui->sendButton->setEnabled(false);
@@ -177,14 +178,10 @@ void learning::messageReceived(const QString &sender, const QString &text)
 
 void learning::questionReceived(const QString &sender, const QString &text)
 {
-    QFormLayout *formLayout = new QFormLayout;
-    QHBoxLayout *hBox = new QHBoxLayout;
-
-    hBox->addWidget( new QLabel( sender, answer ));
-    hBox->addWidget( new QLabel( text, answer ));
-
-    formLayout->addRow( hBox );
-    answer->setLayout( formLayout );
+   auto table = answer->ui->questionTable;
+   table->insertRow(0);
+   table->setItem(0, 0, new QTableWidgetItem(sender));
+   table->setItem(0, 1, new QTableWidgetItem(text));
 }
 
 void learning::sendMessage()
@@ -315,11 +312,18 @@ void learning::on_chooseButton_clicked()
 
 void learning::on_askButton_clicked()
 {
+    delete question;
+    question = new ask(this);
     question->show();
 }
 
 void learning::on_answerButton_clicked()
 {
     answer->show();
+}
+
+void learning::on_pushButton_4_clicked()
+{
+    other_quest->show();
 }
 

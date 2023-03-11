@@ -365,7 +365,7 @@ color: rgb(179, 179, 179);
        </rect>
       </property>
       <property name="text">
-       <string>Задать вопросы</string>
+       <string>Задать вопрос</string>
       </property>
      </widget>
      <widget class="QPushButton" name="answerButton">

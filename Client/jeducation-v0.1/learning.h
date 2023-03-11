@@ -8,6 +8,7 @@
 #include <QTimer>
 #include "dialog.h"
 #include "ask.h"
+#include "other_questions.h"
 
 namespace Ui {
 class learning;
@@ -21,6 +22,7 @@ class learning : public QDialog
     Q_OBJECT
     Q_DISABLE_COPY(learning)
     friend ask;
+    friend Dialog;
 
 public:
     explicit learning(QWidget *parent = nullptr);
@@ -37,6 +39,8 @@ private:
     bool is_connected;
     Dialog *answer;
     ask *question;
+    other_questions *other_quest;
+
 
 private slots:
     void on_pushButton_clicked();
@@ -58,6 +62,7 @@ private slots:
     void on_chooseButton_clicked();
     void on_askButton_clicked();
     void on_answerButton_clicked();
+    void on_pushButton_4_clicked();
 };
 
 #endif // LEARNING_H

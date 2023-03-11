@@ -20,8 +20,3 @@ void ask::on_buttonBox_accepted()
    static_cast<learning*>(parentWidget())->m_Client->sendQuestion(ui->textEdit->toPlainText());
 }
 
-void ask::on_ask_rejected()
-{
-    hide();
-}
-

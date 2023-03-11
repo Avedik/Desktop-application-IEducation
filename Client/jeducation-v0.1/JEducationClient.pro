@@ -16,7 +16,8 @@ SOURCES += \
     info.cpp \
     learning.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    other_questions.cpp
 
 HEADERS += \
     Controller/controller.h \
@@ -25,7 +26,8 @@ HEADERS += \
     dialog.h \
     info.h \
     learning.h \
-    mainwindow.h
+    mainwindow.h \
+    other_questions.h
 
 FORMS += \
     ask.ui \
@@ -33,7 +35,8 @@ FORMS += \
     dialog.ui \
     info.ui \
     learning.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    other_questions.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
