@@ -50,6 +50,7 @@ private slots:
     void userLeft(const QString &username);
     void error(QAbstractSocket::SocketError socketError);
     void on_chooseButton_clicked();
+    void on_pushButton_2_clicked();
 };
 
 #endif // LEARNING_H

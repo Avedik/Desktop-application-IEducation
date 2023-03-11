@@ -297,3 +297,9 @@ void learning::on_chooseButton_clicked()
     ui->label_2->setPixmap(img);
 }
 
+
+void learning::on_pushButton_2_clicked()
+{
+
+}
+
