@@ -59,11 +59,10 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
     const QString text = textVal.toString().trimmed();
     if (text.isEmpty())
         return;
-    QJsonObject message;
-    auto e = typeVal.toString();
 
-    auto t = docObj.toVariantMap();
-    for(QVariantMap::const_iterator iter = t.begin(); iter != t.end(); ++iter)
+    QJsonObject message;
+    auto varMap = docObj.toVariantMap();
+    for(QVariantMap::const_iterator iter = varMap.begin(); iter != varMap.end(); ++iter)
         message[iter.key()] = iter.value().toString();
 
     message[QStringLiteral("отправитель")] = sender->userName();
