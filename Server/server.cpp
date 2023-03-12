@@ -44,6 +44,12 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
     connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
     connectedMessage[QStringLiteral("новый пользователь")] = newUserName;
     broadcast(connectedMessage, sender);
+
+    QJsonObject message;
+    message[QStringLiteral("тип")] = QStringLiteral("подключение");
+    for (ServerWorker *_worker : m_clients)
+        message[_worker->userName()] = "";
+    broadcast(message, nullptr);
 }
 
 void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
@@ -53,11 +59,7 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
     if (typeVal.isNull() || !typeVal.isString())
         return;
     const QJsonValue receiverVal = docObj.value(QStringLiteral("получатель"));
-    const QJsonValue textVal = docObj.value(QStringLiteral("текст"));
-    if (textVal.isNull() || !textVal.isString())
-        return;
-    const QString text = textVal.toString().trimmed();
-    if (text.isEmpty())
+    if (!receiverVal.isNull() && receiverVal.isString() && sender->userName().compare(receiverVal.toString()) == 0)
         return;
 
     QJsonObject message;
@@ -70,7 +72,10 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
         for (ServerWorker *worker : m_clients) {
             Q_ASSERT(worker);
             if (worker->userName().compare(receiverVal.toString()) == 0)
+            {
                 sendJson(worker, message);
+                break;
+            }
         }
     else
         broadcast(message, sender);
@@ -139,13 +144,8 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::error, this, std::bind(&Server::userError, this, worker));
     connect(worker, &ServerWorker::jsonReceived, this, std::bind(&Server::jsonReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
-    m_clients.append(worker);
 
-    QJsonObject message;
-    message[QStringLiteral("тип")] = QStringLiteral("подключение");
-    for (ServerWorker *worker : m_clients)
-        message[worker->userName()] = "";
-    broadcast(message, nullptr);
+    m_clients.append(worker);
     emit logMessage(QStringLiteral("Новый клиент подключился"));
 }
 

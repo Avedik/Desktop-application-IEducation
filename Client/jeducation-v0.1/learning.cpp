@@ -204,9 +204,13 @@ void learning::refreshUsersList(const QVariantMap& users)
 {
     auto table = question->ui->usersTable;
     table->clearContents();
+    table->setRowCount(0);
 
-    for (QVariantMap::const_iterator iter = ++users.begin(); iter != users.end(); ++iter)
+    for (QVariantMap::const_iterator iter = users.begin(); iter != users.end(); ++iter)
     {
+        if (iter.key().compare(QStringLiteral("тип")) == 0)
+            continue;
+
         table->insertRow(0);
         table->setItem(0, 0, new QTableWidgetItem(iter.key()));
     }
