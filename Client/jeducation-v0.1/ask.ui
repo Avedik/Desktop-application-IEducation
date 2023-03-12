@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>616</width>
     <height>300</height>
    </rect>
   </property>
@@ -36,6 +36,16 @@
      <y>60</y>
      <width>241</width>
      <height>121</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="usersTable">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>30</y>
+     <width>256</width>
+     <height>192</height>
     </rect>
    </property>
   </widget>

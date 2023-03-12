@@ -7,9 +7,11 @@ namespace Ui {
 class ask;
 }
 
+class learning;
 class ask : public QDialog
 {
     Q_OBJECT
+    friend learning;
 
 public:
     explicit ask(QWidget *parent = nullptr);

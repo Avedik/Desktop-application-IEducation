@@ -48,7 +48,7 @@ void Controller::sendMessage(const QString &text)
     clientStream << QJsonDocument(message).toJson();
 }
 
-void Controller::sendQuestion(const QString &text)
+void Controller::sendQuestion(const QString &destUser, const QString &text)
 {
     if (text.isEmpty())
         return;
@@ -57,6 +57,7 @@ void Controller::sendQuestion(const QString &text)
     QJsonObject message;
     message[QStringLiteral("тип")] = QStringLiteral("вопрос");
     message[QStringLiteral("текст")] = text;
+    message[QStringLiteral("получатель")] = destUser;
     clientStream << QJsonDocument(message).toJson();
 }
 
@@ -81,10 +82,10 @@ void Controller::disconnectFromHost()
 
 void Controller::jsonReceived(const QJsonObject &docObj)
 {
-    const QJsonValue типVal = docObj.value(QStringLiteral("тип"));
-    if (типVal.isNull() || !типVal.isString())
+    const QJsonValue typeVal = docObj.value(QStringLiteral("тип"));
+    if (typeVal.isNull() || !typeVal.isString())
         return;
-    if (типVal.toString().compare(QStringLiteral("логин"), Qt::CaseInsensitive) == 0) {
+    if (typeVal.toString().compare(QStringLiteral("логин"), Qt::CaseInsensitive) == 0) {
         if (m_loggedIn)
             return;
         const QJsonValue resultVal = docObj.value(QStringLiteral("успешно"));
@@ -98,7 +99,7 @@ void Controller::jsonReceived(const QJsonObject &docObj)
 
         const QJsonValue reasonVal = docObj.value(QStringLiteral("причина"));
         emit loginError(reasonVal.toString());
-    } else if (типVal.toString().compare(QStringLiteral("сообщение"), Qt::CaseInsensitive) == 0) {
+    } else if (typeVal.toString().compare(QStringLiteral("сообщение"), Qt::CaseInsensitive) == 0) {
         const QJsonValue textVal = docObj.value(QStringLiteral("текст"));
         const QJsonValue senderVal = docObj.value(QStringLiteral("отправитель"));
         if (textVal.isNull() || !textVal.isString())
@@ -107,7 +108,7 @@ void Controller::jsonReceived(const QJsonObject &docObj)
             return;
 
         emit messageReceived(senderVal.toString(), textVal.toString());
-    } else if (типVal.toString().compare(QStringLiteral("вопрос"), Qt::CaseInsensitive) == 0) {
+    } else if (typeVal.toString().compare(QStringLiteral("вопрос"), Qt::CaseInsensitive) == 0) {
 
         const QJsonValue textVal = docObj.value(QStringLiteral("текст"));
         const QJsonValue senderVal = docObj.value(QStringLiteral("отправитель"));
@@ -117,7 +118,7 @@ void Controller::jsonReceived(const QJsonObject &docObj)
             return;
 
         emit questionReceived(senderVal.toString(), textVal.toString());
-    } else if (типVal.toString().compare(QStringLiteral("ответ"), Qt::CaseInsensitive) == 0) {
+    } else if (typeVal.toString().compare(QStringLiteral("ответ"), Qt::CaseInsensitive) == 0) {
 
         const QJsonValue sourceVal = docObj.value(QStringLiteral("источник"));
         const QJsonValue senderVal = docObj.value(QStringLiteral("отправитель"));
@@ -131,13 +132,17 @@ void Controller::jsonReceived(const QJsonObject &docObj)
             return;
 
         emit answerReceived(sourceVal.toString(), senderVal.toString(), questionVal.toString(), answerVal.toString());
-    } else if (типVal.toString().compare(QStringLiteral("новый пользователь"), Qt::CaseInsensitive) == 0) {
+    } else if (typeVal.toString().compare(QStringLiteral("подключение"), Qt::CaseInsensitive) == 0
+               || typeVal.toString().compare(QStringLiteral("отсоединение"), Qt::CaseInsensitive) == 0) {
+
+        emit refreshUsersList(docObj.toVariantMap());
+    } else if (typeVal.toString().compare(QStringLiteral("новый пользователь"), Qt::CaseInsensitive) == 0) {
 
         const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
         if (usernameVal.isNull() || !usernameVal.isString())
             return;
         emit userJoined(usernameVal.toString());
-    } else if (типVal.toString().compare(QStringLiteral("пользователь отключился"), Qt::CaseInsensitive) == 0) {
+    } else if (typeVal.toString().compare(QStringLiteral("пользователь отключился"), Qt::CaseInsensitive) == 0) {
         const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
         if (usernameVal.isNull() || !usernameVal.isString())
             return;

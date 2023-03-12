@@ -1,6 +1,7 @@
 #include "learning.h"
 #include "ui_learning.h"
 #include "ui_dialog.h"
+#include "ui_ask.h"
 #include "ui_other_questions.h"
 #include <QtWidgets>
 #include "Controller/controller.h"
@@ -20,6 +21,7 @@ learning::learning(QWidget *parent) :
 {
     answer = new Dialog(this);
     other_quest = new other_questions(this);
+    question = new ask(this);
 
     ui->setupUi(this);
     ui->sendButton->setEnabled(false);
@@ -38,6 +40,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::messageReceived, this, &learning::messageReceived);
     connect(m_Client, &Controller::questionReceived, this, &learning::questionReceived);
     connect(m_Client, &Controller::answerReceived, this, &learning::answerReceived);
+    connect(m_Client, &Controller::refreshUsersList, this, &learning::refreshUsersList);
     connect(m_Client, &Controller::disconnected, this, &learning::disconnectedFromServer);
     connect(m_Client, &Controller::error, this, &learning::error);
     connect(m_Client, &Controller::userJoined, this, &learning::userJoined);
@@ -197,6 +200,18 @@ void learning::answerReceived(const QString &from, const QString &to, const QStr
     table->setItem(0, 3, new QTableWidgetItem(ans));
 }
 
+void learning::refreshUsersList(const QVariantMap& users)
+{
+    auto table = question->ui->usersTable;
+    table->clearContents();
+
+    for (QVariantMap::const_iterator iter = ++users.begin(); iter != users.end(); ++iter)
+    {
+        table->insertRow(0);
+        table->setItem(0, 0, new QTableWidgetItem(iter.key()));
+    }
+}
+
 void learning::sendMessage()
 {
     m_Client->sendMessage(ui->messageEdit->text());
@@ -325,8 +340,7 @@ void learning::on_chooseButton_clicked()
 
 void learning::on_askButton_clicked()
 {
-    delete question;
-    question = new ask(this);
+    question->ui->textEdit->clear();
     question->show();
 }
 
