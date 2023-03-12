@@ -185,8 +185,14 @@ void learning::questionReceived(const QString &sender, const QString &text)
 {
    auto table = answer->ui->questionTable;
    table->insertRow(0);
-   table->setItem(0, 0, new QTableWidgetItem(sender));
-   table->setItem(0, 1, new QTableWidgetItem(text));
+
+   int count = 0;
+   for (auto s : {sender, text})
+   {
+       QTableWidgetItem *item = new QTableWidgetItem(s);
+       item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+       table->setItem(0, count++, item);
+   }
 }
 
 void learning::answerReceived(const QString &from, const QString &to, const QString &ques, const QString &ans)
@@ -194,10 +200,13 @@ void learning::answerReceived(const QString &from, const QString &to, const QStr
     auto table = other_quest->ui->answerTable;
     table->insertRow(0);
 
-    table->setItem(0, 0, new QTableWidgetItem(from));
-    table->setItem(0, 1, new QTableWidgetItem(to));
-    table->setItem(0, 2, new QTableWidgetItem(ques));
-    table->setItem(0, 3, new QTableWidgetItem(ans));
+    int count = 0;
+    for (auto s : {from, to, ques, ans})
+    {
+        QTableWidgetItem *item = new QTableWidgetItem(s);
+        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+        table->setItem(0, count++, item);
+    }
 }
 
 void learning::refreshUsersList(const QVariantMap& users)
@@ -210,9 +219,11 @@ void learning::refreshUsersList(const QVariantMap& users)
     {
         if (iter.key().compare(QStringLiteral("тип")) == 0)
             continue;
-
         table->insertRow(0);
-        table->setItem(0, 0, new QTableWidgetItem(iter.key()));
+
+        QTableWidgetItem *item = new QTableWidgetItem(iter.key());
+        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+        table->setItem(0, 0, item);
     }
 }
 
