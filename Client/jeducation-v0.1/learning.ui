@@ -149,6 +149,9 @@ color: rgb(177, 177, 177);</string>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QListView" name="chatView">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -213,6 +216,9 @@ color: rgb(177, 177, 177);</string>
      </item>
      <item>
       <widget class="QPushButton" name="sendButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="styleSheet">
         <string notr="true"/>
        </property>
@@ -356,6 +362,9 @@ color: rgb(179, 179, 179);
       <enum>QFrame::Raised</enum>
      </property>
      <widget class="QPushButton" name="askButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -369,6 +378,9 @@ color: rgb(179, 179, 179);
       </property>
      </widget>
      <widget class="QPushButton" name="answerButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>150</x>
@@ -381,7 +393,10 @@ color: rgb(179, 179, 179);
        <string>Ответить на вопросы</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_4">
+     <widget class="QPushButton" name="allAnswersButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>310</x>

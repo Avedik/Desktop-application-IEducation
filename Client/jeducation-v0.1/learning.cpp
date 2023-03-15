@@ -24,9 +24,6 @@ learning::learning(QWidget *parent) :
     question = new ask(this);
 
     ui->setupUi(this);
-    ui->sendButton->setEnabled(false);
-    ui->messageEdit->setEnabled(false);
-    ui->chatView->setEnabled(false);
     setStyleSheet("QPushButton { background-color: rgb(100,100,100); }");
     setStyleSheet(styleSheet() + "QLabel, QLineEdit, QPushButton { color: white; }");
 
@@ -130,7 +127,20 @@ void learning::connectedToServer()
     ui->connectButton->setText(tr("Отключиться"));
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(20,20,20); }");
     ui->label_3->setText(newUsername);
+
+    switch_enabled(true);
     attemptLogin(newUsername);
+}
+
+void learning::switch_enabled(bool is_enabled)
+{
+    ui->sendButton->setEnabled(is_enabled);
+    ui->messageEdit->setEnabled(is_enabled);
+    ui->chatView->setEnabled(is_enabled);
+
+    ui->askButton->setEnabled(is_enabled);
+    ui->answerButton->setEnabled(is_enabled);
+    ui->allAnswersButton->setEnabled(is_enabled);
 }
 
 void learning::attemptLogin(const QString &userName)
@@ -140,10 +150,6 @@ void learning::attemptLogin(const QString &userName)
 
 void learning::loggedIn()
 {
-    ui->sendButton->setEnabled(true);
-    ui->messageEdit->setEnabled(true);
-    ui->chatView->setEnabled(true);
-
     m_lastUserName.clear();
 }
 
@@ -248,10 +254,8 @@ void learning::disconnectedFromServer()
 
     ui->connectButton->setText(tr("Подключиться"));
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
-    ui->sendButton->setEnabled(false);
-    ui->messageEdit->setEnabled(false);
-    ui->chatView->setEnabled(false);
-    ui->connectButton->setEnabled(true);
+
+    switch_enabled(false);
     m_lastUserName.clear();
     hide();
 }
@@ -334,12 +338,7 @@ void learning::error(QAbstractSocket::SocketError socketError)
         Q_UNREACHABLE();
     }
 
-    ui->connectButton->setEnabled(true);
-
-    ui->sendButton->setEnabled(false);
-    ui->messageEdit->setEnabled(false);
-    ui->chatView->setEnabled(false);
-
+    switch_enabled(false);
     m_lastUserName.clear();
 }
 
@@ -364,7 +363,7 @@ void learning::on_answerButton_clicked()
     answer->show();
 }
 
-void learning::on_pushButton_4_clicked()
+void learning::on_allAnswersButton_clicked()
 {
     other_quest->show();
 }

@@ -24,6 +24,7 @@ class learning : public QDialog
     friend ask;
     friend Dialog;
 
+    void switch_enabled(bool is_enabled);
 public:
     explicit learning(QWidget *parent = nullptr);
     ~learning();
@@ -64,7 +65,7 @@ private slots:
     void on_chooseButton_clicked();
     void on_askButton_clicked();
     void on_answerButton_clicked();
-    void on_pushButton_4_clicked();
+    void on_allAnswersButton_clicked();
 };
 
 #endif // LEARNING_H
