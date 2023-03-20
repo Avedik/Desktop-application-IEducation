@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     Controller/controller.cpp \
     ask.cpp \
+    brainstorm.cpp \
     choosemode.cpp \
     dialog.cpp \
     info.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 HEADERS += \
     Controller/controller.h \
     ask.h \
+    brainstorm.h \
     choosemode.h \
     dataTypes.h \
     dialog.h \
@@ -32,6 +34,7 @@ HEADERS += \
 
 FORMS += \
     ask.ui \
+    brainstorm.ui \
     choosemode.ui \
     dialog.ui \
     info.ui \
