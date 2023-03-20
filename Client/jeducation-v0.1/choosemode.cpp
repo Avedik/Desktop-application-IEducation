@@ -2,6 +2,7 @@
 #include "ui_choosemode.h"
 #include "learning.h"
 #include "mainwindow.h"
+#include "brainstorm.h"
 
 ChooseMode::ChooseMode(QWidget *parent) :
     QDialog(parent),
@@ -27,5 +28,14 @@ void ChooseMode::on_pushButton_2_clicked()
 {
     this->close();
     emit firstWindow();
+}
+
+
+
+
+void ChooseMode::on_pushButton_3_clicked()
+{
+    mode2 = new brainstorm(this);
+    mode2 -> show();
 }
 

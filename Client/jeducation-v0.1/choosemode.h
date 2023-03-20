@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "learning.h"
+#include "brainstorm.h"
 
 namespace Ui {
 class ChooseMode;
@@ -24,9 +25,12 @@ private slots:
 
    void on_pushButton_2_clicked();
 
+   void on_pushButton_3_clicked();
+
 private:
     Ui::ChooseMode *ui;
     learning *mode1;
+    brainstorm *mode2;
 
 };
 
