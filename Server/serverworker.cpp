@@ -61,7 +61,6 @@ void ServerWorker::setUserName(const QString &userName)
 void ServerWorker::receiveJson(QDataStream& socketStream)
 {
     QByteArray jsonData;
-    socketStream.setVersion(QDataStream::Qt_5_7);
     for (;;) {
         socketStream >> jsonData;
         if (socketStream.commitTransaction()) {
@@ -85,17 +84,14 @@ void ServerWorker::receiveJson(QDataStream& socketStream)
 
 void ServerWorker::receiveImage(QDataStream& socketStream)
 {
-    socketStream.setVersion(QDataStream::Qt_5_7);
-
     QImage img;
-    QTextStream out(stdout);
-
     socketStream >> img;
     if (socketStream.status() != QDataStream::Ok)
     {
         socketStream.commitTransaction();
         return;
     }
+    socketStream.commitTransaction();
     emit imageReceived(img, userName());
 }
 
