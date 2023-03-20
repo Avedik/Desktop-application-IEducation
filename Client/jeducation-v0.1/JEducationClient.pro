@@ -23,6 +23,7 @@ HEADERS += \
     Controller/controller.h \
     ask.h \
     choosemode.h \
+    dataTypes.h \
     dialog.h \
     info.h \
     learning.h \

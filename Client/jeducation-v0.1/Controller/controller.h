@@ -3,18 +3,22 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QImage>
+
 class QHostAddress;
 class QJsonDocument;
 class Controller : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(Controller)
+
 public:
     explicit Controller(QObject *parent = nullptr);
 public slots:
     void connectToServer(const QHostAddress &address, quint16 port);
     void login(const QString &userName);
     void sendMessage(const QString &text);
+    void sendImage(const QImage& image);
     void sendQuestion(const QString &destUser, const QString &text);
     void sendAnswer(const QString &source, const QString &question, const QString &answer);
     void disconnectFromHost();
@@ -34,6 +38,7 @@ signals:
     void error(QAbstractSocket::SocketError socketError);
     void userJoined(const QString &username);
     void userLeft(const QString &username);
+    void receiveImage(const QImage& image, const QString& source);
 private:
     QTcpSocket *m_clientSocket;
     bool m_loggedIn;

@@ -8,7 +8,7 @@ ask::ask(QWidget *parent) :
     ui(new Ui::ask)
 {
     ui->setupUi(this);
-    ui->usersTable->setColumnCount(1);
+    ui->usersTable->setColumnCount(2);
     ui->usersTable->setShowGrid(true);
 
     // Разрешаем выделение только одного элемента
@@ -16,7 +16,7 @@ ask::ask(QWidget *parent) :
     // Разрешаем выделение построчно
     ui->usersTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     // Устанавливаем заголовки колонок
-    ui->usersTable->setHorizontalHeaderLabels(QStringList() << "Участники");
+    ui->usersTable->setHorizontalHeaderLabels(QStringList() << "Фото" << "Участники");
     // Растягиваем последнюю колонку на всё доступное пространство
     ui->usersTable->horizontalHeader()->setStretchLastSection(true);
 }

@@ -106,6 +106,17 @@ void Server::jsonReceived(ServerWorker *sender, const QJsonObject &doc)
     jsonFromLoggedIn(sender, doc);
 }
 
+void Server::imageReceived(ServerWorker *sender, const QImage &img, const QString& source)
+{
+    Q_ASSERT(sender);
+    emit logMessage(QStringLiteral("Image получен ") );
+    if (!sender->userName().isEmpty())
+        for (ServerWorker *worker : m_clients) {
+            Q_ASSERT(worker);
+            worker->sendImage(img, source);
+        }
+}
+
 void Server::userDisconnected(ServerWorker *sender)
 {
     m_clients.removeAll(sender);
@@ -143,6 +154,8 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::disconnectedFromClient, this, std::bind(&Server::userDisconnected, this, worker));
     connect(worker, &ServerWorker::error, this, std::bind(&Server::userError, this, worker));
     connect(worker, &ServerWorker::jsonReceived, this, std::bind(&Server::jsonReceived, this, worker, std::placeholders::_1));
+    connect(worker, &ServerWorker::imageReceived, this, std::bind(&Server::imageReceived, this,
+                                                                  worker, std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
 
     m_clients.append(worker);

@@ -3,11 +3,17 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QImage>
+
 class QJsonObject;
 class ServerWorker : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(ServerWorker)
+
+    //Метод по чтению входящих сообщений из сети и отправке на главный серверный объект
+    void receiveJson(QDataStream& socketStream);
+    void receiveImage(QDataStream& socketStream);
 public:
     explicit ServerWorker(QObject *parent = nullptr);
     virtual bool setSocketDescriptor(qintptr socketDescriptor);
@@ -15,9 +21,11 @@ public:
     //Способ получения и установки имени пользователя
     void setUserName(const QString &userName);
     void sendJson(const QJsonObject &jsonData);
+    void sendImage(const QImage& image, const QString& source);
 signals:
     //Используется для отправки на центральный сервер полученного сообщения
     void jsonReceived(const QJsonObject &jsonDoc);
+    void imageReceived(const QImage &image, const QString& source);
     //Выдается, когда клиент закрывает соединение
     void disconnectedFromClient();
     //Используется для уведомления об ошибке
@@ -28,8 +36,8 @@ public slots:
     //Метод, закрывающий соединение с клиентом
     void disconnectFromClient();
 private slots:
-    //Метод по чтению входящих сообщений из сети и отправке на главный серверный объект
-    void receiveJson();
+
+    void onReadyRead();
 private:
     //Содержит сокет, взаимодействующий с клиентом
     QTcpSocket *m_serverSocket;

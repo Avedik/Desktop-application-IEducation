@@ -1,10 +1,12 @@
 #include "Controller/controller.h"
+#include "dataTypes.h"
 #include <QTcpSocket>
 #include <QDataStream>
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QBuffer>
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
@@ -32,7 +34,7 @@ void Controller::login(const QString &userName)
         QJsonObject message;
         message[QStringLiteral("тип")] = QStringLiteral("логин");
         message[QStringLiteral("имя пользователя")] = userName;
-        clientStream << QJsonDocument(message).toJson(QJsonDocument::Compact);
+        clientStream << DataTypes::JSON << QJsonDocument(message).toJson(QJsonDocument::Compact);
     }
 }
 
@@ -45,7 +47,14 @@ void Controller::sendMessage(const QString &text)
     QJsonObject message;
     message[QStringLiteral("тип")] = QStringLiteral("сообщение");
     message[QStringLiteral("текст")] = text;
-    clientStream << QJsonDocument(message).toJson();
+    clientStream << DataTypes::JSON << QJsonDocument(message).toJson();
+}
+
+void Controller::sendImage(const QImage& image)
+{
+    QDataStream socketStream(m_clientSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::IMAGE << image;
 }
 
 void Controller::sendQuestion(const QString &destUser, const QString &text)
@@ -58,7 +67,7 @@ void Controller::sendQuestion(const QString &destUser, const QString &text)
     message[QStringLiteral("тип")] = QStringLiteral("вопрос");
     message[QStringLiteral("текст")] = text;
     message[QStringLiteral("получатель")] = destUser;
-    clientStream << QJsonDocument(message).toJson();
+    clientStream << DataTypes::JSON << QJsonDocument(message).toJson();
 }
 
 void Controller::sendAnswer(const QString &source, const QString &question, const QString &answer)
@@ -72,7 +81,7 @@ void Controller::sendAnswer(const QString &source, const QString &question, cons
     message[QStringLiteral("источник")] = source;
     message[QStringLiteral("вопрос")] = question;
     message[QStringLiteral("ответ")] = answer;
-    clientStream << QJsonDocument(message).toJson();
+    clientStream << DataTypes::JSON << QJsonDocument(message).toJson();
 }
 
 void Controller::disconnectFromHost()
@@ -92,7 +101,7 @@ void Controller::jsonReceived(const QJsonObject &docObj)
         if (resultVal.isNull() || !resultVal.isBool())
             return;
         const bool loginSuccess = resultVal.toBool();
-        if (loginSuccess) {
+        if (loginSuccess) {;
             emit loggedIn();
             return;
         }
@@ -157,12 +166,21 @@ void Controller::connectToServer(const QHostAddress &address, quint16 port)
 
 void Controller::onReadyRead()
 {
-    QByteArray jsonData;
     QDataStream socketStream(m_clientSocket);
-
     socketStream.setVersion(QDataStream::Qt_5_7);
+
+    DataTypes _type = DataTypes::JSON;
+    socketStream.startTransaction();
+    socketStream >> _type;
+    if (socketStream.status() != QDataStream::Ok)
+    {
+        socketStream.commitTransaction();
+        return;
+    }
+
+    if (_type == DataTypes::JSON){
+    QByteArray jsonData;
     for (;;) {
-        socketStream.startTransaction();
         socketStream >> jsonData;
         if (socketStream.commitTransaction()) {
             QJsonParseError parseError;
@@ -171,8 +189,22 @@ void Controller::onReadyRead()
                 if (jsonDoc.isObject())
                     jsonReceived(jsonDoc.object());
             }
+            socketStream.startTransaction();
         } else {
             break;
         }
     }
+    }
+    else if (_type == DataTypes::IMAGE)
+    {
+        QImage img;
+        QString source;
+
+        socketStream >> img >> source;
+        if (!socketStream.commitTransaction())
+            return;
+        emit receiveImage(img, source);
+    }
+    else
+        socketStream.commitTransaction();
 }

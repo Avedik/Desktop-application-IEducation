@@ -332,6 +332,9 @@ color: rgb(179, 179, 179);
        </property>
        <item>
         <widget class="QPushButton" name="chooseButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="maximumSize">
           <size>
            <width>400</width>

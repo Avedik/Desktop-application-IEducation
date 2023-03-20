@@ -24,7 +24,7 @@ class learning : public QDialog
     friend ask;
     friend Dialog;
 
-    void switch_enabled(bool is_enabled);
+    void switchEnabled(bool is_enabled);
 public:
     explicit learning(QWidget *parent = nullptr);
     ~learning();
@@ -41,6 +41,7 @@ private:
     Dialog *answer;
     ask *question;
     other_questions *other_quest;
+    QString picturePath;
 
 
 private slots:
@@ -66,6 +67,7 @@ private slots:
     void on_askButton_clicked();
     void on_answerButton_clicked();
     void on_allAnswersButton_clicked();
+    void receiveImage(const QImage& image, const QString& source);
 };
 
 #endif // LEARNING_H

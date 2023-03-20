@@ -42,6 +42,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::error, this, &learning::error);
     connect(m_Client, &Controller::userJoined, this, &learning::userJoined);
     connect(m_Client, &Controller::userLeft, this, &learning::userLeft);
+    connect(m_Client, &Controller::receiveImage, this, &learning::receiveImage);
     connect(ui->connectButton, &QPushButton::clicked, this, &learning::attemptConnection);
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
     connect(ui->messageEdit, &QLineEdit::returnPressed, this, &learning::sendMessage);
@@ -128,15 +129,16 @@ void learning::connectedToServer()
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(20,20,20); }");
     ui->label_3->setText(newUsername);
 
-    switch_enabled(true);
+    switchEnabled(true);
     attemptLogin(newUsername);
 }
 
-void learning::switch_enabled(bool is_enabled)
+void learning::switchEnabled(bool is_enabled)
 {
     ui->sendButton->setEnabled(is_enabled);
     ui->messageEdit->setEnabled(is_enabled);
     ui->chatView->setEnabled(is_enabled);
+    ui->chooseButton->setEnabled(is_enabled);
 
     ui->askButton->setEnabled(is_enabled);
     ui->answerButton->setEnabled(is_enabled);
@@ -229,8 +231,9 @@ void learning::refreshUsersList(const QVariantMap& users)
 
         QTableWidgetItem *item = new QTableWidgetItem(iter.key());
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        table->setItem(0, 0, item);
+        table->setItem(0, 1, item);
     }
+    m_Client->sendImage(QImage(picturePath));
 }
 
 void learning::sendMessage()
@@ -255,7 +258,7 @@ void learning::disconnectedFromServer()
     ui->connectButton->setText(tr("Подключиться"));
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
 
-    switch_enabled(false);
+    switchEnabled(false);
     m_lastUserName.clear();
     hide();
 }
@@ -338,18 +341,20 @@ void learning::error(QAbstractSocket::SocketError socketError)
         Q_UNREACHABLE();
     }
 
-    switch_enabled(false);
+    switchEnabled(false);
     m_lastUserName.clear();
 }
 
 void learning::on_chooseButton_clicked()
 {
-    QString url = QFileDialog::getOpenFileName(this, "Выбор фотографии", "../", "*.png *.jpg");
+    picturePath = QFileDialog::getOpenFileName(this, "Выбор фотографии", "../", "*.png *.jpg");
 
-    QPixmap img(url);
+    QPixmap img(picturePath);
     QSize sz(150,150);
     img = img.scaled(sz, Qt::KeepAspectRatio);
     ui->label_2->setPixmap(img);
+
+    m_Client->sendImage(QImage(picturePath));
 }
 
 void learning::on_askButton_clicked()
@@ -366,5 +371,21 @@ void learning::on_answerButton_clicked()
 void learning::on_allAnswersButton_clicked()
 {
     other_quest->show();
+}
+
+void learning::receiveImage(const QImage& image, const QString& source)
+{
+    QPixmap img = QPixmap::fromImage(image);
+    QSize sz(50,50);
+    img = img.scaled(sz, Qt::KeepAspectRatio);
+
+    QLabel *_label = new QLabel();
+    _label->setPixmap(img);
+
+    auto table = question->ui->usersTable;
+    QTableWidgetItem *item = table->findItems(source, Qt::MatchContains).last();
+
+    item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+    table->setCellWidget(item->row(), 0, _label);
 }
 

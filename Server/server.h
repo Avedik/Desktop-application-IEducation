@@ -26,6 +26,7 @@ private slots:
     ///Проверяет статус подключенных пользователей и логирует информацию об этом
     void broadcast(const QJsonObject &message, ServerWorker *exclude);
     void jsonReceived(ServerWorker *sender, const QJsonObject &doc);
+    void imageReceived(ServerWorker *sender, const QImage &img, const QString& source);
     ///Функция для обработки выхода пользователя
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя
