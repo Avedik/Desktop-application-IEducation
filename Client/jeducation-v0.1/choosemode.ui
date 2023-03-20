@@ -27,24 +27,8 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>40</number>
+    <number>20</number>
    </property>
-   <item>
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Minimum</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
@@ -77,6 +61,9 @@
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>10</number>
+     </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="topMargin">
@@ -119,7 +106,7 @@
           <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
 border:20px;
 border-radius:15;
-color: rgb(24, 67, 100);</string>
+color: rgb(30, 30, 30);</string>
          </property>
          <property name="text">
           <string>Изучение учебного материала</string>
@@ -177,7 +164,7 @@ color: rgb(24, 67, 100);</string>
           <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
 border:20px;
 border-radius:15;
-color: rgb(24, 67, 100);
+color: rgb(30, 30, 30);
 </string>
          </property>
          <property name="text">
@@ -203,12 +190,28 @@ color: rgb(24, 67, 100);
     </layout>
    </item>
    <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
       <number>10</number>
      </property>
+     <property name="rightMargin">
+      <number>12</number>
+     </property>
      <property name="bottomMargin">
-      <number>25</number>
+      <number>12</number>
      </property>
      <item>
       <spacer name="horizontalSpacer">
@@ -237,32 +240,23 @@ color: rgb(24, 67, 100);
          <height>35</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <family>Bahnschrift</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(189, 189, 189);
-color: rgb(0, 0, 0);
-border:2px;
-border-radius:7;</string>
+        <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+border:20px;
+border-radius:7;
+color: rgb(30, 30, 30);
+</string>
        </property>
        <property name="text">
         <string>Назад</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Minimum</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>10</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
