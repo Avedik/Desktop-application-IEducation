@@ -59,7 +59,7 @@ learning::learning(QWidget *parent) :
     timer= new QTimer(this);
     timer->setInterval(160);
     connect(timer,SIGNAL(timeout()),this,SLOT(paintingTimer()));
-
+    ui->chatView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
@@ -221,7 +221,7 @@ void learning::questionReceived(const QString &sender, const QString &text)
    for (auto s : {sender, text})
    {
        QTableWidgetItem *item = new QTableWidgetItem(s);
-       item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+       item->setFlags(item->flags() | Qt::ItemIsEditable);
        table->setItem(0, count++, item);
    }
 }
@@ -235,7 +235,7 @@ void learning::answerReceived(const QString &from, const QString &to, const QStr
     for (auto s : {from, to, ques, ans})
     {
         QTableWidgetItem *item = new QTableWidgetItem(s);
-        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+        item->setFlags(item->flags() | Qt::ItemIsEditable);
         table->setItem(0, count++, item);
     }
 }
@@ -253,7 +253,7 @@ void learning::refreshUsersList(const QVariantMap& users)
         table->insertRow(0);
 
         QTableWidgetItem *item = new QTableWidgetItem(iter.key());
-        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+        item->setFlags(item->flags() | Qt::ItemIsEditable);
         table->setItem(0, 1, item);
     }
     m_Client->sendImage(QImage(picturePath));
