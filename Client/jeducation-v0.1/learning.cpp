@@ -263,6 +263,8 @@ void learning::refreshUsersList(const QVariantMap& users)
 
 void learning::sendMessage()
 {
+    if (ui->messageEdit->text().trimmed().isEmpty())
+        return;
     m_Client->sendMessage(ui->messageEdit->text());
 
     const int newRow = m_Model->rowCount();
