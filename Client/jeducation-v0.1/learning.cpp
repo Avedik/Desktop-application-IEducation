@@ -10,9 +10,6 @@
 #include <QMessageBox>
 #include <QHostAddress>
 
-int tic = 0;
-int cnt = 0;
-// от сглаза
 learning::learning(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::learning)
@@ -94,7 +91,9 @@ void learning::on_pushButton_clicked()
     {
         cnt_timer->start();
         timer->start();
+        ui->pushButton->setEnabled(false);
     }
+      m_Client->sendMessage(QString("startTimer"));
 }
 
 void learning::paintEvent(QPaintEvent *)
@@ -188,8 +187,13 @@ void learning::loginFailed(const QString &reason)
 
 void learning::messageReceived(const QString &sender, const QString &text)
 {
-    int newRow = m_Model->rowCount();
+    if (text == QString("startTimer"))
+    {
+        on_pushButton_clicked();
+        return;
+    }
 
+    int newRow = m_Model->rowCount();
     if (m_lastUserName != sender) {
 
         m_lastUserName = sender;

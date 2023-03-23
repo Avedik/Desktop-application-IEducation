@@ -43,6 +43,8 @@ private:
     other_questions *other_quest;
     QString picturePath;
 
+    int tic = 0;
+    int cnt = 0;
 signals:
     void learningCancelled();
 private slots:
