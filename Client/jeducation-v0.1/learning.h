@@ -43,7 +43,8 @@ private:
     other_questions *other_quest;
     QString picturePath;
 
-
+signals:
+    void learningCancelled();
 private slots:
     void on_pushButton_clicked();
     void countTimer();
@@ -68,6 +69,8 @@ private slots:
     void on_answerButton_clicked();
     void on_allAnswersButton_clicked();
     void receiveImage(const QImage& image, const QString& source);
+
+    void on_learning_rejected();
 
 private:
     class keyEnterReceiver : public QObject

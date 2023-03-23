@@ -83,6 +83,8 @@ bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
 
 learning::~learning()
 {
+    is_connected = false;
+    m_Client->disconnectFromHost();
     delete ui;
 }
 
@@ -410,5 +412,11 @@ void learning::receiveImage(const QImage& image, const QString& source)
 
     item->setFlags(item->flags() ^ Qt::ItemIsEditable);
     table->setCellWidget(item->row(), 0, _label);
+}
+
+
+void learning::on_learning_rejected()
+{
+    emit learningCancelled();
 }
 
