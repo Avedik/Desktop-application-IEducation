@@ -121,6 +121,9 @@ border-radius:10;</string>
          <property name="text">
           <string>Подключиться</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -200,6 +203,9 @@ background-color: rgb(156, 190, 200);</string>
        <property name="text">
         <string>Начать</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
     </layout>
@@ -278,6 +284,9 @@ border-radius:5;</string>
        </property>
        <property name="text">
         <string>Отправить</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -410,6 +419,9 @@ border-radius:5;</string>
          <property name="text">
           <string>Выбрать фото</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -465,6 +477,9 @@ border-radius:5;</string>
         <property name="text">
          <string>Задать вопрос</string>
         </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -493,6 +508,9 @@ border-radius:5;</string>
         <property name="text">
          <string>Ответить на вопросы</string>
         </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -520,6 +538,9 @@ border-radius:5;</string>
         </property>
         <property name="text">
          <string>Ответы остальных участников</string>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

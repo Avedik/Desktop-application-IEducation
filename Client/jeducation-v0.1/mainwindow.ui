@@ -180,6 +180,9 @@ border-radius:10;</string>
           <property name="text">
            <string>НАЧАТЬ</string>
           </property>
+          <property name="autoDefault">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -277,7 +280,7 @@ border-radius:10;</string>
      <x>0</x>
      <y>0</y>
      <width>840</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

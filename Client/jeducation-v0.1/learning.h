@@ -68,6 +68,16 @@ private slots:
     void on_answerButton_clicked();
     void on_allAnswersButton_clicked();
     void receiveImage(const QImage& image, const QString& source);
+
+private:
+    class keyEnterReceiver : public QObject
+    {
+        learning* dest;
+    public:
+        keyEnterReceiver(learning* _dest): dest(_dest) {}
+    protected:
+        bool eventFilter(QObject* obj, QEvent* event);
+    };
 };
 
 #endif // LEARNING_H

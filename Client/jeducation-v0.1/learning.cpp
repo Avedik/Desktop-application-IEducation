@@ -31,6 +31,10 @@ learning::learning(QWidget *parent) :
     is_connected = false;
     ui->chatView->setModel(m_Model);
 
+    // Задаём обработчик нажатия на Enter
+    keyEnterReceiver* key = new keyEnterReceiver(this);
+    installEventFilter(key);
+
     connect(m_Client, &Controller::connected, this, &learning::connectedToServer);
     connect(m_Client, &Controller::loggedIn, this, &learning::loggedIn);
     connect(m_Client, &Controller::loginError, this, &learning::loginFailed);
@@ -56,6 +60,25 @@ learning::learning(QWidget *parent) :
     timer->setInterval(160);
     connect(timer,SIGNAL(timeout()),this,SLOT(paintingTimer()));
 
+}
+
+bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
+{
+    if (event->type()==QEvent::KeyPress) {
+            QKeyEvent* key = static_cast<QKeyEvent*>(event);
+            if ( (key->key()==Qt::Key_Enter) || (key->key()==Qt::Key_Return) ) {
+                if (dest->is_connected)
+                    dest->sendMessage();
+                else
+                    dest->attemptConnection();
+            } else {
+                return QObject::eventFilter(obj, event);
+            }
+            return true;
+    } else {
+        return QObject::eventFilter(obj, event);
+    }
+    return false;
 }
 
 learning::~learning()
