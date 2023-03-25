@@ -6,6 +6,7 @@ brainstorm::brainstorm(QWidget *parent) :
     ui(new Ui::brainstorm)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 brainstorm::~brainstorm()

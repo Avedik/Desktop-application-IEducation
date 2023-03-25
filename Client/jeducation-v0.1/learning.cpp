@@ -1,4 +1,5 @@
 #include "learning.h"
+#include "textviewer.h"
 #include "ui_learning.h"
 #include "ui_dialog.h"
 #include "ui_ask.h"
@@ -44,6 +45,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::userJoined, this, &learning::userJoined);
     connect(m_Client, &Controller::userLeft, this, &learning::userLeft);
     connect(m_Client, &Controller::receiveImage, this, &learning::receiveImage);
+
     connect(ui->connectButton, &QPushButton::clicked, this, &learning::attemptConnection);
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
     connect(ui->messageEdit, &QLineEdit::returnPressed, this, &learning::sendMessage);
@@ -57,6 +59,7 @@ learning::learning(QWidget *parent) :
     timer->setInterval(160);
     connect(timer,SIGNAL(timeout()),this,SLOT(paintingTimer()));
     ui->chatView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
@@ -80,8 +83,9 @@ bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
 
 learning::~learning()
 {
+    if (is_connected)
+        m_Client->disconnectFromHost();
     is_connected = false;
-    m_Client->disconnectFromHost();
     delete ui;
 }
 
@@ -420,9 +424,28 @@ void learning::receiveImage(const QImage& image, const QString& source)
     table->setCellWidget(item->row(), 0, _label);
 }
 
-
-void learning::on_learning_rejected()
+void learning::on_importPdfButton_clicked()
 {
-    emit learningCancelled();
+    textViewer = new TextViewer();
+
+    QFileDialog dialog;
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setViewMode(QFileDialog::Detail);
+    dialog.setOption(QFileDialog::ReadOnly, true);
+    dialog.setWindowTitle(QString("Файл операции QAXwidget"));
+    dialog.setDirectory(QString("./"));
+    dialog.setNameFilter(QString("*.pdf"));
+
+    if (dialog.exec()) {
+        textViewer->show();
+        // Открыть в соответствии с суффиксом файла
+        QStringList files = dialog.selectedFiles();
+        for (auto filename : files)
+            if (filename.endsWith(".docx") || filename.endsWith(".doc"))
+                textViewer->openWord(filename);
+            else if (filename.endsWith(".pdf"))
+                textViewer->openPdf(filename);
+    }
 }
+
 

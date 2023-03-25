@@ -16,6 +16,7 @@ class learning;
 
 class Controller;
 class QStandardItemModel;
+class TextViewer;
 
 class learning : public QDialog
 {
@@ -42,11 +43,11 @@ private:
     ask *question;
     other_questions *other_quest;
     QString picturePath;
+    TextViewer *textViewer;
 
     int tic = 0;
     int cnt = 0;
-signals:
-    void learningCancelled();
+
 private slots:
     void on_pushButton_clicked();
     void countTimer();
@@ -71,8 +72,7 @@ private slots:
     void on_answerButton_clicked();
     void on_allAnswersButton_clicked();
     void receiveImage(const QImage& image, const QString& source);
-
-    void on_learning_rejected();
+    void on_importPdfButton_clicked();
 
 private:
     class keyEnterReceiver : public QObject

@@ -29,19 +29,12 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <widget class="QLabel" name="label_5">
-       <property name="minimumSize">
-        <size>
-         <width>500</width>
-         <height>400</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(179, 179, 179);
-background-color: rgb(29, 29, 29);</string>
-       </property>
+      <widget class="QPushButton" name="importPdfButton">
        <property name="text">
-        <string>материал</string>
+        <string>Загрузить материал</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

@@ -1,4 +1,4 @@
-QT       += core gui network widgets
+QT       += core gui network widgets pdfwidgets axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,7 +18,8 @@ SOURCES += \
     learning.cpp \
     main.cpp \
     mainwindow.cpp \
-    other_questions.cpp
+    other_questions.cpp \
+    textviewer.cpp
 
 HEADERS += \
     Controller/controller.h \
@@ -30,7 +31,8 @@ HEADERS += \
     info.h \
     learning.h \
     mainwindow.h \
-    other_questions.h
+    other_questions.h \
+    textviewer.h
 
 FORMS += \
     ask.ui \
@@ -40,7 +42,8 @@ FORMS += \
     info.ui \
     learning.ui \
     mainwindow.ui \
-    other_questions.ui
+    other_questions.ui \
+    textviewer.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

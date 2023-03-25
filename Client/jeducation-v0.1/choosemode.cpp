@@ -19,14 +19,7 @@ ChooseMode::~ChooseMode()
 void ChooseMode::on_pushButton_clicked()
 {
     mode1 = new learning(this);
-    connect(mode1, &learning::learningCancelled, this, &ChooseMode::learningCancelled);
     mode1 -> show();
-
-}
-
-void ChooseMode::learningCancelled()
-{
-    delete mode1;
 }
 
 void ChooseMode::on_pushButton_2_clicked()
@@ -34,9 +27,6 @@ void ChooseMode::on_pushButton_2_clicked()
     this->close();
     emit firstWindow();
 }
-
-
-
 
 void ChooseMode::on_pushButton_3_clicked()
 {
