@@ -30,13 +30,9 @@ void TextViewer::openWord(QString &filename)
 void TextViewer::openPdf(QString &filename)
 {
     closeOffice();
-    m_content = new QAxWidget(this);
-    if(!m_content->setControl("Adobe PDF Reader"))
-        QMessageBox::critical(this, "Error", "PDF не установлен!");
+    m_content = new QAxWidget("Microsoft Web Browser");
+    m_content->dynamicCall("Navigate(const QString&)", filename);
     ui->gridLayout->addWidget(m_content);
-    m_content->dynamicCall(
-                "LoadFile(const QString&)",
-                filename);
 }
 
 void TextViewer::closeOffice()

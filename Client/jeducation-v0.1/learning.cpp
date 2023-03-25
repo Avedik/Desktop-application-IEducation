@@ -434,7 +434,7 @@ void learning::on_importPdfButton_clicked()
     dialog.setOption(QFileDialog::ReadOnly, true);
     dialog.setWindowTitle(QString("Файл операции QAXwidget"));
     dialog.setDirectory(QString("./"));
-    dialog.setNameFilter(QString("*.pdf"));
+    dialog.setNameFilter(QString("*.doc *.docx *.pdf"));
 
     if (dialog.exec()) {
         textViewer->show();
