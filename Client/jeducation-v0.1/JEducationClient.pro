@@ -1,4 +1,4 @@
-QT       += core gui network widgets pdfwidgets axcontainer
+QT       += core gui network widgets axcontainer qml quick pdf svg
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,9 +17,9 @@ SOURCES += \
     info.cpp \
     learning.cpp \
     main.cpp \
+    main.cpp \
     mainwindow.cpp \
-    other_questions.cpp \
-    textviewer.cpp
+    other_questions.cpp
 
 HEADERS += \
     Controller/controller.h \
@@ -31,8 +31,7 @@ HEADERS += \
     info.h \
     learning.h \
     mainwindow.h \
-    other_questions.h \
-    textviewer.h
+    other_questions.h
 
 FORMS += \
     ask.ui \
@@ -42,10 +41,20 @@ FORMS += \
     info.ui \
     learning.ui \
     mainwindow.ui \
-    other_questions.ui \
-    textviewer.ui
+    other_questions.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    pdfViewer/resources/zoom-in.svg \
+    pdfViewer/resources/zoom-out.svg \
+    pdfViewer/viewer.qml
+
+RESOURCES += \
+    pdfViewer/viewer.qrc
+
+macos:QMAKE_INFO_PLIST = pdfViewer/resources/macos/Info.plist
+macos:ICON = pdfViewer/resources/multipage.icns

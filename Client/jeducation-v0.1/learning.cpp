@@ -1,5 +1,4 @@
 #include "learning.h"
-#include "textviewer.h"
 #include "ui_learning.h"
 #include "ui_dialog.h"
 #include "ui_ask.h"
@@ -83,6 +82,8 @@ bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
 
 learning::~learning()
 {
+    if (engine)
+        delete engine;
     if (is_connected)
         m_Client->disconnectFromHost();
     is_connected = false;
@@ -426,26 +427,13 @@ void learning::receiveImage(const QImage& image, const QString& source)
 
 void learning::on_importPdfButton_clicked()
 {
-    textViewer = new TextViewer();
+    QString docPath = QFileDialog::getOpenFileName(this, "Импортирование материала", "../", "*.pdf");
 
-    QFileDialog dialog;
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    dialog.setViewMode(QFileDialog::Detail);
-    dialog.setOption(QFileDialog::ReadOnly, true);
-    dialog.setWindowTitle(QString("Файл операции QAXwidget"));
-    dialog.setDirectory(QString("./"));
-    dialog.setNameFilter(QString("*.doc *.docx *.pdf"));
-
-    if (dialog.exec()) {
-        textViewer->show();
-        // Открыть в соответствии с суффиксом файла
-        QStringList files = dialog.selectedFiles();
-        for (auto filename : files)
-            if (filename.endsWith(".docx") || filename.endsWith(".doc"))
-                textViewer->openWord(filename);
-            else if (filename.endsWith(".pdf"))
-                textViewer->openPdf(filename);
-    }
+    if (engine)
+        delete engine;
+    engine = new QQmlApplicationEngine();
+    engine->load(QUrl(QStringLiteral("qrc:///pdfviewer/viewer.qml")));
+    engine->rootObjects().constFirst()->setProperty("source", QUrl::fromUserInput(docPath));
 }
 
 

@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QAbstractSocket>
 #include <QTimer>
+#include <QQmlApplicationEngine>
 #include "dialog.h"
 #include "ask.h"
 #include "other_questions.h"
@@ -16,7 +17,6 @@ class learning;
 
 class Controller;
 class QStandardItemModel;
-class TextViewer;
 
 class learning : public QDialog
 {
@@ -43,7 +43,7 @@ private:
     ask *question;
     other_questions *other_quest;
     QString picturePath;
-    TextViewer *textViewer;
+    QQmlApplicationEngine *engine = nullptr;
 
     int tic = 0;
     int cnt = 0;
