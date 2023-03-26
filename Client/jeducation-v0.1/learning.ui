@@ -30,6 +30,9 @@
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
       <widget class="QPushButton" name="importPdfButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Загрузить материал</string>
        </property>
@@ -138,32 +141,20 @@ border-radius:10;</string>
       </spacer>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLabel" name="label_6">
-         <property name="font">
-          <font>
-           <family>Bahnschrift</family>
-           <pointsize>20</pointsize>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(151, 184, 193);
-color: rgb(27, 27, 27);</string>
-         </property>
-         <property name="text">
-          <string>10:00</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="timerEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>00:10</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer_3">
@@ -183,6 +174,9 @@ color: rgb(27, 27, 27);</string>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="font">
         <font>
          <family>Bahnschrift</family>
@@ -248,7 +242,7 @@ background-color: rgb(156, 190, 200);</string>
         <string notr="true">Ваше сообщение...</string>
        </property>
        <property name="cursorPosition">
-        <number>0</number>
+        <number>17</number>
        </property>
       </widget>
      </item>
@@ -303,7 +297,7 @@ border-radius:5;</string>
        </property>
        <property name="minimumSize">
         <size>
-         <width>100</width>
+         <width>150</width>
          <height>20</height>
         </size>
        </property>
@@ -319,7 +313,7 @@ color: rgb(179, 179, 179);
 </string>
        </property>
        <property name="text">
-        <string>Username</string>
+        <string>Имя пользователя</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -360,6 +354,9 @@ color: rgb(179, 179, 179);
          </property>
          <property name="text">
           <string>Фото</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>

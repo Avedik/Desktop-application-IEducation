@@ -49,10 +49,6 @@ ApplicationWindow {
                 }
             }
             Shortcut {
-                sequence: StandardKey.Find
-                onActivated: searchField.forceActiveFocus()
-            }
-            Shortcut {
                 sequence: StandardKey.Quit
                 onActivated: Qt.quit()
             }
@@ -103,9 +99,7 @@ ApplicationWindow {
     PdfMultiPageView {
         id: view
         anchors.fill: parent
-        anchors.leftMargin: sidebar.position * sidebar.width
         document: doc
-        searchString: searchField.text
         onCurrentPageChanged: currentPageSB.value = view.currentPage + 1
     }
 

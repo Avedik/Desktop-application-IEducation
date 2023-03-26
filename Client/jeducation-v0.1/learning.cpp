@@ -49,7 +49,7 @@ learning::learning(QWidget *parent) :
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
     connect(ui->messageEdit, &QLineEdit::returnPressed, this, &learning::sendMessage);
 
-    time.setHMS(0,10,0);
+    time.setHMS(0,0,10);
     cnt_timer= new QTimer(this);
     cnt_timer->setInterval(1000);
     connect(cnt_timer,SIGNAL(timeout()),this,SLOT(countTimer()));
@@ -66,7 +66,9 @@ bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
     if (event->type()==QEvent::KeyPress) {
             QKeyEvent* key = static_cast<QKeyEvent*>(event);
             if ( (key->key()==Qt::Key_Enter) || (key->key()==Qt::Key_Return) ) {
-                if (dest->is_connected)
+                if (dest->time_is_changed)
+                    dest->time_is_changed = false;
+                else if (dest->is_connected)
                     dest->sendMessage();
                 else
                     dest->attemptConnection();
@@ -83,22 +85,69 @@ bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
 learning::~learning()
 {
     if (engine)
+    {
+        QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
         delete engine;
+    }
     if (is_connected)
         m_Client->disconnectFromHost();
-    is_connected = false;
     delete ui;
+}
+
+
+void learning::on_timerEdit_textChanged(const QString &arg1)
+{
+    time_is_changed = true;
+}
+
+void learning::on_timerEdit_editingFinished()
+{
+    QStringList timeElems = ui->timerEdit->text().split(":");
+    if (timeElems.size() != 2)
+    {
+        QMessageBox::critical(this,"Ошибка","Введите корректное время в формате **:**");
+        return;
+    }
+
+    bool is_min = true;
+    bool is_sec = true;
+    int mins = timeElems.first().toInt(&is_min);
+    int seconds = timeElems.last().toInt(&is_sec);
+
+    if (!is_min || mins >= 100)
+    {
+        QMessageBox::critical(this,"Ошибка","Введите корректное число минут");
+        return;
+    }
+    if (!is_sec || seconds >= 60)
+    {
+        QMessageBox::critical(this,"Ошибка","Введите корректное число секунд");
+        return;
+    }
+    if ((mins == 0 && seconds == 0) || mins < 0 || seconds < 0)
+    {
+        QMessageBox::critical(this,"Ошибка","Задайте корректное время");
+        return;
+    }
+    time.setHMS(mins/60, mins == 0 ? 0 : mins%60, seconds);
+    m_Client->sendMessage(QString("timerValue") + ui->timerEdit->text());
 }
 
 void learning::on_pushButton_clicked()
 {
+    if (ui->importPdfButton->isEnabled())
+    {
+        QMessageBox::warning(this,"Предупреждение","Загрузите материал для изучения");
+        return;
+    }
+
     if (!cnt_timer->isActive())
     {
         cnt_timer->start();
         timer->start();
         ui->pushButton->setEnabled(false);
     }
-      m_Client->sendMessage(QString("startTimer"));
+    m_Client->sendMessage(QString("startTimer"));
 }
 
 void learning::paintEvent(QPaintEvent *)
@@ -110,11 +159,48 @@ void learning::paintEvent(QPaintEvent *)
 void learning::countTimer()
 {
     tic++;
-    ui->label_6->setText(time.addSecs(-tic).toString("mm:ss"));
-    if (ui->label_6->text() == "00:00")
+    ui->timerEdit->setText(time.addSecs(-tic).toString("mm:ss"));
+    if (ui->timerEdit->text() == "00:00")
     {
         timer->stop();
         cnt_timer->stop();
+        tic = cnt = 0;
+
+        if (engine)
+        {
+            QMessageBox::information(this, "Сообщение",
+                                     "Задайте время в таймере для составления вопросов и запустите его.");
+            on_askButton_clicked();
+            ui->importPdfButton->setEnabled(false);
+
+            QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
+            delete engine;
+            engine = nullptr;
+        }
+        else if (ui->askButton->isEnabled())
+        {
+            QMessageBox::information(this, "Сообщение",
+                                     "Задайте время в таймере для ответов на вопросы и запустите его.");
+            question->close();
+            on_answerButton_clicked();
+            ui->askButton->setEnabled(false);
+        }
+        else if (ui->answerButton->isEnabled())
+        {
+            QMessageBox::information(this, "Сообщение",
+                                     "Задайте время в таймере для оценки ответов других участников и запустите его.");
+            answer->close();
+            on_allAnswersButton_clicked();
+            ui->answerButton->setEnabled(false);
+        }
+        else if (ui->allAnswersButton->isEnabled())
+        {
+            QMessageBox::information(this, "Сообщение", "Вы прошли все этапы!");
+            other_quest->close();
+            on_allAnswersButton_clicked();
+            ui->answerButton->setEnabled(false);
+        }
+        ui->pushButton->setEnabled(true);
     }
 }
 
@@ -169,9 +255,10 @@ void learning::switchEnabled(bool is_enabled)
     ui->chatView->setEnabled(is_enabled);
     ui->chooseButton->setEnabled(is_enabled);
 
+    ui->pushButton->setEnabled(is_enabled);
+    ui->timerEdit->setEnabled(is_enabled);
     ui->askButton->setEnabled(is_enabled);
-    ui->answerButton->setEnabled(is_enabled);
-    ui->allAnswersButton->setEnabled(is_enabled);
+    ui->importPdfButton->setEnabled(is_enabled);
 }
 
 void learning::attemptLogin(const QString &userName)
@@ -195,6 +282,12 @@ void learning::messageReceived(const QString &sender, const QString &text)
     if (text == QString("startTimer"))
     {
         on_pushButton_clicked();
+        return;
+    }
+    else if (text.startsWith(QString("timerValue")))
+    {
+        ui->timerEdit->setText(text.mid(10, 5));
+        on_timerEdit_editingFinished();
         return;
     }
 
@@ -428,12 +521,21 @@ void learning::receiveImage(const QImage& image, const QString& source)
 void learning::on_importPdfButton_clicked()
 {
     QString docPath = QFileDialog::getOpenFileName(this, "Импортирование материала", "../", "*.pdf");
+    if (docPath.isEmpty())
+        return;
+    ui->importPdfButton->setEnabled(false);
 
     if (engine)
+    {
+        QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
         delete engine;
+        engine = nullptr;
+    }
     engine = new QQmlApplicationEngine();
     engine->load(QUrl(QStringLiteral("qrc:///pdfviewer/viewer.qml")));
     engine->rootObjects().constFirst()->setProperty("source", QUrl::fromUserInput(docPath));
-}
 
+    QMessageBox::information(this, "Сообщение",
+                             "Настройте и запустите таймер. Начните изучать материал!");
+}
 

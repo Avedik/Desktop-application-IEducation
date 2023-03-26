@@ -44,6 +44,7 @@ private:
     other_questions *other_quest;
     QString picturePath;
     QQmlApplicationEngine *engine = nullptr;
+    bool time_is_changed = false;
 
     int tic = 0;
     int cnt = 0;
@@ -73,6 +74,10 @@ private slots:
     void on_allAnswersButton_clicked();
     void receiveImage(const QImage& image, const QString& source);
     void on_importPdfButton_clicked();
+
+    void on_timerEdit_editingFinished();
+
+    void on_timerEdit_textChanged(const QString &arg1);
 
 private:
     class keyEnterReceiver : public QObject
