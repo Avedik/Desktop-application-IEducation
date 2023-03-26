@@ -130,6 +130,7 @@ void learning::on_timerEdit_editingFinished()
         return;
     }
     time.setHMS(mins/60, mins == 0 ? 0 : mins%60, seconds);
+    ui->pushButton->setEnabled(true);
     m_Client->sendMessage(QString("timerValue") + ui->timerEdit->text());
 }
 
@@ -148,6 +149,7 @@ void learning::on_pushButton_clicked()
         ui->pushButton->setEnabled(false);
     }
     m_Client->sendMessage(QString("startTimer"));
+    ui->timerEdit->setReadOnly(true);
 }
 
 void learning::paintEvent(QPaintEvent *)
@@ -165,42 +167,47 @@ void learning::countTimer()
         timer->stop();
         cnt_timer->stop();
         tic = cnt = 0;
+        ui->timerEdit->setReadOnly(false);
 
         if (engine)
         {
-            QMessageBox::information(this, "Сообщение",
-                                     "Задайте время в таймере для составления вопросов и запустите его.");
             on_askButton_clicked();
             ui->importPdfButton->setEnabled(false);
 
             QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
             delete engine;
             engine = nullptr;
+
+            QMessageBox::information(this, "Сообщение",
+                                     "Задайте время в таймере для составления вопросов и запустите его.");
         }
         else if (ui->askButton->isEnabled())
         {
-            QMessageBox::information(this, "Сообщение",
-                                     "Задайте время в таймере для ответов на вопросы и запустите его.");
             question->close();
             on_answerButton_clicked();
             ui->askButton->setEnabled(false);
+            ui->answerButton->setEnabled(true);
+
+            QMessageBox::information(this, "Сообщение",
+                                     "Задайте время в таймере для ответов на вопросы и запустите его.");
         }
         else if (ui->answerButton->isEnabled())
         {
-            QMessageBox::information(this, "Сообщение",
-                                     "Задайте время в таймере для оценки ответов других участников и запустите его.");
             answer->close();
             on_allAnswersButton_clicked();
             ui->answerButton->setEnabled(false);
+            ui->allAnswersButton->setEnabled(true);
+
+            QMessageBox::information(this, "Сообщение",
+                                     "Задайте время в таймере для оценки ответов других участников и запустите его.");
         }
         else if (ui->allAnswersButton->isEnabled())
         {
-            QMessageBox::information(this, "Сообщение", "Вы прошли все этапы!");
             other_quest->close();
             on_allAnswersButton_clicked();
-            ui->answerButton->setEnabled(false);
+            ui->allAnswersButton->setEnabled(false);
+            QMessageBox::information(this, "Сообщение", "Вы прошли все этапы!");
         }
-        ui->pushButton->setEnabled(true);
     }
 }
 
