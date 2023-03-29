@@ -71,7 +71,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(29, 81, 121);</string>
+        <string notr="true">color: rgb(27, 27, 27)</string>
        </property>
        <property name="text">
         <string>Jeducation
