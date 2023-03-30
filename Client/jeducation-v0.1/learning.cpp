@@ -486,7 +486,7 @@ void learning::on_chooseButton_clicked()
     picturePath = QFileDialog::getOpenFileName(this, "Выбор фотографии", "../", "*.png *.jpg");
 
     QPixmap img(picturePath);
-    QSize sz(150,150);
+    QSize sz(300,300);
     img = img.scaled(sz, Qt::KeepAspectRatio);
     ui->label_2->setPixmap(img);
 
