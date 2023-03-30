@@ -15,7 +15,16 @@ public:
     explicit rating(QWidget *parent = nullptr);
     ~rating();
 
+signals:
+    void firstWindow1();
+
+
+private slots:
+    void on_pushButton_clicked();
+
 private:
+
+
     Ui::rating *ui;
 };
 
