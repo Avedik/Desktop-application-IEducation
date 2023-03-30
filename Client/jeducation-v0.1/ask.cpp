@@ -2,6 +2,7 @@
 #include "ui_ask.h"
 #include "learning.h"
 #include "Controller/controller.h"
+#include <QMessageBox>
 
 ask::ask(QWidget *parent) :
     QDialog(parent),
@@ -28,6 +29,12 @@ ask::~ask()
 
 void ask::on_buttonBox_accepted()
 {
+   if (ui->usersTable->selectedItems().empty())
+   {
+       QMessageBox::critical(this,"Ошибка","Выберите адресата");
+       return;
+   }
+
    static_cast<learning*>(parentWidget())->m_Client->sendQuestion(ui->usersTable->selectedItems().first()->text(),
                                                                   ui->textEdit->toPlainText());
 }
