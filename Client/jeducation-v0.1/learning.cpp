@@ -9,6 +9,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QHostAddress>
+#include <QVariant>
 
 learning::learning(QWidget *parent) :
     QDialog(parent),
@@ -364,7 +365,7 @@ void learning::refreshUsersList(const QVariantMap& users)
         table->insertRow(0);
 
         QTableWidgetItem *item = new QTableWidgetItem(iter.key());
-        item->setFlags(item->flags() | Qt::ItemIsEditable);
+        item->setBackground(QBrush(QColor(iter.key() == ui->label_3->text() ? Qt::red : Qt::green)));
         table->setItem(0, 1, item);
     }
     m_Client->sendImage(QImage(picturePath));
