@@ -4,6 +4,7 @@
 #include <iostream>
 #include "info.h"
 #include <QPixmap>
+#include "rating.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -32,5 +33,12 @@ void MainWindow::on_pushButton_2_clicked()
 {
     window1 = new info(this);
     window1 -> show();
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+
+    window2 = new rating(this);
+    window2 -> show();
 }
 
