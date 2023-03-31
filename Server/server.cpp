@@ -121,6 +121,17 @@ void Server::imageReceived(ServerWorker *sender, const QImage &img, const QStrin
             worker->sendImage(img, source);
         }
 }
+void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
+{
+    Q_ASSERT(sender);
+    emit logMessage(QStringLiteral("PDF получен ") );
+    if (!sender->userName().isEmpty())
+        for (ServerWorker *worker : m_clients) {
+            Q_ASSERT(worker);
+            if (worker != sender)
+                worker->sendPDF(data);
+    }
+}
 
 void Server::userDisconnected(ServerWorker *sender)
 {
@@ -160,6 +171,7 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::jsonReceived, this, std::bind(&Server::jsonReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::imageReceived, this, std::bind(&Server::imageReceived, this,
                                                                   worker, std::placeholders::_1, std::placeholders::_2));
+    connect(worker, &ServerWorker::pdfReceived, this, std::bind(&Server::pdfReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
 
     m_clients.append(worker);
