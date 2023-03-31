@@ -333,7 +333,7 @@ void learning::questionReceived(const QString &sender, const QString &text)
    for (auto s : {sender, text})
    {
        QTableWidgetItem *item = new QTableWidgetItem(s);
-       item->setFlags(item->flags() | Qt::ItemIsEditable);
+       item->setFlags(item->flags() & (~Qt::ItemIsEditable));
        table->setItem(0, count++, item);
    }
 }
@@ -347,7 +347,7 @@ void learning::answerReceived(const QString &from, const QString &to, const QStr
     for (auto s : {from, to, ques, ans})
     {
         QTableWidgetItem *item = new QTableWidgetItem(s);
-        item->setFlags(item->flags() | Qt::ItemIsEditable);
+        item->setFlags(item->flags() & (~Qt::ItemIsEditable));
         table->setItem(0, count++, item);
     }
 }
@@ -370,7 +370,12 @@ void learning::refreshUsersList(const QVariantMap& users, const QString& type)
         else {
             table->insertRow(0);
             QTableWidgetItem *item = new QTableWidgetItem(iter.key());
-            item->setBackground(QBrush(QColor(iter.key() == ui->label_3->text() ? Qt::red : Qt::green)));
+            if (iter.key() == ui->label_3->text())
+            {
+                item->setBackground(QBrush(QColor(Qt::red)));
+                item->setFlags(item->flags() & (~Qt::ItemIsSelectable) & (~Qt::ItemIsEditable));
+            } else
+                item->setBackground(QBrush(QColor(Qt::green)));
             table->setItem(0, 1, item);
         }
     }
@@ -526,8 +531,6 @@ void learning::receiveImage(const QImage& image, const QString& source)
 
     auto table = question->ui->usersTable;
     QTableWidgetItem *item = table->findItems(source, Qt::MatchContains).last();
-
-    item->setFlags(item->flags() ^ Qt::ItemIsEditable);
     table->setCellWidget(item->row(), 0, _label);
 }
 

@@ -35,7 +35,10 @@ void ask::on_buttonBox_accepted()
        return;
    }
 
-   static_cast<learning*>(parentWidget())->m_Client->sendQuestion(ui->usersTable->selectedItems().first()->text(),
+   auto selectedItem = ui->usersTable->selectedItems().first();
+   static_cast<learning*>(parentWidget())->m_Client->sendQuestion(selectedItem->text(),
                                                                   ui->textEdit->toPlainText());
+   selectedItem->setFlags(selectedItem->flags() & (~Qt::ItemIsSelectable));
+   selectedItem->setBackground(QBrush(QColor(Qt::red)));
 }
 
