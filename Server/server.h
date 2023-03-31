@@ -27,6 +27,7 @@ private slots:
     void broadcast(const QJsonObject &message, ServerWorker *exclude);
     void jsonReceived(ServerWorker *sender, const QJsonObject &doc);
     void imageReceived(ServerWorker *sender, const QImage &img, const QString& source);
+    void pdfReceived(ServerWorker *sender, const QByteArray &data);
     ///Функция для обработки выхода пользователя
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя
