@@ -43,6 +43,14 @@ void ServerWorker::sendImage(const QImage& image, const QString& source)
     socketStream << DataTypes::IMAGE << image << source;
 }
 
+void ServerWorker::sendPDF(const QByteArray &data)
+{
+    emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - PDF"));
+    QDataStream socketStream(m_serverSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::PDF_FILE << data;
+}
+
 void ServerWorker::disconnectFromClient()
 {
     m_serverSocket->disconnectFromHost();
@@ -95,6 +103,19 @@ void ServerWorker::receiveImage(QDataStream& socketStream)
     emit imageReceived(img, userName());
 }
 
+void ServerWorker::receivePDF(QDataStream& socketStream)
+{
+    QByteArray data;
+    socketStream >> data;
+    if (socketStream.status() != QDataStream::Ok)
+    {
+        socketStream.commitTransaction();
+        return;
+    }
+    socketStream.commitTransaction();
+    emit pdfReceived(data);
+}
+
 void ServerWorker::onReadyRead()
 {
     QDataStream socketStream(m_serverSocket);
@@ -109,7 +130,9 @@ void ServerWorker::onReadyRead()
         return;
     }
 
-    if (_type == DataTypes::JSON)
+    if (_type == DataTypes::PDF_FILE)
+            receivePDF(socketStream);
+    else if (_type == DataTypes::JSON)
         receiveJson(socketStream);
     else if (_type == DataTypes::IMAGE)
         receiveImage(socketStream);
