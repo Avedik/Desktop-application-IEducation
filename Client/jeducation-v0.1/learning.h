@@ -79,6 +79,8 @@ private slots:
 
     void on_timerEdit_textChanged(const QString &arg1);
 
+    void on_connectButton_clicked();
+
 private:
     class keyEnterReceiver : public QObject
     {

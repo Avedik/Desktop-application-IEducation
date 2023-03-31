@@ -558,3 +558,17 @@ void learning::on_importPdfButton_clicked()
                              "Настройте и запустите таймер. Начните изучать материал!");
 }
 
+
+void learning::on_connectButton_clicked()
+{
+  ui->importPdfButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->pushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->allAnswersButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->askButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->allAnswersButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->chooseButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->importPdfButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->sendButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+  ui->answerButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+}
+

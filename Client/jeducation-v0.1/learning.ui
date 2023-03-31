@@ -180,7 +180,7 @@ border-radius:10;</string>
        </property>
        <property name="styleSheet">
         <string notr="true">color: rgb(26, 26, 26);
-background-color: rgb(156, 190, 200);</string>
+background-color: rgb(184, 184, 184);</string>
        </property>
        <property name="text">
         <string>Начать</string>
@@ -372,7 +372,7 @@ color:rgb(27, 27, 27)</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+          <string notr="true">background-color: rgb(184, 184, 184);
 color: rgb(27, 27, 27);
 border:2px;
 border-radius:5;</string>
@@ -452,7 +452,7 @@ border-radius:5;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+             <string notr="true">background-color: rgb(184, 184, 184);
 color: rgb(27, 27, 27);
 border:2px;
 border-radius:5;</string>
@@ -489,7 +489,7 @@ border-radius:5;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+             <string notr="true">background-color: rgb(184, 184, 184);
 color: rgb(27, 27, 27);
 border:2px;
 border-radius:5;</string>
@@ -526,7 +526,7 @@ border-radius:5;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+             <string notr="true">background-color: rgb(184, 184, 184);
 color: rgb(27, 27, 27);
 border:2px;
 border-radius:5;</string>
@@ -638,7 +638,7 @@ border-radius:5;</string>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+        <string notr="true">background-color: rgb(184, 184, 184);
 color: rgb(27, 27, 27);
 border:2px;
 border-radius:5;</string>
@@ -691,7 +691,7 @@ border-radius:5;</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+          <string notr="true">background-color: rgb(184, 184, 184);
 color: rgb(27, 27, 27);
 border:2px;
 border-radius:10;</string>
