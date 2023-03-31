@@ -5,7 +5,7 @@
 #include <QMetaType>
 
 enum class DataTypes : qint32 {
-    JSON, IMAGE
+    JSON, IMAGE, PDF_FILE
 };
 Q_DECLARE_METATYPE(DataTypes);
 
