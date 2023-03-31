@@ -45,6 +45,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::userJoined, this, &learning::userJoined);
     connect(m_Client, &Controller::userLeft, this, &learning::userLeft);
     connect(m_Client, &Controller::receiveImage, this, &learning::receiveImage);
+    connect(m_Client, &Controller::receivePDF, this, &learning::receivePDF);
 
     connect(ui->connectButton, &QPushButton::clicked, this, &learning::attemptConnection);
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
@@ -537,13 +538,40 @@ void learning::receiveImage(const QImage& image, const QString& source)
     table->setCellWidget(item->row(), 0, _label);
 }
 
+void learning::receivePDF(const QByteArray &data)
+{
+    QFile file("JDocument.pdf");
+    if (!file.open(QFile::WriteOnly))
+    {
+        QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
+        return;
+    }
+    file.write(data);
+    file.close();
+    openPDFViewer(QApplication::applicationDirPath() + "/JDocument.pdf");
+}
+
 void learning::on_importPdfButton_clicked()
 {
     QString docPath = QFileDialog::getOpenFileName(this, "Импортирование материала", "../", "*.pdf");
+
     if (docPath.isEmpty())
         return;
-    ui->importPdfButton->setEnabled(false);
 
+    QFile file(docPath);
+    if (file.open(QFile::ReadOnly))
+    {
+        m_Client->sendPDF(file.readAll());
+        file.close();
+    }
+    else
+        QMessageBox::critical(this,"Ошибка","Не удалось отправить файл");
+    openPDFViewer(docPath);
+}
+
+void learning::openPDFViewer(const QString& docPath)
+{
+    ui->importPdfButton->setEnabled(false);
     if (engine)
     {
         QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
