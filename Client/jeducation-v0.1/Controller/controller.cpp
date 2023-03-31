@@ -84,6 +84,13 @@ void Controller::sendAnswer(const QString &source, const QString &question, cons
     clientStream << DataTypes::JSON << QJsonDocument(message).toJson();
 }
 
+void Controller::sendPDF(const QByteArray &data)
+{
+    QDataStream socketStream(m_clientSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::PDF_FILE << data;
+}
+
 void Controller::disconnectFromHost()
 {
     m_clientSocket->disconnectFromHost();
