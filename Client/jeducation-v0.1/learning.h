@@ -73,11 +73,13 @@ private slots:
     void on_answerButton_clicked();
     void on_allAnswersButton_clicked();
     void receiveImage(const QImage& image, const QString& source);
+    void receivePDF(const QByteArray &data);
     void on_importPdfButton_clicked();
 
     void on_timerEdit_editingFinished();
 
     void on_timerEdit_textChanged(const QString &arg1);
+    void openPDFViewer(const QString& docPath);
 
     void on_connectButton_clicked();
 
