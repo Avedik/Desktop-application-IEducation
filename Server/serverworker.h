@@ -14,6 +14,7 @@ class ServerWorker : public QObject
     //Метод по чтению входящих сообщений из сети и отправке на главный серверный объект
     void receiveJson(QDataStream& socketStream);
     void receiveImage(QDataStream& socketStream);
+    void receivePDF(QDataStream& socketStream);
 public:
     explicit ServerWorker(QObject *parent = nullptr);
     virtual bool setSocketDescriptor(qintptr socketDescriptor);
@@ -22,10 +23,12 @@ public:
     void setUserName(const QString &userName);
     void sendJson(const QJsonObject &jsonData);
     void sendImage(const QImage& image, const QString& source);
+    void sendPDF(const QByteArray &data);
 signals:
     //Используется для отправки на центральный сервер полученного сообщения
     void jsonReceived(const QJsonObject &jsonDoc);
     void imageReceived(const QImage &image, const QString& source);
+    void pdfReceived(const QByteArray &data);
     //Выдается, когда клиент закрывает соединение
     void disconnectedFromClient();
     //Используется для уведомления об ошибке
