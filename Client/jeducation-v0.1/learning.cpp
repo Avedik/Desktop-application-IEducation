@@ -352,23 +352,28 @@ void learning::answerReceived(const QString &from, const QString &to, const QStr
     }
 }
 
-void learning::refreshUsersList(const QVariantMap& users)
+void learning::refreshUsersList(const QVariantMap& users, const QString& type)
 {
     auto table = question->ui->usersTable;
-    table->clearContents();
-    table->setRowCount(0);
 
     for (QVariantMap::const_iterator iter = users.begin(); iter != users.end(); ++iter)
     {
         if (iter.key().compare(QStringLiteral("тип")) == 0)
             continue;
-        table->insertRow(0);
 
-        QTableWidgetItem *item = new QTableWidgetItem(iter.key());
-        item->setBackground(QBrush(QColor(iter.key() == ui->label_3->text() ? Qt::red : Qt::green)));
-        table->setItem(0, 1, item);
+        if (type == "отсоединение")
+        {
+            for(int i = 0; i < table->rowCount(); ++i)
+              if(table->item(i, 1)->text() == iter.key())
+                  table->removeRow(i);
+        }
+        else {
+            table->insertRow(0);
+            QTableWidgetItem *item = new QTableWidgetItem(iter.key());
+            item->setBackground(QBrush(QColor(iter.key() == ui->label_3->text() ? Qt::red : Qt::green)));
+            table->setItem(0, 1, item);
+        }
     }
-    m_Client->sendImage(QImage(picturePath));
 }
 
 void learning::sendMessage()

@@ -144,7 +144,7 @@ void Controller::jsonReceived(const QJsonObject &docObj)
     } else if (typeVal.toString().compare(QStringLiteral("подключение"), Qt::CaseInsensitive) == 0
                || typeVal.toString().compare(QStringLiteral("отсоединение"), Qt::CaseInsensitive) == 0) {
 
-        emit refreshUsersList(docObj.toVariantMap());
+        emit refreshUsersList(docObj.toVariantMap(), typeVal.toString());
     } else if (typeVal.toString().compare(QStringLiteral("новый пользователь"), Qt::CaseInsensitive) == 0) {
 
         const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));

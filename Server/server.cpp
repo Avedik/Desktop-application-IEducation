@@ -45,11 +45,16 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
     connectedMessage[QStringLiteral("новый пользователь")] = newUserName;
     broadcast(connectedMessage, sender);
 
-    QJsonObject message;
-    message[QStringLiteral("тип")] = QStringLiteral("подключение");
+    QJsonObject messageToAll;
+    messageToAll[QStringLiteral("тип")] = QStringLiteral("подключение");
+    messageToAll[sender->userName()] = "";
+    broadcast(messageToAll, sender);
+
+    QJsonObject messageToSender;
+    messageToSender[QStringLiteral("тип")] = QStringLiteral("подключение");
     for (ServerWorker *_worker : m_clients)
-        message[_worker->userName()] = "";
-    broadcast(message, nullptr);
+        messageToSender[_worker->userName()] = "";
+    sendJson(sender, messageToSender);
 }
 
 void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
@@ -131,9 +136,8 @@ void Server::userDisconnected(ServerWorker *sender)
 
     QJsonObject message;
     message[QStringLiteral("тип")] = QStringLiteral("отсоединение");
-    for (ServerWorker *worker : m_clients)
-        message[worker->userName()] = "";
-    broadcast(message, nullptr);
+    message[sender->userName()] = "";
+    broadcast(message, sender);
 
     sender->deleteLater();
 }
