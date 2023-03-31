@@ -375,7 +375,10 @@ void learning::refreshUsersList(const QVariantMap& users, const QString& type)
                 item->setBackground(QBrush(QColor(Qt::red)));
                 item->setFlags(item->flags() & (~Qt::ItemIsSelectable) & (~Qt::ItemIsEditable));
             } else
+            {
                 item->setBackground(QBrush(QColor(Qt::green)));
+                item->setFlags(item->flags() & (~Qt::ItemIsEditable));
+            }
             table->setItem(0, 1, item);
         }
     }
