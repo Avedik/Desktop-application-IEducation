@@ -81,8 +81,6 @@ private slots:
     void on_timerEdit_textChanged(const QString &arg1);
     void openPDFViewer(const QString& docPath);
 
-    void on_connectButton_clicked();
-
 private:
     class keyEnterReceiver : public QObject
     {
