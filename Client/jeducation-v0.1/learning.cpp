@@ -540,7 +540,7 @@ void learning::receiveImage(const QImage& image, const QString& source)
 
 void learning::receivePDF(const QByteArray &data)
 {
-    QFile file("JDocument.pdf");
+    QFile file(QApplication::applicationDirPath() + "/JDocument.pdf");
     if (!file.open(QFile::WriteOnly))
     {
         QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");

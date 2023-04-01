@@ -185,7 +185,19 @@ void Controller::onReadyRead()
         return;
     }
 
-    if (_type == DataTypes::JSON){
+    if (_type == DataTypes::PDF_FILE)
+    {
+        QByteArray data;
+        socketStream >> data;
+        if (socketStream.status() != QDataStream::Ok)
+        {
+            socketStream.commitTransaction();
+            return;
+        }
+        socketStream.commitTransaction();
+        emit receivePDF(data);
+    }
+    else if (_type == DataTypes::JSON) {
     QByteArray jsonData;
     for (;;) {
         socketStream >> jsonData;
