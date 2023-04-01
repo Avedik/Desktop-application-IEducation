@@ -48,7 +48,8 @@ private:
 
     int tic = 0;
     int cnt = 0;
-
+private:
+    void startTimer();
 private slots:
     void on_pushButton_clicked();
     void countTimer();

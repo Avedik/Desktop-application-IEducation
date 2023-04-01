@@ -132,8 +132,18 @@ void learning::on_timerEdit_editingFinished()
         return;
     }
     time.setHMS(mins/60, mins == 0 ? 0 : mins%60, seconds);
-    ui->pushButton->setEnabled(true);
     m_Client->sendMessage(QString("timerValue") + ui->timerEdit->text());
+}
+
+void learning::startTimer()
+{
+    if (!cnt_timer->isActive())
+    {
+        cnt_timer->start();
+        timer->start();
+        ui->pushButton->setEnabled(false);
+    }
+    ui->timerEdit->setReadOnly(true);
 }
 
 void learning::on_pushButton_clicked()
@@ -143,15 +153,13 @@ void learning::on_pushButton_clicked()
         QMessageBox::warning(this,"Предупреждение","Загрузите материал для изучения");
         return;
     }
-
-    if (!cnt_timer->isActive())
-    {
-        cnt_timer->start();
-        timer->start();
-        ui->pushButton->setEnabled(false);
-    }
     m_Client->sendMessage(QString("startTimer"));
-    ui->timerEdit->setReadOnly(true);
+    if (time_is_changed)
+    {
+        time_is_changed = false;
+        emit ui->timerEdit->editingFinished();
+    }
+    startTimer();
 }
 
 void learning::paintEvent(QPaintEvent *)
@@ -211,6 +219,7 @@ void learning::countTimer()
             QMessageBox::information(this, "Сообщение", "Вы прошли все этапы!");
         }
     }
+    ui->pushButton->setEnabled(true);
 }
 
 void learning::paintingTimer()
@@ -300,7 +309,8 @@ void learning::messageReceived(const QString &sender, const QString &text)
 {
     if (text == QString("startTimer"))
     {
-        on_pushButton_clicked();
+        time_is_changed = false;
+        startTimer();
         return;
     }
     else if (text.startsWith(QString("timerValue")))
