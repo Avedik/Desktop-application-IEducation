@@ -124,7 +124,6 @@ bool learning::timerEditFinished()
         return false;
     }
     time.setHMS(mins/60, mins == 0 ? 0 : mins%60, seconds);
-    m_Client->sendMessage(QString("timerValue") + ui->timerEdit->text());
     return true;
 }
 
@@ -146,9 +145,11 @@ void learning::on_pushButton_clicked()
         QMessageBox::warning(this,"Предупреждение","Загрузите материал для изучения");
         return;
     }
-    m_Client->sendMessage(QString("startTimer"));
     if (timerEditFinished())
+    {
+        m_Client->sendMessage(QString("startTimer") + ui->timerEdit->text());
         startTimer();
+    }
 }
 
 void learning::paintEvent(QPaintEvent *)
@@ -296,15 +297,11 @@ void learning::loginFailed(const QString &reason)
 
 void learning::messageReceived(const QString &sender, const QString &text)
 {
-    if (text == QString("startTimer"))
+    if (text.startsWith(QString("startTimer")))
     {
+        ui->timerEdit->setText(text.mid(10, text.size() - 1));
         if (timerEditFinished())
             startTimer();
-        return;
-    }
-    else if (text.startsWith(QString("timerValue")))
-    {
-        ui->timerEdit->setText(text.mid(10, 5));
         return;
     }
 
