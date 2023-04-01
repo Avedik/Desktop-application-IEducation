@@ -68,9 +68,7 @@ bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
     if (event->type()==QEvent::KeyPress) {
             QKeyEvent* key = static_cast<QKeyEvent*>(event);
             if ( (key->key()==Qt::Key_Enter) || (key->key()==Qt::Key_Return) ) {
-                if (dest->time_is_changed)
-                    dest->time_is_changed = false;
-                else if (dest->is_connected)
+                if (dest->is_connected)
                     dest->sendMessage();
                 else
                     dest->attemptConnection();
@@ -96,19 +94,13 @@ learning::~learning()
     delete ui;
 }
 
-
-void learning::on_timerEdit_textChanged(const QString &arg1)
-{
-    time_is_changed = true;
-}
-
-void learning::on_timerEdit_editingFinished()
+bool learning::timerEditFinished()
 {
     QStringList timeElems = ui->timerEdit->text().split(":");
     if (timeElems.size() != 2)
     {
         QMessageBox::critical(this,"Ошибка","Введите корректное время в формате **:**");
-        return;
+        return false;
     }
 
     bool is_min = true;
@@ -119,20 +111,21 @@ void learning::on_timerEdit_editingFinished()
     if (!is_min || mins >= 100)
     {
         QMessageBox::critical(this,"Ошибка","Введите корректное число минут");
-        return;
+        return false;
     }
     if (!is_sec || seconds >= 60)
     {
         QMessageBox::critical(this,"Ошибка","Введите корректное число секунд");
-        return;
+        return false;
     }
     if ((mins == 0 && seconds == 0) || mins < 0 || seconds < 0)
     {
         QMessageBox::critical(this,"Ошибка","Задайте корректное время");
-        return;
+        return false;
     }
     time.setHMS(mins/60, mins == 0 ? 0 : mins%60, seconds);
     m_Client->sendMessage(QString("timerValue") + ui->timerEdit->text());
+    return true;
 }
 
 void learning::startTimer()
@@ -141,9 +134,9 @@ void learning::startTimer()
     {
         cnt_timer->start();
         timer->start();
-        ui->pushButton->setEnabled(false);
+        switchButtonEnabled(ui->pushButton, false);
+        ui->timerEdit->setReadOnly(true);
     }
-    ui->timerEdit->setReadOnly(true);
 }
 
 void learning::on_pushButton_clicked()
@@ -154,12 +147,8 @@ void learning::on_pushButton_clicked()
         return;
     }
     m_Client->sendMessage(QString("startTimer"));
-    if (time_is_changed)
-    {
-        time_is_changed = false;
-        emit ui->timerEdit->editingFinished();
-    }
-    startTimer();
+    if (timerEditFinished())
+        startTimer();
 }
 
 void learning::paintEvent(QPaintEvent *)
@@ -182,7 +171,7 @@ void learning::countTimer()
         if (engine)
         {
             on_askButton_clicked();
-            ui->importPdfButton->setEnabled(false);
+            switchButtonEnabled(ui->importPdfButton, false);
 
             QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
             delete engine;
@@ -195,8 +184,8 @@ void learning::countTimer()
         {
             question->close();
             on_answerButton_clicked();
-            ui->askButton->setEnabled(false);
-            ui->answerButton->setEnabled(true);
+            switchButtonEnabled(ui->askButton, false);
+            switchButtonEnabled(ui->answerButton, true);
 
             QMessageBox::information(this, "Сообщение",
                                      "Задайте время в таймере для ответов на вопросы и запустите его.");
@@ -205,8 +194,8 @@ void learning::countTimer()
         {
             answer->close();
             on_allAnswersButton_clicked();
-            ui->answerButton->setEnabled(false);
-            ui->allAnswersButton->setEnabled(true);
+            switchButtonEnabled(ui->answerButton, false);
+            switchButtonEnabled(ui->allAnswersButton, true);
 
             QMessageBox::information(this, "Сообщение",
                                      "Задайте время в таймере для оценки ответов других участников и запустите его.");
@@ -215,11 +204,11 @@ void learning::countTimer()
         {
             other_quest->close();
             on_allAnswersButton_clicked();
-            ui->allAnswersButton->setEnabled(false);
+            switchButtonEnabled(ui->allAnswersButton, false);
             QMessageBox::information(this, "Сообщение", "Вы прошли все этапы!");
         }
+        switchButtonEnabled(ui->pushButton, true);
     }
-    ui->pushButton->setEnabled(true);
 }
 
 void learning::paintingTimer()
@@ -268,25 +257,25 @@ void learning::connectedToServer()
 
 void learning::switchEnabled(bool is_enabled)
 {
-    ui->sendButton->setEnabled(is_enabled);
     ui->messageEdit->setEnabled(is_enabled);
     ui->chatView->setEnabled(is_enabled);
-    ui->chooseButton->setEnabled(is_enabled);
-
-    ui->pushButton->setEnabled(is_enabled);
     ui->timerEdit->setEnabled(is_enabled);
-    ui->askButton->setEnabled(is_enabled);
-    ui->importPdfButton->setEnabled(is_enabled);
 
-    ui->importPdfButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->pushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->allAnswersButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->askButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->allAnswersButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->chooseButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->importPdfButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->sendButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
-    ui->answerButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+    for (auto but : {ui->importPdfButton,
+            ui->pushButton,
+            ui->askButton,
+            ui->chooseButton,
+            ui->sendButton })
+        switchButtonEnabled(but, is_enabled);
+}
+
+void learning::switchButtonEnabled(QPushButton* button, bool is_enabled)
+{
+    button->setEnabled(is_enabled);
+    if (is_enabled)
+        button->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+    else
+        button->setStyleSheet("background-color: rgb(184, 184, 184)");
 }
 
 void learning::attemptLogin(const QString &userName)
@@ -309,17 +298,13 @@ void learning::messageReceived(const QString &sender, const QString &text)
 {
     if (text == QString("startTimer"))
     {
-        time_is_changed = false;
-        startTimer();
+        if (timerEditFinished())
+            startTimer();
         return;
     }
     else if (text.startsWith(QString("timerValue")))
     {
         ui->timerEdit->setText(text.mid(10, 5));
-        QStringList timeElems = ui->timerEdit->text().split(":");
-        int mins = timeElems.first().toInt();
-        int seconds = timeElems.last().toInt();
-        time.setHMS(mins/60, mins == 0 ? 0 : mins%60, seconds);
         return;
     }
 
@@ -433,6 +418,8 @@ void learning::disconnectedFromServer()
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
 
     switchEnabled(false);
+    switchButtonEnabled(ui->allAnswersButton, false);
+    switchButtonEnabled(ui->answerButton, false);
     m_lastUserName.clear();
     hide();
 }
@@ -516,6 +503,8 @@ void learning::error(QAbstractSocket::SocketError socketError)
     }
 
     switchEnabled(false);
+    switchButtonEnabled(ui->allAnswersButton, false);
+    switchButtonEnabled(ui->answerButton, false);
     m_lastUserName.clear();
 }
 
@@ -590,11 +579,12 @@ void learning::on_importPdfButton_clicked()
     else
         QMessageBox::critical(this,"Ошибка","Не удалось отправить файл");
     openPDFViewer(docPath);
+    on_pushButton_clicked();
 }
 
 void learning::openPDFViewer(const QString& docPath)
 {
-    ui->importPdfButton->setEnabled(false);
+    switchButtonEnabled(ui->importPdfButton, false);
     if (engine)
     {
         QMetaObject::invokeMethod(engine->rootObjects().first(), "close");

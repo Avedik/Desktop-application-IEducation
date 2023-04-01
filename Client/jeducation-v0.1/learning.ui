@@ -597,10 +597,13 @@ border-radius:5;</string>
         <string notr="true">color: rgb(27, 27, 27);</string>
        </property>
        <property name="text">
-        <string notr="true">Ваше сообщение...</string>
+        <string notr="true"/>
        </property>
        <property name="cursorPosition">
-        <number>17</number>
+        <number>0</number>
+       </property>
+       <property name="placeholderText">
+        <string>Ваше сообщение...</string>
        </property>
       </widget>
      </item>

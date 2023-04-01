@@ -25,7 +25,6 @@ class learning : public QDialog
     friend ask;
     friend Dialog;
 
-    void switchEnabled(bool is_enabled);
 public:
     explicit learning(QWidget *parent = nullptr);
     ~learning();
@@ -44,12 +43,13 @@ private:
     other_questions *other_quest;
     QString picturePath;
     QQmlApplicationEngine *engine = nullptr;
-    bool time_is_changed = false;
 
     int tic = 0;
     int cnt = 0;
 private:
     void startTimer();
+    void switchEnabled(bool is_enabled);
+    void switchButtonEnabled(QPushButton* button, bool is_enabled);
 private slots:
     void on_pushButton_clicked();
     void countTimer();
@@ -77,9 +77,7 @@ private slots:
     void receivePDF(const QByteArray &data);
     void on_importPdfButton_clicked();
 
-    void on_timerEdit_editingFinished();
-
-    void on_timerEdit_textChanged(const QString &arg1);
+    bool timerEditFinished();
     void openPDFViewer(const QString& docPath);
 
 private:
