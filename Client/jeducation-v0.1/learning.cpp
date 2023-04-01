@@ -316,7 +316,10 @@ void learning::messageReceived(const QString &sender, const QString &text)
     else if (text.startsWith(QString("timerValue")))
     {
         ui->timerEdit->setText(text.mid(10, 5));
-        on_timerEdit_editingFinished();
+        QStringList timeElems = ui->timerEdit->text().split(":");
+        int mins = timeElems.first().toInt();
+        int seconds = timeElems.last().toInt();
+        time.setHMS(mins/60, mins == 0 ? 0 : mins%60, seconds);
         return;
     }
 
@@ -601,7 +604,4 @@ void learning::openPDFViewer(const QString& docPath)
     engine = new QQmlApplicationEngine();
     engine->load(QUrl(QStringLiteral("qrc:///pdfviewer/viewer.qml")));
     engine->rootObjects().constFirst()->setProperty("source", QUrl::fromUserInput(docPath));
-
-    QMessageBox::information(this, "Сообщение",
-                             "Настройте и запустите таймер. Начните изучать материал!");
 }
