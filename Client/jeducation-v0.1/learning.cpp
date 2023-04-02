@@ -23,7 +23,7 @@ learning::learning(QWidget *parent) :
 
     ui->setupUi(this);
     setStyleSheet("QPushButton { background-color: rgb(100,100,100); }");
-    setStyleSheet(styleSheet() + "QLabel, QLineEdit, QPushButton { color: white; }");
+    setStyleSheet(styleSheet() + "QLabel, QLineEdit, QListView { color: black; } QPushButton { color: white; }");
 
     m_Model->insertColumn(0);
     is_connected = false;
@@ -141,15 +141,27 @@ void learning::startTimer()
 
 void learning::on_pushButton_clicked()
 {
-    if (ui->importPdfButton->isEnabled())
-    {
-        QMessageBox::warning(this,"Предупреждение","Загрузите материал для изучения");
+    if (!timerEditFinished())
         return;
-    }
-    if (timerEditFinished())
+    m_Client->sendMessage(QString("startTimer") + ui->timerEdit->text());
+    startTimer();
+
+    if (m_step == 0)
+        switchButtonEnabled(ui->importPdfButton, true);
+    else if (m_step == 1)
     {
-        m_Client->sendMessage(QString("startTimer") + ui->timerEdit->text());
-        startTimer();
+        switchButtonEnabled(ui->askButton, true);
+        on_askButton_clicked();
+    }
+    else if (m_step == 2)
+    {
+        switchButtonEnabled(ui->answerButton, true);
+        on_answerButton_clicked();
+    }
+    else if (m_step == 3)
+    {
+        switchButtonEnabled(ui->allAnswersButton, true);
+        on_allAnswersButton_clicked();
     }
 }
 
@@ -170,11 +182,8 @@ void learning::countTimer()
         tic = cnt = 0;
         ui->timerEdit->setReadOnly(false);
 
-        if (engine)
+        if (m_step == 0)
         {
-            on_askButton_clicked();
-            switchButtonEnabled(ui->importPdfButton, false);
-
             QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
             delete engine;
             engine = nullptr;
@@ -182,34 +191,32 @@ void learning::countTimer()
             QMessageBox::information(this, "Сообщение",
                                      "Задайте время в таймере для составления вопросов и запустите его.");
         }
-        else if (ui->askButton->isEnabled())
+        else if (m_step == 1)
         {
             question->close();
-            on_answerButton_clicked();
             switchButtonEnabled(ui->askButton, false);
-            switchButtonEnabled(ui->answerButton, true);
 
             QMessageBox::information(this, "Сообщение",
                                      "Задайте время в таймере для ответов на вопросы и запустите его.");
         }
-        else if (ui->answerButton->isEnabled())
+        else if (m_step == 2)
         {
             answer->close();
-            on_allAnswersButton_clicked();
             switchButtonEnabled(ui->answerButton, false);
-            switchButtonEnabled(ui->allAnswersButton, true);
 
             QMessageBox::information(this, "Сообщение",
                                      "Задайте время в таймере для оценки ответов других участников и запустите его.");
         }
-        else if (ui->allAnswersButton->isEnabled())
+        else if (m_step == 3)
         {
             other_quest->close();
-            on_allAnswersButton_clicked();
             switchButtonEnabled(ui->allAnswersButton, false);
             QMessageBox::information(this, "Сообщение", "Вы прошли все этапы!");
+            switchButtonEnabled(ui->pushButton, false);
+            return;
         }
         switchButtonEnabled(ui->pushButton, true);
+        ++m_step;
     }
 }
 
@@ -254,6 +261,7 @@ void learning::connectedToServer()
     ui->label_3->setText(newUsername);
 
     switchEnabled(true);
+    switchButtonEnabled(ui->importPdfButton, false);
     attemptLogin(newUsername);
 }
 
@@ -265,7 +273,6 @@ void learning::switchEnabled(bool is_enabled)
 
     for (auto but : {ui->importPdfButton,
             ui->pushButton,
-            ui->askButton,
             ui->chooseButton,
             ui->sendButton })
         switchButtonEnabled(but, is_enabled);
@@ -329,6 +336,7 @@ void learning::messageReceived(const QString &sender, const QString &text)
         m_Model->setData(m_Model->index(newRow, 0), int(Qt::AlignLeft | Qt::AlignVCenter), Qt::TextAlignmentRole);
 
         m_Model->setData(m_Model->index(newRow, 0), boldFont, Qt::FontRole);
+        m_Model->setData(m_Model->index(newRow, 0), QColor(Qt::red), Qt::ForegroundRole);
         ++newRow;
     } else {
 
@@ -336,6 +344,7 @@ void learning::messageReceived(const QString &sender, const QString &text)
     }
     m_Model->setData(m_Model->index(newRow, 0), text);
     m_Model->setData(m_Model->index(newRow, 0), int(Qt::AlignLeft | Qt::AlignVCenter), Qt::TextAlignmentRole);
+    m_Model->setData(m_Model->index(newRow, 0), QColor(Qt::black), Qt::ForegroundRole);
     ui->chatView->scrollToBottom();
 }
 
@@ -620,5 +629,7 @@ void learning::fileSentOut()
     ui->progressBar->setMaximum(100);
     ui->progressBar->setValue(100);
     switchEnabled(true);
+    switchButtonEnabled(ui->pushButton, false);
+    switchButtonEnabled(ui->importPdfButton, false);
     openPDFViewer(QApplication::applicationDirPath() + "/JDocument.pdf");
 }

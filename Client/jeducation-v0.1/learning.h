@@ -46,6 +46,7 @@ private:
 
     int tic = 0;
     int cnt = 0;
+    int m_step = 0;
 private:
     void startTimer();
     void switchEnabled(bool is_enabled);
