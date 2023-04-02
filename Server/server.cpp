@@ -123,14 +123,14 @@ void Server::imageReceived(ServerWorker *sender, const QImage &img, const QStrin
 }
 void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
 {
+    _state = false;
     Q_ASSERT(sender);
     emit logMessage(QStringLiteral("PDF получен ") );
     if (!sender->userName().isEmpty())
         for (ServerWorker *worker : m_clients) {
             Q_ASSERT(worker);
-            if (worker != sender)
-                worker->sendPDF(data);
-    }
+            worker->sendPDF(data);
+        }
 }
 
 void Server::userDisconnected(ServerWorker *sender)
@@ -150,6 +150,8 @@ void Server::userDisconnected(ServerWorker *sender)
     message[sender->userName()] = "";
     broadcast(message, sender);
 
+    if (m_clients.size() == 0)
+        _state = true;
     sender->deleteLater();
 }
 
@@ -159,8 +161,21 @@ void Server::userError(ServerWorker *sender)
     emit logMessage(QStringLiteral("Ошибка от ") + sender->userName());
 }
 
+void Server::userReceiveFile()
+{
+    ++numberOfUsersWithFile;
+    if (numberOfUsersWithFile == m_clients.size())
+    {
+        for (ServerWorker *worker : m_clients)
+            worker->sendServiceInfo();
+        numberOfUsersWithFile = 0;
+    }
+}
+
 void Server::incomingConnection(qintptr socketDescriptor)
 {
+    if (!_state)
+        return;
     ServerWorker *worker = new ServerWorker(this);
     if (!worker->setSocketDescriptor(socketDescriptor)) {
         worker->deleteLater();
@@ -173,6 +188,7 @@ void Server::incomingConnection(qintptr socketDescriptor)
                                                                   worker, std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::pdfReceived, this, std::bind(&Server::pdfReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
+    connect(worker, &ServerWorker::userReceiveFile, this, &Server::userReceiveFile);
 
     m_clients.append(worker);
     emit logMessage(QStringLiteral("Новый клиент подключился"));

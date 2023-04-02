@@ -23,6 +23,7 @@ public slots:
     void sendAnswer(const QString &source, const QString &question, const QString &answer);
     void sendPDF(const QByteArray &data);
     void disconnectFromHost();
+    void fileReceived();
 
 private slots:
     void onReadyRead();
@@ -41,6 +42,7 @@ signals:
     void userLeft(const QString &username);
     void receiveImage(const QImage& image, const QString& source);
     void receivePDF(const QByteArray &data);
+    void fileSentOut();
 private:
     QTcpSocket *m_clientSocket;
     bool m_loggedIn;

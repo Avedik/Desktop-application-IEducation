@@ -24,11 +24,13 @@ public:
     void sendJson(const QJsonObject &jsonData);
     void sendImage(const QImage& image, const QString& source);
     void sendPDF(const QByteArray &data);
+    void sendServiceInfo();
 signals:
     //Используется для отправки на центральный сервер полученного сообщения
     void jsonReceived(const QJsonObject &jsonDoc);
     void imageReceived(const QImage &image, const QString& source);
     void pdfReceived(const QByteArray &data);
+    void userReceiveFile();
     //Выдается, когда клиент закрывает соединение
     void disconnectedFromClient();
     //Используется для уведомления об ошибке

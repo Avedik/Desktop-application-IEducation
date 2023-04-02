@@ -50,6 +50,7 @@ private:
     void startTimer();
     void switchEnabled(bool is_enabled);
     void switchButtonEnabled(QPushButton* button, bool is_enabled);
+    void wait();
 private slots:
     void on_pushButton_clicked();
     void countTimer();
@@ -79,6 +80,7 @@ private slots:
 
     bool timerEditFinished();
     void openPDFViewer(const QString& docPath);
+    void fileSentOut();
 
 private:
     class keyEnterReceiver : public QObject

@@ -51,6 +51,13 @@ void ServerWorker::sendPDF(const QByteArray &data)
     socketStream << DataTypes::PDF_FILE << data;
 }
 
+void ServerWorker::sendServiceInfo()
+{
+    QDataStream socketStream(m_serverSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::FILE_SEND_CODE;
+}
+
 void ServerWorker::disconnectFromClient()
 {
     m_serverSocket->disconnectFromHost();
@@ -69,25 +76,23 @@ void ServerWorker::setUserName(const QString &userName)
 void ServerWorker::receiveJson(QDataStream& socketStream)
 {
     QByteArray jsonData;
-    for (;;) {
-        socketStream >> jsonData;
-        if (socketStream.commitTransaction()) {
-            QJsonParseError parseError;
-            const QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
-            if (parseError.error == QJsonParseError::NoError) {
-                if (jsonDoc.isObject())
-                    emit jsonReceived(jsonDoc.object());
-                else
-                    emit logMessage(QStringLiteral("Неверное сообщение: ") + QString::fromUtf8(jsonData));
-            } else {
-                emit logMessage(QStringLiteral("Неверное сообщение: ") + QString::fromUtf8(jsonData));
-            }
+    socketStream >> jsonData;
 
-            socketStream.startTransaction();
+    if (socketStream.commitTransaction()) {
+        QJsonParseError parseError;
+        const QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+        if (parseError.error == QJsonParseError::NoError) {
+            if (jsonDoc.isObject())
+                emit jsonReceived(jsonDoc.object());
+            else
+                emit logMessage(QStringLiteral("Неверное сообщение: ") + QString::fromUtf8(jsonData));
         } else {
-            break;
+            emit logMessage(QStringLiteral("Неверное сообщение: ") + QString::fromUtf8(jsonData));
         }
+
+        socketStream.startTransaction();
     }
+
 }
 
 void ServerWorker::receiveImage(QDataStream& socketStream)
@@ -130,8 +135,10 @@ void ServerWorker::onReadyRead()
         return;
     }
 
-    if (_type == DataTypes::PDF_FILE)
-            receivePDF(socketStream);
+    if (_type == DataTypes::FILE_RECEIVE_CODE)
+        emit userReceiveFile();
+    else if (_type == DataTypes::PDF_FILE)
+        receivePDF(socketStream);
     else if (_type == DataTypes::JSON)
         receiveJson(socketStream);
     else if (_type == DataTypes::IMAGE)

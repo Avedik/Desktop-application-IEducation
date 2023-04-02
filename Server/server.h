@@ -21,6 +21,8 @@ private:
     void sendJson(ServerWorker *destination, const QJsonObject &message);
     //Вектор для хранения пользователей
     QVector<ServerWorker *> m_clients;
+    bool _state = true;
+    qint32 numberOfUsersWithFile = 0;
 
 private slots:
     ///Проверяет статус подключенных пользователей и логирует информацию об этом
@@ -32,6 +34,7 @@ private slots:
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя
     void userError(ServerWorker *sender);
+    void userReceiveFile();
 
 public:
     ///Конструктор Server

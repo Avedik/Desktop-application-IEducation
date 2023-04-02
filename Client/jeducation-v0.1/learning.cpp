@@ -46,6 +46,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::userLeft, this, &learning::userLeft);
     connect(m_Client, &Controller::receiveImage, this, &learning::receiveImage);
     connect(m_Client, &Controller::receivePDF, this, &learning::receivePDF);
+    connect(m_Client, &Controller::fileSentOut, this, &learning::fileSentOut);
 
     connect(ui->connectButton, &QPushButton::clicked, this, &learning::attemptConnection);
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
@@ -304,6 +305,14 @@ void learning::messageReceived(const QString &sender, const QString &text)
             startTimer();
         return;
     }
+    else if (text == QString("on_importPdfButton_clicked"))
+    {
+        switchEnabled(false);
+        ui->progressBar->setMaximum(0);
+        ui->progressBar->setMinimum(0);
+        ui->progressBar->setValue(0);
+        return;
+    }
 
     int newRow = m_Model->rowCount();
     if (m_lastUserName != sender) {
@@ -547,6 +556,12 @@ void learning::receiveImage(const QImage& image, const QString& source)
     table->setCellWidget(item->row(), 0, _label);
 }
 
+void learning::wait() {
+    QEventLoop loop;
+    connect(m_Client, &Controller::fileSentOut, &loop, &QEventLoop::quit );
+    loop.exec();
+}
+
 void learning::receivePDF(const QByteArray &data)
 {
     QFile file(QApplication::applicationDirPath() + "/JDocument.pdf");
@@ -557,7 +572,8 @@ void learning::receivePDF(const QByteArray &data)
     }
     file.write(data);
     file.close();
-    openPDFViewer(QApplication::applicationDirPath() + "/JDocument.pdf");
+
+    m_Client->fileReceived();
 }
 
 void learning::on_importPdfButton_clicked()
@@ -567,6 +583,7 @@ void learning::on_importPdfButton_clicked()
     if (docPath.isEmpty())
         return;
 
+    m_Client->sendMessage(QString("on_importPdfButton_clicked"));
     QFile file(docPath);
     if (file.open(QFile::ReadOnly))
     {
@@ -575,7 +592,12 @@ void learning::on_importPdfButton_clicked()
     }
     else
         QMessageBox::critical(this,"Ошибка","Не удалось отправить файл");
-    openPDFViewer(docPath);
+
+    switchEnabled(false);
+    ui->progressBar->setMaximum(0);
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setValue(0);
+    wait();
     on_pushButton_clicked();
 }
 
@@ -591,4 +613,12 @@ void learning::openPDFViewer(const QString& docPath)
     engine = new QQmlApplicationEngine();
     engine->load(QUrl(QStringLiteral("qrc:///pdfviewer/viewer.qml")));
     engine->rootObjects().constFirst()->setProperty("source", QUrl::fromUserInput(docPath));
+}
+
+void learning::fileSentOut()
+{
+    ui->progressBar->setMaximum(100);
+    ui->progressBar->setValue(100);
+    switchEnabled(true);
+    openPDFViewer(QApplication::applicationDirPath() + "/JDocument.pdf");
 }
