@@ -21,15 +21,20 @@ private:
     void sendJson(ServerWorker *destination, const QJsonObject &message);
     //Вектор для хранения пользователей
     QVector<ServerWorker *> m_clients;
+    bool _state = true;
+    qint32 numberOfUsersWithFile = 0;
 
 private slots:
     ///Проверяет статус подключенных пользователей и логирует информацию об этом
     void broadcast(const QJsonObject &message, ServerWorker *exclude);
     void jsonReceived(ServerWorker *sender, const QJsonObject &doc);
+    void imageReceived(ServerWorker *sender, const QImage &img, const QString& source);
+    void pdfReceived(ServerWorker *sender, const QByteArray &data);
     ///Функция для обработки выхода пользователя
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя
     void userError(ServerWorker *sender);
+    void userReceiveFile();
 
 public:
     ///Конструктор Server

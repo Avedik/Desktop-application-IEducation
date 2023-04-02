@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/pdfviewer">
+        <file>viewer.qml</file>
+        <file>resources/zoom-in.svg</file>
+        <file>resources/zoom-out.svg</file>
+    </qresource>
+</RCC>

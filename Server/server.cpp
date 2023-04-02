@@ -44,6 +44,17 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
     connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
     connectedMessage[QStringLiteral("новый пользователь")] = newUserName;
     broadcast(connectedMessage, sender);
+
+    QJsonObject messageToAll;
+    messageToAll[QStringLiteral("тип")] = QStringLiteral("подключение");
+    messageToAll[sender->userName()] = "";
+    broadcast(messageToAll, sender);
+
+    QJsonObject messageToSender;
+    messageToSender[QStringLiteral("тип")] = QStringLiteral("подключение");
+    for (ServerWorker *_worker : m_clients)
+        messageToSender[_worker->userName()] = "";
+    sendJson(sender, messageToSender);
 }
 
 void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
@@ -52,19 +63,27 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
     const QJsonValue typeVal = docObj.value(QStringLiteral("тип"));
     if (typeVal.isNull() || !typeVal.isString())
         return;
-    if (typeVal.toString().compare(QStringLiteral("сообщение"), Qt::CaseInsensitive) != 0)
+    const QJsonValue receiverVal = docObj.value(QStringLiteral("получатель"));
+    if (!receiverVal.isNull() && receiverVal.isString() && sender->userName().compare(receiverVal.toString()) == 0)
         return;
-    const QJsonValue textVal = docObj.value(QStringLiteral("текст"));
-    if (textVal.isNull() || !textVal.isString())
-        return;
-    const QString text = textVal.toString().trimmed();
-    if (text.isEmpty())
-        return;
+
     QJsonObject message;
-    message[QStringLiteral("тип")] = QStringLiteral("сообщение");
-    message[QStringLiteral("текст")] = text;
+    auto varMap = docObj.toVariantMap();
+    for(QVariantMap::const_iterator iter = varMap.begin(); iter != varMap.end(); ++iter)
+        message[iter.key()] = iter.value().toString();
+
     message[QStringLiteral("отправитель")] = sender->userName();
-    broadcast(message, sender);
+    if (typeVal.toString().compare(QStringLiteral("вопрос")) == 0)
+        for (ServerWorker *worker : m_clients) {
+            Q_ASSERT(worker);
+            if (worker->userName().compare(receiverVal.toString()) == 0)
+            {
+                sendJson(worker, message);
+                break;
+            }
+        }
+    else
+        broadcast(message, sender);
 }
 
 void Server::sendJson(ServerWorker *destination, const QJsonObject &message)
@@ -92,6 +111,28 @@ void Server::jsonReceived(ServerWorker *sender, const QJsonObject &doc)
     jsonFromLoggedIn(sender, doc);
 }
 
+void Server::imageReceived(ServerWorker *sender, const QImage &img, const QString& source)
+{
+    Q_ASSERT(sender);
+    emit logMessage(QStringLiteral("Image получен ") );
+    if (!sender->userName().isEmpty())
+        for (ServerWorker *worker : m_clients) {
+            Q_ASSERT(worker);
+            worker->sendImage(img, source);
+        }
+}
+void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
+{
+    _state = false;
+    Q_ASSERT(sender);
+    emit logMessage(QStringLiteral("PDF получен ") );
+    if (!sender->userName().isEmpty())
+        for (ServerWorker *worker : m_clients) {
+            Q_ASSERT(worker);
+            worker->sendPDF(data);
+        }
+}
+
 void Server::userDisconnected(ServerWorker *sender)
 {
     m_clients.removeAll(sender);
@@ -103,6 +144,14 @@ void Server::userDisconnected(ServerWorker *sender)
         broadcast(disconnectedMessage, nullptr);
         emit logMessage(userName + QStringLiteral(" отключен"));
     }
+
+    QJsonObject message;
+    message[QStringLiteral("тип")] = QStringLiteral("отсоединение");
+    message[sender->userName()] = "";
+    broadcast(message, sender);
+
+    if (m_clients.size() == 0)
+        _state = true;
     sender->deleteLater();
 }
 
@@ -112,8 +161,21 @@ void Server::userError(ServerWorker *sender)
     emit logMessage(QStringLiteral("Ошибка от ") + sender->userName());
 }
 
+void Server::userReceiveFile()
+{
+    ++numberOfUsersWithFile;
+    if (numberOfUsersWithFile == m_clients.size())
+    {
+        for (ServerWorker *worker : m_clients)
+            worker->sendServiceInfo();
+        numberOfUsersWithFile = 0;
+    }
+}
+
 void Server::incomingConnection(qintptr socketDescriptor)
 {
+    if (!_state)
+        return;
     ServerWorker *worker = new ServerWorker(this);
     if (!worker->setSocketDescriptor(socketDescriptor)) {
         worker->deleteLater();
@@ -122,7 +184,12 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::disconnectedFromClient, this, std::bind(&Server::userDisconnected, this, worker));
     connect(worker, &ServerWorker::error, this, std::bind(&Server::userError, this, worker));
     connect(worker, &ServerWorker::jsonReceived, this, std::bind(&Server::jsonReceived, this, worker, std::placeholders::_1));
+    connect(worker, &ServerWorker::imageReceived, this, std::bind(&Server::imageReceived, this,
+                                                                  worker, std::placeholders::_1, std::placeholders::_2));
+    connect(worker, &ServerWorker::pdfReceived, this, std::bind(&Server::pdfReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
+    connect(worker, &ServerWorker::userReceiveFile, this, &Server::userReceiveFile);
+
     m_clients.append(worker);
     emit logMessage(QStringLiteral("Новый клиент подключился"));
 }

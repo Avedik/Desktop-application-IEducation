@@ -26,7 +26,7 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(101, 154, 169);</string>
+   <string notr="true">background-color: rgb(125, 185, 217);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
@@ -82,7 +82,7 @@
           <property name="font">
            <font>
             <family>Bahnschrift</family>
-            <pointsize>36</pointsize>
+            <pointsize>44</pointsize>
            </font>
           </property>
           <property name="focusPolicy">
@@ -118,7 +118,7 @@ border-radius:10</string>
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>28</height>
+          <height>30</height>
          </size>
         </property>
        </spacer>
@@ -152,7 +152,7 @@ border-radius:10</string>
           <property name="minimumSize">
            <size>
             <width>140</width>
-            <height>100</height>
+            <height>80</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -165,25 +165,95 @@ border-radius:10</string>
            <font>
             <family>Bahnschrift</family>
             <pointsize>22</pointsize>
-            <underline>true</underline>
+            <underline>false</underline>
            </font>
           </property>
           <property name="autoFillBackground">
            <bool>false</bool>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(41, 114, 136);
+           <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
 color: rgb(27, 27, 27);
 border:2px;
-border-radius:20;</string>
+border-radius:10;</string>
           </property>
           <property name="text">
            <string>НАЧАТЬ</string>
+          </property>
+          <property name="autoDefault">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>100</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>100</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_3">
+          <property name="minimumSize">
+           <size>
+            <width>140</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Bahnschrift</family>
+            <pointsize>22</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+color: rgb(27, 27, 27);
+border:2px;
+border-radius:10;</string>
+          </property>
+          <property name="text">
+           <string>РЕЙТИНГ</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -216,7 +286,45 @@ border-radius:20;</string>
      </spacer>
     </item>
     <item>
+     <spacer name="verticalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>10</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>30</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item>
        <widget class="QPushButton" name="pushButton_2">
         <property name="enabled">
@@ -277,7 +385,7 @@ border-radius:10;</string>
      <x>0</x>
      <y>0</y>
      <width>840</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

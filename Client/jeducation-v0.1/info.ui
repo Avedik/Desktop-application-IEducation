@@ -16,11 +16,16 @@
     <height>500</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>JEducation v0.1</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(101, 154, 169);</string>
+   <string notr="true">background-color: rgb(125, 185, 217);</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -62,11 +67,11 @@
        <property name="font">
         <font>
          <family>Bahnschrift</family>
-         <pointsize>12</pointsize>
+         <pointsize>15</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(207, 207, 207);</string>
+        <string notr="true">color: rgb(27, 27, 27)</string>
        </property>
        <property name="text">
         <string>Jeducation
@@ -106,6 +111,15 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="rightMargin">
+      <number>9</number>
+     </property>
+     <property name="bottomMargin">
+      <number>9</number>
+     </property>
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
@@ -127,8 +141,14 @@
          <height>40</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <family>Bahnschrift</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(184, 184, 184);
+        <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
 color: rgb(29, 29, 29);
 border:2px;
 border-radius:7;</string>

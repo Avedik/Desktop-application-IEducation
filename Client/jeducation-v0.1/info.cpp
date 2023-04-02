@@ -6,6 +6,7 @@ info::info(QWidget *parent) :
     ui(new Ui::info)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 info::~info()
