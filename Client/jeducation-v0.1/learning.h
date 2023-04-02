@@ -51,7 +51,7 @@ private:
     void startTimer();
     void switchEnabled(bool is_enabled);
     void switchButtonEnabled(QPushButton* button, bool is_enabled);
-    void wait();
+    void goToNextStep();
 private slots:
     void on_pushButton_clicked();
     void countTimer();

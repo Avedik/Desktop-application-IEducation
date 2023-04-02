@@ -139,13 +139,8 @@ void learning::startTimer()
     }
 }
 
-void learning::on_pushButton_clicked()
+void learning::goToNextStep()
 {
-    if (!timerEditFinished())
-        return;
-    m_Client->sendMessage(QString("startTimer") + ui->timerEdit->text());
-    startTimer();
-
     if (m_step == 0)
         switchButtonEnabled(ui->importPdfButton, true);
     else if (m_step == 1)
@@ -165,6 +160,15 @@ void learning::on_pushButton_clicked()
     }
 }
 
+void learning::on_pushButton_clicked()
+{
+    if (!timerEditFinished())
+        return;
+    m_Client->sendMessage(QString("startTimer") + ui->timerEdit->text());
+    startTimer();
+    goToNextStep();
+}
+
 void learning::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -182,40 +186,36 @@ void learning::countTimer()
         tic = cnt = 0;
         ui->timerEdit->setReadOnly(false);
 
+        switchButtonEnabled(ui->pushButton, true);
         if (m_step == 0)
         {
             QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
             delete engine;
             engine = nullptr;
 
-            QMessageBox::information(this, "Сообщение",
-                                     "Задайте время в таймере для составления вопросов и запустите его.");
+            ui->infoLabel->setText("Задайте время в таймере для составления вопросов.");
         }
         else if (m_step == 1)
         {
             question->close();
             switchButtonEnabled(ui->askButton, false);
 
-            QMessageBox::information(this, "Сообщение",
-                                     "Задайте время в таймере для ответов на вопросы и запустите его.");
+            ui->infoLabel->setText("Задайте время в таймере для ответов на вопросы.");
         }
         else if (m_step == 2)
         {
             answer->close();
             switchButtonEnabled(ui->answerButton, false);
 
-            QMessageBox::information(this, "Сообщение",
-                                     "Задайте время в таймере для оценки ответов других участников и запустите его.");
+            ui->infoLabel->setText("Задайте время в таймере для оценки ответов других участников.");
         }
         else if (m_step == 3)
         {
             other_quest->close();
             switchButtonEnabled(ui->allAnswersButton, false);
-            QMessageBox::information(this, "Сообщение", "Вы прошли все этапы!");
+            ui->infoLabel->setText("Вы прошли все этапы!");
             switchButtonEnabled(ui->pushButton, false);
-            return;
         }
-        switchButtonEnabled(ui->pushButton, true);
         ++m_step;
     }
 }
@@ -309,7 +309,10 @@ void learning::messageReceived(const QString &sender, const QString &text)
     {
         ui->timerEdit->setText(text.mid(10, text.size() - 1));
         if (timerEditFinished())
+        {
             startTimer();
+            goToNextStep();
+        }
         return;
     }
     else if (text == QString("on_importPdfButton_clicked"))
@@ -420,6 +423,7 @@ void learning::sendMessage()
     m_Model->setData(m_Model->index(newRow, 0), ui->messageEdit->text());
 
     m_Model->setData(m_Model->index(newRow, 0), int(Qt::AlignRight | Qt::AlignVCenter), Qt::TextAlignmentRole);
+    m_Model->setData(m_Model->index(newRow, 0), QColor(Qt::black), Qt::ForegroundRole);
     ui->messageEdit->clear();
     ui->chatView->scrollToBottom();
     m_lastUserName.clear();
@@ -528,7 +532,7 @@ void learning::on_chooseButton_clicked()
     picturePath = QFileDialog::getOpenFileName(this, "Выбор фотографии", "../", "*.png *.jpg");
 
     QPixmap img(picturePath);
-    QSize sz(300,300);
+    QSize sz(200,200);
     img = img.scaled(sz, Qt::KeepAspectRatio);
     ui->label_2->setPixmap(img);
 
@@ -563,12 +567,6 @@ void learning::receiveImage(const QImage& image, const QString& source)
     auto table = question->ui->usersTable;
     QTableWidgetItem *item = table->findItems(source, Qt::MatchContains).last();
     table->setCellWidget(item->row(), 0, _label);
-}
-
-void learning::wait() {
-    QEventLoop loop;
-    connect(m_Client, &Controller::fileSentOut, &loop, &QEventLoop::quit );
-    loop.exec();
 }
 
 void learning::receivePDF(const QByteArray &data)
@@ -606,8 +604,6 @@ void learning::on_importPdfButton_clicked()
     ui->progressBar->setMaximum(0);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
-    wait();
-    on_pushButton_clicked();
 }
 
 void learning::openPDFViewer(const QString& docPath)
