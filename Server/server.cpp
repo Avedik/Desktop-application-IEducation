@@ -1,5 +1,6 @@
 #include "server.h"
 #include "serverworker.h"
+#include "meeting.h"
 #include <QThread>
 #include <functional>
 #include <QJsonDocument>
@@ -7,7 +8,58 @@
 #include <QJsonValue>
 #include <QTimer>
 
-Server::Server(QObject *parent): QTcpServer(parent){}
+Server::Server(QObject *parent): QTcpServer(parent){
+    for (int i = 0; i < 2; ++i)
+        m_modes.push_back(new QVector<Meeting*>());
+}
+
+void Server::allocateUser(ServerWorker *sender, const QString& ID)
+{
+    sender->setMode(ID.mid(0,1).toInt());
+    QString meetingID = ID.mid(2, ID.length() - 2);
+    int id = 0;
+    bool isGoodID = true;
+
+    if (meetingID != QStringLiteral("Новое собрание"))
+    {
+        id = meetingID.toInt(&isGoodID);
+        if (isGoodID && 0 <= id && id < m_modes.at(sender->getMode())->size())
+        {
+            if (m_modes.at(sender->getMode())->at(id)->getStatus()) {
+            waitingUsers.removeAll(sender);
+            m_modes.at(sender->getMode())->at(id)->addClient(sender);
+            sender->setMeetingID(id);
+            } else
+            {
+                QJsonObject messageToSender;
+                messageToSender[QStringLiteral("тип")] = QStringLiteral("логин");
+                messageToSender[QStringLiteral("успешно")] = false;
+                messageToSender[QStringLiteral("причина")] = QStringLiteral("К этому собранию уже нельзя присоединиться");
+                sendJson(sender, messageToSender);
+                return;
+            }
+        }
+        else
+        {
+            QJsonObject messageToSender;
+            messageToSender[QStringLiteral("тип")] = QStringLiteral("логин");
+            messageToSender[QStringLiteral("успешно")] = false;
+            messageToSender[QStringLiteral("причина")] = QStringLiteral("Собрания с таким ID не существует");
+            sendJson(sender, messageToSender);
+            return;
+        }
+    }
+    else
+    {
+        m_modes.at(sender->getMode())->push_back(new Meeting ({sender}));
+        sender->setMeetingID(m_modes.at(sender->getMode())->size() - 1);
+        waitingUsers.removeAll(sender);
+    }
+    QJsonObject connectedMessage;
+    connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
+    connectedMessage[QStringLiteral("имя пользователя")] = QStringLiteral("");
+    sendJson(sender, connectedMessage);
+}
 
 void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
 {
@@ -15,22 +67,33 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
     const QJsonValue typeVal = docObj.value(QStringLiteral("тип"));
     if (typeVal.isNull() || !typeVal.isString())
         return;
+    if (typeVal.toString().compare(QStringLiteral("распределение"), Qt::CaseInsensitive) == 0)
+    {
+        const QJsonValue ID = docObj.value(QStringLiteral("ID собрания"));
+        if (ID.isNull() || !ID.isString())
+            return;
+        allocateUser(sender, ID.toString());
+        return;
+    }
+
     if (typeVal.toString().compare(QStringLiteral("логин"), Qt::CaseInsensitive) != 0)
         return;
+
     const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
     if (usernameVal.isNull() || !usernameVal.isString())
         return;
     const QString newUserName = usernameVal.toString().simplified();
     if (newUserName.isEmpty())
         return;
-    for (ServerWorker *worker : qAsConst(m_clients)) {
+
+    for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
         if (worker == sender)
             continue;
         if (worker->userName().compare(newUserName, Qt::CaseInsensitive) == 0) {
             QJsonObject message;
             message[QStringLiteral("тип")] = QStringLiteral("логин");
             message[QStringLiteral("успешно")] = false;
-            message[QStringLiteral("причина")] = QStringLiteral("имя пользователя уже существует");
+            message[QStringLiteral("причина")] = QStringLiteral("Имя пользователя уже существует");
             sendJson(sender, message);
             return;
         }
@@ -39,10 +102,12 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
     QJsonObject successMessage;
     successMessage[QStringLiteral("тип")] = QStringLiteral("логин");
     successMessage[QStringLiteral("успешно")] = true;
+    successMessage[QStringLiteral("имя пользователя")] = newUserName;
     sendJson(sender, successMessage);
+
     QJsonObject connectedMessage;
     connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
-    connectedMessage[QStringLiteral("новый пользователь")] = newUserName;
+    connectedMessage[QStringLiteral("имя пользователя")] = newUserName;
     broadcast(connectedMessage, sender);
 
     QJsonObject messageToAll;
@@ -52,7 +117,7 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
 
     QJsonObject messageToSender;
     messageToSender[QStringLiteral("тип")] = QStringLiteral("подключение");
-    for (ServerWorker *_worker : m_clients)
+    for (ServerWorker *_worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID()))
         messageToSender[_worker->userName()] = "";
     sendJson(sender, messageToSender);
 }
@@ -74,7 +139,7 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
 
     message[QStringLiteral("отправитель")] = sender->userName();
     if (typeVal.toString().compare(QStringLiteral("вопрос")) == 0)
-        for (ServerWorker *worker : m_clients) {
+        for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
             Q_ASSERT(worker);
             if (worker->userName().compare(receiverVal.toString()) == 0)
             {
@@ -94,7 +159,7 @@ void Server::sendJson(ServerWorker *destination, const QJsonObject &message)
 
 void Server::broadcast(const QJsonObject &message, ServerWorker *exclude)
 {
-    for (ServerWorker *worker : m_clients) {
+    for (ServerWorker *worker : *m_modes.at(exclude->getMode())->at(exclude->getMeetingID())) {
         Q_ASSERT(worker);
         if (worker == exclude)
             continue;
@@ -116,18 +181,17 @@ void Server::imageReceived(ServerWorker *sender, const QImage &img, const QStrin
     Q_ASSERT(sender);
     emit logMessage(QStringLiteral("Image получен ") );
     if (!sender->userName().isEmpty())
-        for (ServerWorker *worker : m_clients) {
+        for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
             Q_ASSERT(worker);
             worker->sendImage(img, source);
         }
 }
 void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
 {
-    _state = false;
     Q_ASSERT(sender);
     emit logMessage(QStringLiteral("PDF получен ") );
     if (!sender->userName().isEmpty())
-        for (ServerWorker *worker : m_clients) {
+        for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
             Q_ASSERT(worker);
             worker->sendPDF(data);
         }
@@ -135,13 +199,12 @@ void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
 
 void Server::userDisconnected(ServerWorker *sender)
 {
-    m_clients.removeAll(sender);
     const QString userName = sender->userName();
     if (!userName.isEmpty()) {
         QJsonObject disconnectedMessage;
         disconnectedMessage[QStringLiteral("тип")] = QStringLiteral("пользователь отключился");
         disconnectedMessage[QStringLiteral("новый пользователь")] = userName;
-        broadcast(disconnectedMessage, nullptr);
+        broadcast(disconnectedMessage, sender);
         emit logMessage(userName + QStringLiteral(" отключен"));
     }
 
@@ -149,10 +212,20 @@ void Server::userDisconnected(ServerWorker *sender)
     message[QStringLiteral("тип")] = QStringLiteral("отсоединение");
     message[sender->userName()] = "";
     broadcast(message, sender);
-
-    if (m_clients.size() == 0)
-        _state = true;
     sender->deleteLater();
+
+    if (waitingUsers.contains(sender))
+        waitingUsers.removeAll(sender);
+    else {
+        Meeting* meeting = m_modes.at(sender->getMode())->at(sender->getMeetingID());
+        meeting->removeClient(sender);
+        if (meeting->size() == 0)
+        {
+            m_modes.at(sender->getMode())->removeAll(meeting);
+            if (!meeting->isDeleted())
+                delete meeting;
+        }
+    }
 }
 
 void Server::userError(ServerWorker *sender)
@@ -161,21 +234,20 @@ void Server::userError(ServerWorker *sender)
     emit logMessage(QStringLiteral("Ошибка от ") + sender->userName());
 }
 
-void Server::userReceiveFile()
+void Server::userReceiveFile(ServerWorker *sender)
 {
-    ++numberOfUsersWithFile;
-    if (numberOfUsersWithFile == m_clients.size())
+    Meeting *meeting = m_modes.at(sender->getMode())->at(sender->getMeetingID());
+    meeting->increaseCountOfUsersWithFile();
+    if (meeting->getCountOfUsersWithFile() == meeting->size())
     {
-        for (ServerWorker *worker : m_clients)
+        meeting->setStatus(false);
+        for (ServerWorker *worker : *meeting)
             worker->sendServiceInfo();
-        numberOfUsersWithFile = 0;
     }
 }
 
 void Server::incomingConnection(qintptr socketDescriptor)
 {
-    if (!_state)
-        return;
     ServerWorker *worker = new ServerWorker(this);
     if (!worker->setSocketDescriptor(socketDescriptor)) {
         worker->deleteLater();
@@ -188,18 +260,34 @@ void Server::incomingConnection(qintptr socketDescriptor)
                                                                   worker, std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::pdfReceived, this, std::bind(&Server::pdfReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
-    connect(worker, &ServerWorker::userReceiveFile, this, &Server::userReceiveFile);
+    connect(worker, &ServerWorker::userReceiveFile, this, std::bind(&Server::userReceiveFile, this, worker));
 
-    m_clients.append(worker);
+    waitingUsers.push_back(worker);
     emit logMessage(QStringLiteral("Новый клиент подключился"));
 }
 
 void Server::stopServer()
 {
-    for (ServerWorker *worker : m_clients) {
-        worker->disconnectFromClient();
+    while (waitingUsers.size())
+        waitingUsers.back()->disconnectFromClient();
+
+    while (m_modes.size()) {
+        QVector<Meeting*>* mode = m_modes.back();
+        while (mode->size()) {
+            Meeting* meeting = mode->back();
+            delete meeting;
+            mode->removeAll(meeting);
+        }
+
+        m_modes.removeAll(mode);
+        delete mode;
     }
     close();
+}
+
+Server::~Server()
+{
+    stopServer();
 }
 
 

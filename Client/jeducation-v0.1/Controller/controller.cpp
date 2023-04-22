@@ -38,6 +38,18 @@ void Controller::login(const QString &userName)
     }
 }
 
+void Controller::chooseMeeting(const QString &ID)
+{
+    if (m_clientSocket->state() == QAbstractSocket::ConnectedState) {
+        QDataStream clientStream(m_clientSocket);
+        clientStream.setVersion(QDataStream::Qt_5_7);
+        QJsonObject message;
+        message[QStringLiteral("тип")] = QStringLiteral("распределение");
+        message[QStringLiteral("ID собрания")] = ID;
+        clientStream << DataTypes::JSON << QJsonDocument(message).toJson(QJsonDocument::Compact);
+    }
+}
+
 void Controller::sendMessage(const QString &text)
 {
     if (text.isEmpty())
@@ -109,7 +121,7 @@ void Controller::jsonReceived(const QJsonObject &docObj)
             return;
         const bool loginSuccess = resultVal.toBool();
         if (loginSuccess) {;
-            emit loggedIn();
+            emit loggedIn(docObj.value(QStringLiteral("имя пользователя")).toString());
             return;
         }
 

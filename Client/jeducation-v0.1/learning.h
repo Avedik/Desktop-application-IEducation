@@ -43,6 +43,7 @@ private:
     other_questions *other_quest;
     QString picturePath;
     QQmlApplicationEngine *engine = nullptr;
+    QString *meetingID = nullptr;
 
     int tic = 0;
     int cnt = 0;
@@ -60,7 +61,7 @@ private slots:
     void attemptConnection();
     void connectedToServer();
     void attemptLogin(const QString &userName);
-    void loggedIn();
+    void loggedIn(const QString& userName);
     void loginFailed(const QString &reason);
     void messageReceived(const QString &sender, const QString &text);
     void questionReceived(const QString &sender, const QString &text);

@@ -16,6 +16,7 @@ ServerWindow::ServerWindow(QWidget* parent) : QWidget(parent)
 ServerWindow::~ServerWindow()
 {
     delete ui;
+    delete m_Server;
 }
 
 void ServerWindow::StartServer()
@@ -33,7 +34,8 @@ void ServerWindow::StartServer()
         }
     }
     else {
-        m_Server->stopServer();
+        delete m_Server;
+        m_Server = new Server(this);
         ui->startStopButton->setText(tr("Запустить сервер"));
         logMessage(QStringLiteral("Сервер остановлен"));
     }

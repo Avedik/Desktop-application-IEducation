@@ -17,6 +17,7 @@ public:
 public slots:
     void connectToServer(const QHostAddress &address, quint16 port);
     void login(const QString &userName);
+    void chooseMeeting(const QString &ID);
     void sendMessage(const QString &text);
     void sendImage(const QImage& image);
     void sendQuestion(const QString &destUser, const QString &text);
@@ -30,7 +31,7 @@ private slots:
 
 signals:
     void connected();
-    void loggedIn();
+    void loggedIn(const QString& userName);
     void loginError(const QString &reason);
     void disconnected();
     void messageReceived(const QString &sender, const QString &text);

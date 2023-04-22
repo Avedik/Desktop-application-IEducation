@@ -3,10 +3,13 @@
 
 #include <QTcpServer>
 #include <QVector>
+#include <QQueue>
+#include <QList>
 
 //Класс для управления потоками
 class QThread;
 class ServerWorker;
+class Meeting;
 class Server : public QTcpServer
 {
 private:
@@ -19,10 +22,10 @@ private:
     void jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &doc);
     ///Отправка json запроса
     void sendJson(ServerWorker *destination, const QJsonObject &message);
+    void allocateUser(ServerWorker *sender, const QString& ID);
     //Вектор для хранения пользователей
-    QVector<ServerWorker *> m_clients;
-    bool _state = true;
-    qint32 numberOfUsersWithFile = 0;
+    QVector<QVector<Meeting*>*> m_modes;
+    QQueue<ServerWorker *> waitingUsers;
 
 private slots:
     ///Проверяет статус подключенных пользователей и логирует информацию об этом
@@ -34,11 +37,12 @@ private slots:
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя
     void userError(ServerWorker *sender);
-    void userReceiveFile();
+    void userReceiveFile(ServerWorker *sender);
 
 public:
     ///Конструктор Server
     explicit Server(QObject *parent = nullptr);
+    ~Server();
 
 public slots:
     ///Функция для остановки сервера

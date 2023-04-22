@@ -25,6 +25,10 @@ public:
     void sendImage(const QImage& image, const QString& source);
     void sendPDF(const QByteArray &data);
     void sendServiceInfo();
+    void setMeetingID(qint32 ID);
+    qint32 getMeetingID();
+    void setMode(qint32 mode);
+    qint32 getMode();
 signals:
     //Используется для отправки на центральный сервер полученного сообщения
     void jsonReceived(const QJsonObject &jsonDoc);
@@ -48,6 +52,8 @@ private:
     QTcpSocket *m_serverSocket;
     //Имя пользователя подключенного к этому объекту
     QString m_userName;
+    qint32 meetingID;
+    qint32 mode;
 };
 
 #endif // SERVERWORKER_H

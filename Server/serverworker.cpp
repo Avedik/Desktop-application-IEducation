@@ -8,8 +8,9 @@
 #include <QImage>
 
 ServerWorker::ServerWorker(QObject *parent)
-    : QObject(parent)
-    , m_serverSocket(new QTcpSocket(this))
+    : QObject(parent),
+    m_serverSocket(new QTcpSocket(this)),
+    meetingID(0)
 {
     connect(m_serverSocket, &QTcpSocket::readyRead, this, &ServerWorker::onReadyRead);
     connect(m_serverSocket, &QTcpSocket::disconnected, this, &ServerWorker::disconnectedFromClient);
@@ -24,6 +25,26 @@ ServerWorker::ServerWorker(QObject *parent)
 bool ServerWorker::setSocketDescriptor(qintptr socketDescriptor)
 {
     return m_serverSocket->setSocketDescriptor(socketDescriptor);
+}
+
+void ServerWorker::setMeetingID(qint32 ID)
+{
+    meetingID = ID;
+}
+
+qint32 ServerWorker::getMeetingID()
+{
+    return meetingID;
+}
+
+void ServerWorker::setMode(qint32 mode)
+{
+    this->mode = mode;
+}
+
+qint32 ServerWorker::getMode()
+{
+    return mode;
 }
 
 void ServerWorker::sendJson(const QJsonObject &json)

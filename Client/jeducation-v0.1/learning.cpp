@@ -234,35 +234,42 @@ void learning::attemptConnection()
       return m_Client->disconnectFromHost();
     }
 
-    const QString hostAddress = QInputDialog::getText(
-        this
-        , tr("Выбор сервера")
-        , tr("Адрес сервера")
-        , QLineEdit::Normal
-        , QStringLiteral("46.29.115.42")
-    );
-    if (hostAddress.isEmpty())
-      return;
-
-    m_Client->connectToServer(QHostAddress(hostAddress), 1967);
+    m_Client->connectToServer(QHostAddress(QString("46.29.115.42")), 1967);
 }
 
 void learning::connectedToServer()
 {
-    const QString newUsername = QInputDialog::getText(this, tr("Выбор пользователя"), tr("Имя пользователя"));
-    if (newUsername.isEmpty()){
-        is_connected = false;
-        return m_Client->disconnectFromHost();
+    if (!meetingID) {
+        do {
+            bool ok;
+            meetingID = new QString(QInputDialog::getText(
+                                        this
+                                        , tr("Выбор собрания")
+                                        , tr("ID собрания")
+                                        , QLineEdit::Normal
+                                        , QStringLiteral("Новое собрание")
+                                        , &ok
+                                        ));
+            bool isNum = true;
+            int ID = meetingID->toInt(&isNum);
+
+            if (ok && *meetingID != QString("Новое собрание") && (meetingID->isEmpty() || !isNum || ID < 0))
+            {
+                QMessageBox::critical(this,"Ошибка","Введите корректное ID");
+                continue;
+            } else if (!ok)
+                return;
+            break;
+        } while (true);
+        m_Client->chooseMeeting("0:" + *meetingID);
     }
     
     is_connected = true;
     ui->connectButton->setText(tr("Отключиться"));
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(20,20,20); }");
-    ui->label_3->setText(newUsername);
 
     switchEnabled(true);
     switchButtonEnabled(ui->importPdfButton, false);
-    attemptLogin(newUsername);
 }
 
 void learning::switchEnabled(bool is_enabled)
@@ -292,15 +299,21 @@ void learning::attemptLogin(const QString &userName)
     m_Client->login(userName);
 }
 
-void learning::loggedIn()
+void learning::loggedIn(const QString& userName)
 {
+    ui->label_3->setText(userName);
     m_lastUserName.clear();
 }
 
 void learning::loginFailed(const QString &reason)
 {
     QMessageBox::critical(this, tr("Ошибка"), reason);
-    connectedToServer();
+    if (reason == QString("Собрания с таким ID не существует") || reason == QString("К этому уже нельзя присоединиться"))
+    {
+        meetingID = nullptr;
+        connectedToServer();
+    } else if (reason == QString("Имя пользователя уже существует"))
+        userJoined("");
 }
 
 void learning::messageReceived(const QString &sender, const QString &text)
@@ -431,7 +444,7 @@ void learning::sendMessage()
 
 void learning::disconnectedFromServer()
 {
-    QMessageBox::warning(this, tr("Отсоединено"), tr("Хост прервал соединение"));
+    QMessageBox::warning(this, tr("Отсоединено"), tr("Соединение прервано"));
 
     ui->connectButton->setText(tr("Подключиться"));
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
@@ -445,6 +458,16 @@ void learning::disconnectedFromServer()
 
 void learning::userJoined(const QString &username)
 {
+    if (username.isEmpty()) {
+        const QString newUsername = QInputDialog::getText(this, tr("Выбор пользователя"), tr("Имя пользователя"));
+        if (newUsername.isEmpty()){
+            is_connected = false;
+            return m_Client->disconnectFromHost();
+        }
+        attemptLogin(newUsername);
+        return;
+    }
+
     const int newRow = m_Model->rowCount();
     m_Model->insertRow(newRow);
 

@@ -9,11 +9,13 @@ CONFIG += debug_and_release
 
 HEADERS += \
     dataTypes.h \
+    meeting.h \
     server.h \
     serverworker.h \
     serverWindow.h
 
 SOURCES += \
+    meeting.cpp \
     server.cpp \
     servermain.cpp \
     serverworker.cpp \
