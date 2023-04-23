@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QImage>
+#include <QPointF>
 
 class QJsonObject;
 class Meeting;
@@ -15,6 +16,7 @@ class ServerWorker : public QObject
     //Метод по чтению входящих сообщений из сети и отправке на главный серверный объект
     void receiveJson(QDataStream& socketStream);
     void receiveImage(QDataStream& socketStream);
+    void receivePoint(QDataStream& socketStream);
     void receivePDF(QDataStream& socketStream);
 public:
     explicit ServerWorker(QObject *parent = nullptr);
@@ -24,6 +26,7 @@ public:
     void setUserName(const QString &userName);
     void sendJson(const QJsonObject &jsonData);
     void sendImage(const QImage& image, const QString& source);
+    void sendPoint(const QPointF& point, qint32 operationCode);
     void sendPDF(const QByteArray &data);
     void sendServiceInfo();
     void setMeeting(Meeting* meeting);
@@ -34,6 +37,7 @@ signals:
     //Используется для отправки на центральный сервер полученного сообщения
     void jsonReceived(const QJsonObject &jsonDoc);
     void imageReceived(const QImage &image, const QString& source);
+    void pointReceived(const QPointF& point, qint32 operationCode);
     void pdfReceived(const QByteArray &data);
     void userReceiveFile();
     //Выдается, когда клиент закрывает соединение

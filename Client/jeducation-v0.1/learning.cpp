@@ -85,6 +85,8 @@ bool learning::keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
 
 learning::~learning()
 {
+    if (meetingID)
+        delete meetingID;
     if (engine)
     {
         QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
@@ -446,7 +448,7 @@ void learning::disconnectedFromServer()
 {
     QMessageBox::warning(this, tr("Отсоединено"), tr("Соединение прервано"));
 
-    ui->connectButton->setText(tr("Подключиться"));
+    ui->connectButton->setText(tr("Присоединиться к команде"));
     setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
 
     switchEnabled(false);

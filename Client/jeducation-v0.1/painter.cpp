@@ -6,6 +6,11 @@ Painter::Painter(brainstorm *wrapper, QObject *parent) : QGraphicsScene(parent)
     this->wrapper = wrapper;
 }
 
+Painter::~Painter()
+{
+    delete wrapper;
+}
+
 void Painter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!(event->buttons() & Qt::LeftButton))
@@ -13,18 +18,24 @@ void Painter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     if (wrapper->getCurrentInstrument() == brainstorm::Instruments::Stylet)
     {
-        addEllipse(event->scenePos().x() - 2,
-                   event->scenePos().y() - 2,
+        QPointF point(event->scenePos().x() - 2, event->scenePos().y() - 2);
+        addEllipse(point.x(),
+                   point.y(),
                    5, 5,
                    QPen(Qt::NoPen),
                    QBrush(Qt::black));
-        previousPoint = event->scenePos();
+        previousPoint = point;
+        wrapper->sendPoint(point, 0);
     }
     else if (wrapper->getCurrentInstrument() == brainstorm::Instruments::Eraser)
     {
-        QGraphicsItem* item = itemAt(event->scenePos(), QTransform());
+        QPointF point(event->scenePos());
+        QGraphicsItem* item = itemAt(point, QTransform());
         if (item)
+        {
             removeItem(item);
+            wrapper->sendPoint(point, 1);
+        }
     }
 }
 
@@ -35,18 +46,52 @@ void Painter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
     if (wrapper->getCurrentInstrument() == brainstorm::Instruments::Stylet)
     {
-        addLine(previousPoint.x(),
+        QPointF point(event->scenePos());
+        QGraphicsScene::addLine(previousPoint.x(),
                 previousPoint.y(),
-                event->scenePos().x(),
-                event->scenePos().y(),
+                point.x(),
+                point.y(),
                 QPen(Qt::black, 5, Qt::SolidLine, Qt::RoundCap));
 
-        previousPoint = event->scenePos();
+        previousPoint = point;
+        wrapper->sendPoint(point, 2);
     }
     else if (wrapper->getCurrentInstrument() == brainstorm::Instruments::Eraser)
     {
-        QGraphicsItem* item = itemAt(event->scenePos(), QTransform());
+        QPointF point(event->scenePos());
+        QGraphicsItem* item = itemAt(point, QTransform());
         if (item)
+        {
             removeItem(item);
+            wrapper->sendPoint(point, 1);
+        }
     }
+}
+
+void Painter::addPoint(const QPointF& point)
+{
+    addEllipse(point.x(),
+               point.y(),
+               5, 5,
+               QPen(Qt::NoPen),
+               QBrush(Qt::black));
+    previousPoint = point;
+}
+
+void Painter::addLine(const QPointF& point)
+{
+    QGraphicsScene::addLine(previousPoint.x(),
+            previousPoint.y(),
+            point.x(),
+            point.y(),
+            QPen(Qt::black, 5, Qt::SolidLine, Qt::RoundCap));
+
+    previousPoint = point;
+}
+
+void Painter::removePoint(const QPointF& point)
+{
+    QGraphicsItem* item = itemAt(point, QTransform());
+    if (item)
+        removeItem(item);
 }

@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
 #include <QDebug>
+#include <QPointF>
 
 class brainstorm;
 class Painter : public QGraphicsScene
@@ -13,6 +14,10 @@ class Painter : public QGraphicsScene
 
 public:
     explicit Painter(brainstorm *wrapper, QObject *parent = 0);
+    ~Painter();
+    void addPoint(const QPointF& point);
+    void addLine(const QPointF& point);
+    void removePoint(const QPointF& point);
 
 private:
     QPointF previousPoint;

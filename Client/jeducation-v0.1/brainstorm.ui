@@ -22,6 +22,12 @@
     <height>1080</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Bahnschrift</family>
+    <pointsize>11</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
@@ -98,7 +104,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="sendButton">
          <property name="font">
           <font>
            <family>Bahnschrift</family>
@@ -132,7 +138,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="recordButton">
          <property name="font">
           <font>
            <family>Bahnschrift</family>
@@ -388,6 +394,28 @@ color: rgb(179, 179, 179);
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="3" column="5" rowspan="2">
+    <widget class="QPushButton" name="joinButton">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Bahnschrift</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));</string>
+     </property>
+     <property name="text">
+      <string>Присоединиться к команде</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

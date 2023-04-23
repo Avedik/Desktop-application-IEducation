@@ -69,6 +69,13 @@ void Controller::sendImage(const QImage& image)
     socketStream << DataTypes::IMAGE << image;
 }
 
+void Controller::sendPoint(const QPointF& point, qint32 operationCode)
+{
+    QDataStream socketStream(m_clientSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::POINT << operationCode << point;
+}
+
 void Controller::sendQuestion(const QString &destUser, const QString &text)
 {
     if (text.isEmpty())
@@ -237,6 +244,16 @@ void Controller::onReadyRead()
         if (!socketStream.commitTransaction())
             return;
         emit receiveImage(img, source);
+    }
+    else if (_type == DataTypes::POINT)
+    {
+        qint32 operationCode;
+        QPointF point;
+
+        socketStream >> operationCode >> point;
+        if (!socketStream.commitTransaction())
+            return;
+        emit receivePoint(point, operationCode);
     }
     else
         socketStream.commitTransaction();

@@ -58,10 +58,18 @@ void ServerWorker::sendJson(const QJsonObject &json)
 
 void ServerWorker::sendImage(const QImage& image, const QString& source)
 {
-    emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - image"));
+    emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - Image"));
     QDataStream socketStream(m_serverSocket);
     socketStream.setVersion(QDataStream::Qt_5_7);
     socketStream << DataTypes::IMAGE << image << source;
+}
+
+void ServerWorker::sendPoint(const QPointF& point, qint32 operationCode)
+{
+    emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - Point"));
+    QDataStream socketStream(m_serverSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::POINT << operationCode << point;
 }
 
 void ServerWorker::sendPDF(const QByteArray &data)
@@ -129,6 +137,20 @@ void ServerWorker::receiveImage(QDataStream& socketStream)
     emit imageReceived(img, userName());
 }
 
+void ServerWorker::receivePoint(QDataStream& socketStream)
+{
+    qint32 operationCode;
+    QPointF point;
+    socketStream >> operationCode >> point;
+    if (socketStream.status() != QDataStream::Ok)
+    {
+        socketStream.commitTransaction();
+        return;
+    }
+    socketStream.commitTransaction();
+    emit pointReceived(point, operationCode);
+}
+
 void ServerWorker::receivePDF(QDataStream& socketStream)
 {
     QByteArray data;
@@ -164,6 +186,8 @@ void ServerWorker::onReadyRead()
         receiveJson(socketStream);
     else if (_type == DataTypes::IMAGE)
         receiveImage(socketStream);
+    else if (_type == DataTypes::POINT)
+        receivePoint(socketStream);
     else
         socketStream.commitTransaction();
 }

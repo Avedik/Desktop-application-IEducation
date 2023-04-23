@@ -191,6 +191,20 @@ void Server::imageReceived(ServerWorker *sender, const QImage &img, const QStrin
             worker->sendImage(img, source);
         }
 }
+
+void Server::pointReceived(ServerWorker *sender, const QPointF &point, qint32 operationCode)
+{
+    Q_ASSERT(sender);
+    emit logMessage(QStringLiteral("Point получен ") );
+    if (!sender->userName().isEmpty())
+        for (ServerWorker *worker : *sender->getMeeting()) {
+            Q_ASSERT(worker);
+            if (sender == worker)
+                continue;
+            worker->sendPoint(point, operationCode);
+        }
+}
+
 void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
 {
     Q_ASSERT(sender);
@@ -208,7 +222,7 @@ void Server::userDisconnected(ServerWorker *sender)
     if (!userName.isEmpty()) {
         QJsonObject disconnectedMessage;
         disconnectedMessage[QStringLiteral("тип")] = QStringLiteral("пользователь отключился");
-        disconnectedMessage[QStringLiteral("новый пользователь")] = userName;
+        disconnectedMessage[QStringLiteral("имя пользователя")] = userName;
         broadcast(disconnectedMessage, sender);
         emit logMessage(userName + QStringLiteral(" отключен"));
     }
@@ -262,6 +276,8 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::error, this, std::bind(&Server::userError, this, worker));
     connect(worker, &ServerWorker::jsonReceived, this, std::bind(&Server::jsonReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::imageReceived, this, std::bind(&Server::imageReceived, this,
+                                                                  worker, std::placeholders::_1, std::placeholders::_2));
+    connect(worker, &ServerWorker::pointReceived, this, std::bind(&Server::pointReceived, this,
                                                                   worker, std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::pdfReceived, this, std::bind(&Server::pdfReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
