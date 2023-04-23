@@ -169,7 +169,7 @@ void Controller::jsonReceived(const QJsonObject &docObj)
         const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
         if (usernameVal.isNull() || !usernameVal.isString())
             return;
-        emit userJoined(usernameVal.toString());
+        emit userJoined(usernameVal.toString(), docObj.value(QStringLiteral("ID собрания")).toString());
     } else if (typeVal.toString().compare(QStringLiteral("пользователь отключился"), Qt::CaseInsensitive) == 0) {
         const QJsonValue usernameVal = docObj.value(QStringLiteral("имя пользователя"));
         if (usernameVal.isNull() || !usernameVal.isString())

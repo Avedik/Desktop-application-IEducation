@@ -10,7 +10,7 @@
 ServerWorker::ServerWorker(QObject *parent)
     : QObject(parent),
     m_serverSocket(new QTcpSocket(this)),
-    meetingID(0)
+    meeting(nullptr)
 {
     connect(m_serverSocket, &QTcpSocket::readyRead, this, &ServerWorker::onReadyRead);
     connect(m_serverSocket, &QTcpSocket::disconnected, this, &ServerWorker::disconnectedFromClient);
@@ -27,14 +27,14 @@ bool ServerWorker::setSocketDescriptor(qintptr socketDescriptor)
     return m_serverSocket->setSocketDescriptor(socketDescriptor);
 }
 
-void ServerWorker::setMeetingID(qint32 ID)
+void ServerWorker::setMeeting(Meeting* meeting)
 {
-    meetingID = ID;
+    this->meeting = meeting;
 }
 
-qint32 ServerWorker::getMeetingID()
+Meeting* ServerWorker::getMeeting()
 {
-    return meetingID;
+    return meeting;
 }
 
 void ServerWorker::setMode(qint32 mode)
@@ -81,7 +81,7 @@ void ServerWorker::sendServiceInfo()
 
 void ServerWorker::disconnectFromClient()
 {
-    m_serverSocket->disconnectFromHost();
+    m_serverSocket->abort();
 }
 
 QString ServerWorker::userName() const

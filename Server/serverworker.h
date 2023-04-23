@@ -6,6 +6,7 @@
 #include <QImage>
 
 class QJsonObject;
+class Meeting;
 class ServerWorker : public QObject
 {
     Q_OBJECT
@@ -25,8 +26,8 @@ public:
     void sendImage(const QImage& image, const QString& source);
     void sendPDF(const QByteArray &data);
     void sendServiceInfo();
-    void setMeetingID(qint32 ID);
-    qint32 getMeetingID();
+    void setMeeting(Meeting* meeting);
+    Meeting* getMeeting();
     void setMode(qint32 mode);
     qint32 getMode();
 signals:
@@ -52,7 +53,7 @@ private:
     QTcpSocket *m_serverSocket;
     //Имя пользователя подключенного к этому объекту
     QString m_userName;
-    qint32 meetingID;
+    Meeting* meeting;
     qint32 mode;
 };
 

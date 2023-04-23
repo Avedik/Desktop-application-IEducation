@@ -69,7 +69,7 @@ private slots:
     void refreshUsersList(const QVariantMap& users, const QString& type);
     void sendMessage();
     void disconnectedFromServer();
-    void userJoined(const QString &username);
+    void userJoined(const QString &username, const QString &meetingID);
     void userLeft(const QString &username);
     void error(QAbstractSocket::SocketError socketError);
     void on_chooseButton_clicked();

@@ -301,19 +301,19 @@ void learning::attemptLogin(const QString &userName)
 
 void learning::loggedIn(const QString& userName)
 {
-    ui->label_3->setText(userName);
+    ui->label_3->setText(ui->label_3->text() + QString(", Имя: ") + userName);
     m_lastUserName.clear();
 }
 
 void learning::loginFailed(const QString &reason)
 {
     QMessageBox::critical(this, tr("Ошибка"), reason);
-    if (reason == QString("Собрания с таким ID не существует") || reason == QString("К этому уже нельзя присоединиться"))
+    if (reason == QString("Собрания с таким ID не существует") || reason == QString("К этому собранию уже нельзя присоединиться"))
     {
         meetingID = nullptr;
         connectedToServer();
     } else if (reason == QString("Имя пользователя уже существует"))
-        userJoined("");
+        userJoined("", "");
 }
 
 void learning::messageReceived(const QString &sender, const QString &text)
@@ -456,9 +456,11 @@ void learning::disconnectedFromServer()
     hide();
 }
 
-void learning::userJoined(const QString &username)
+void learning::userJoined(const QString &username, const QString &meetingID)
 {
     if (username.isEmpty()) {
+        if (!meetingID.isEmpty())
+            ui->label_3->setText(QStringLiteral("ID собрания: ") + meetingID);
         const QString newUsername = QInputDialog::getText(this, tr("Выбор пользователя"), tr("Имя пользователя"));
         if (newUsername.isEmpty()){
             is_connected = false;

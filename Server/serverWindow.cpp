@@ -34,8 +34,7 @@ void ServerWindow::StartServer()
         }
     }
     else {
-        delete m_Server;
-        m_Server = new Server(this);
+        m_Server->stopServer();
         ui->startStopButton->setText(tr("Запустить сервер"));
         logMessage(QStringLiteral("Сервер остановлен"));
     }

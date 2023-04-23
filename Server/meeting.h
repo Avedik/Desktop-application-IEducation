@@ -12,7 +12,7 @@ class Meeting : public QObject
 public:
     Meeting();
     Meeting(const QVector<ServerWorker *>& meeting);
-    virtual ~Meeting();
+    ~Meeting();
     void addClient(ServerWorker *client);
     void removeClient(ServerWorker *client);
     void setStatus(bool status);

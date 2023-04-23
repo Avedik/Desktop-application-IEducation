@@ -39,7 +39,7 @@ signals:
     void answerReceived(const QString &from, const QString &to, const QString &ques, const QString &ans);
     void refreshUsersList(const QVariantMap& users, const QString& type);
     void error(QAbstractSocket::SocketError socketError);
-    void userJoined(const QString &username);
+    void userJoined(const QString &username, const QString &meetingID);
     void userLeft(const QString &username);
     void receiveImage(const QImage& image, const QString& source);
     void receivePDF(const QByteArray &data);

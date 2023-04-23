@@ -26,9 +26,10 @@ void Server::allocateUser(ServerWorker *sender, const QString& ID)
         if (isGoodID && 0 <= id && id < m_modes.at(sender->getMode())->size())
         {
             if (m_modes.at(sender->getMode())->at(id)->getStatus()) {
-            waitingUsers.removeAll(sender);
-            m_modes.at(sender->getMode())->at(id)->addClient(sender);
-            sender->setMeetingID(id);
+                waitingUsers.removeAll(sender);
+                Meeting* meeting = m_modes.at(sender->getMode())->at(id);
+                meeting->addClient(sender);
+                sender->setMeeting(meeting);
             } else
             {
                 QJsonObject messageToSender;
@@ -51,13 +52,16 @@ void Server::allocateUser(ServerWorker *sender, const QString& ID)
     }
     else
     {
-        m_modes.at(sender->getMode())->push_back(new Meeting ({sender}));
-        sender->setMeetingID(m_modes.at(sender->getMode())->size() - 1);
+        Meeting* newMeeting = new Meeting ({sender});
+        m_modes.at(sender->getMode())->push_back(newMeeting);
+        id = m_modes.at(sender->getMode())->size() - 1;
+        sender->setMeeting(newMeeting);
         waitingUsers.removeAll(sender);
     }
     QJsonObject connectedMessage;
     connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
     connectedMessage[QStringLiteral("имя пользователя")] = QStringLiteral("");
+    connectedMessage[QStringLiteral("ID собрания")] = QString::number(id);
     sendJson(sender, connectedMessage);
 }
 
@@ -86,7 +90,7 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
     if (newUserName.isEmpty())
         return;
 
-    for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
+    for (ServerWorker *worker : *sender->getMeeting()) {
         if (worker == sender)
             continue;
         if (worker->userName().compare(newUserName, Qt::CaseInsensitive) == 0) {
@@ -108,6 +112,7 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
     QJsonObject connectedMessage;
     connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
     connectedMessage[QStringLiteral("имя пользователя")] = newUserName;
+    connectedMessage[QStringLiteral("ID собрания")] = QStringLiteral("");
     broadcast(connectedMessage, sender);
 
     QJsonObject messageToAll;
@@ -117,7 +122,7 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
 
     QJsonObject messageToSender;
     messageToSender[QStringLiteral("тип")] = QStringLiteral("подключение");
-    for (ServerWorker *_worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID()))
+    for (ServerWorker *_worker : *sender->getMeeting())
         messageToSender[_worker->userName()] = "";
     sendJson(sender, messageToSender);
 }
@@ -139,7 +144,7 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
 
     message[QStringLiteral("отправитель")] = sender->userName();
     if (typeVal.toString().compare(QStringLiteral("вопрос")) == 0)
-        for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
+        for (ServerWorker *worker : *sender->getMeeting()) {
             Q_ASSERT(worker);
             if (worker->userName().compare(receiverVal.toString()) == 0)
             {
@@ -159,7 +164,7 @@ void Server::sendJson(ServerWorker *destination, const QJsonObject &message)
 
 void Server::broadcast(const QJsonObject &message, ServerWorker *exclude)
 {
-    for (ServerWorker *worker : *m_modes.at(exclude->getMode())->at(exclude->getMeetingID())) {
+    for (ServerWorker *worker : *exclude->getMeeting()) {
         Q_ASSERT(worker);
         if (worker == exclude)
             continue;
@@ -181,7 +186,7 @@ void Server::imageReceived(ServerWorker *sender, const QImage &img, const QStrin
     Q_ASSERT(sender);
     emit logMessage(QStringLiteral("Image получен ") );
     if (!sender->userName().isEmpty())
-        for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
+        for (ServerWorker *worker : *sender->getMeeting()) {
             Q_ASSERT(worker);
             worker->sendImage(img, source);
         }
@@ -191,7 +196,7 @@ void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
     Q_ASSERT(sender);
     emit logMessage(QStringLiteral("PDF получен ") );
     if (!sender->userName().isEmpty())
-        for (ServerWorker *worker : *m_modes.at(sender->getMode())->at(sender->getMeetingID())) {
+        for (ServerWorker *worker : *sender->getMeeting()) {
             Q_ASSERT(worker);
             worker->sendPDF(data);
         }
@@ -217,7 +222,7 @@ void Server::userDisconnected(ServerWorker *sender)
     if (waitingUsers.contains(sender))
         waitingUsers.removeAll(sender);
     else {
-        Meeting* meeting = m_modes.at(sender->getMode())->at(sender->getMeetingID());
+        Meeting* meeting = sender->getMeeting();
         meeting->removeClient(sender);
         if (meeting->size() == 0)
         {
@@ -236,7 +241,7 @@ void Server::userError(ServerWorker *sender)
 
 void Server::userReceiveFile(ServerWorker *sender)
 {
-    Meeting *meeting = m_modes.at(sender->getMode())->at(sender->getMeetingID());
+    Meeting *meeting = sender->getMeeting();
     meeting->increaseCountOfUsersWithFile();
     if (meeting->getCountOfUsersWithFile() == meeting->size())
     {
@@ -271,16 +276,12 @@ void Server::stopServer()
     while (waitingUsers.size())
         waitingUsers.back()->disconnectFromClient();
 
-    while (m_modes.size()) {
-        QVector<Meeting*>* mode = m_modes.back();
+    for (QVector<Meeting*>* mode : m_modes) {
         while (mode->size()) {
             Meeting* meeting = mode->back();
             delete meeting;
             mode->removeAll(meeting);
         }
-
-        m_modes.removeAll(mode);
-        delete mode;
     }
     close();
 }
@@ -288,6 +289,11 @@ void Server::stopServer()
 Server::~Server()
 {
     stopServer();
+    while (m_modes.size()) {
+        QVector<Meeting*>* mode = m_modes.back();
+        m_modes.removeAll(mode);
+        delete mode;
+    }
 }
 
 
