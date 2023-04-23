@@ -20,6 +20,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     other_questions.cpp \
+    painter.cpp \
     rating.cpp
 
 HEADERS += \
@@ -33,6 +34,7 @@ HEADERS += \
     learning.h \
     mainwindow.h \
     other_questions.h \
+    painter.h \
     rating.h
 
 FORMS += \
