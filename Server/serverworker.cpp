@@ -70,6 +70,7 @@ void ServerWorker::sendPoint(const QPointF& point, qint32 operationCode)
     QDataStream socketStream(m_serverSocket);
     socketStream.setVersion(QDataStream::Qt_5_7);
     socketStream << DataTypes::POINT << operationCode << point;
+    m_serverSocket->flush();
 }
 
 void ServerWorker::sendPDF(const QByteArray &data)

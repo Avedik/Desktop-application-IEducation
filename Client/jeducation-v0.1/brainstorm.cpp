@@ -35,13 +35,12 @@ brainstorm::brainstorm(QWidget *parent) :
 
 brainstorm::~brainstorm()
 {
+    if (is_connected)
+        m_Client->disconnectFromHost();
     delete ui;
     delete scene;
     if (meetingID)
         delete meetingID;
-
-    if (is_connected)
-        m_Client->disconnectFromHost();
 }
 
 brainstorm::Instruments brainstorm::getCurrentInstrument()
@@ -73,7 +72,7 @@ void brainstorm::attemptConnection()
       return m_Client->disconnectFromHost();
     }
 
-    m_Client->connectToServer(QHostAddress(QString("46.29.115.42")), 1967);
+    m_Client->connectToServer(QHostAddress(QString("127.0.0.1")), 1967);//46.29.115.42
 }
 
 void brainstorm::connectedToServer()
