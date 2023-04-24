@@ -30,6 +30,7 @@ brainstorm::brainstorm(QWidget *parent) :
     scene = new Painter(this);
     ui->table->setScene(scene);
     ui->table->setBackgroundBrush(QColor("white"));
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 brainstorm::~brainstorm()

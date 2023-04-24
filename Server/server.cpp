@@ -15,6 +15,16 @@ Server::Server(QObject *parent): QTcpServer(parent){
 
 void Server::allocateUser(ServerWorker *sender, const QString& ID)
 {
+    if (ID.size() <= 2 || (!ID.startsWith("0:") && !ID.startsWith("1:")))
+    {
+        QJsonObject messageToSender;
+        messageToSender[QStringLiteral("тип")] = QStringLiteral("логин");
+        messageToSender[QStringLiteral("успешно")] = false;
+        messageToSender[QStringLiteral("причина")] = QStringLiteral("Неверный ID");
+        sendJson(sender, messageToSender);
+        return;
+    }
+
     sender->setMode(ID.mid(0,1).toInt());
     QString meetingID = ID.mid(2, ID.length() - 2);
     int id = 0;
@@ -77,6 +87,16 @@ void Server::jsonFromLoggedOut(ServerWorker *sender, const QJsonObject &docObj)
         if (ID.isNull() || !ID.isString())
             return;
         allocateUser(sender, ID.toString());
+        return;
+    }
+
+    if (sender->getMeeting() == nullptr)
+    {
+        QJsonObject messageToSender;
+        messageToSender[QStringLiteral("тип")] = QStringLiteral("логин");
+        messageToSender[QStringLiteral("успешно")] = false;
+        messageToSender[QStringLiteral("причина")] = QStringLiteral("Не задан ID");
+        sendJson(sender, messageToSender);
         return;
     }
 
@@ -227,10 +247,13 @@ void Server::userDisconnected(ServerWorker *sender)
         emit logMessage(userName + QStringLiteral(" отключен"));
     }
 
-    QJsonObject message;
-    message[QStringLiteral("тип")] = QStringLiteral("отсоединение");
-    message[sender->userName()] = "";
-    broadcast(message, sender);
+    if (sender->getMeeting() != nullptr)
+    {
+        QJsonObject message;
+        message[QStringLiteral("тип")] = QStringLiteral("отсоединение");
+        message[sender->userName()] = "";
+        broadcast(message, sender);
+    }
     sender->deleteLater();
 
     if (waitingUsers.contains(sender))
