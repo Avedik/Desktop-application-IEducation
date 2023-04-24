@@ -6,11 +6,6 @@ Painter::Painter(brainstorm *wrapper, QObject *parent) : QGraphicsScene(parent)
     this->wrapper = wrapper;
 }
 
-Painter::~Painter()
-{
-    delete wrapper;
-}
-
 void Painter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!(event->buttons() & Qt::LeftButton))

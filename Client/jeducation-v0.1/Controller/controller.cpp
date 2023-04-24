@@ -74,6 +74,7 @@ void Controller::sendPoint(const QPointF& point, qint32 operationCode)
     QDataStream socketStream(m_clientSocket);
     socketStream.setVersion(QDataStream::Qt_5_7);
     socketStream << DataTypes::POINT << operationCode << point;
+    m_clientSocket->flush();
 }
 
 void Controller::sendQuestion(const QString &destUser, const QString &text)

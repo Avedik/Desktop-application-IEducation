@@ -72,7 +72,7 @@ void brainstorm::attemptConnection()
       return m_Client->disconnectFromHost();
     }
 
-    m_Client->connectToServer(QHostAddress(QString("127.0.0.1")), 1967);//46.29.115.42
+    m_Client->connectToServer(QHostAddress(QString("46.29.115.42")), 1967);
 }
 
 void brainstorm::connectedToServer()
