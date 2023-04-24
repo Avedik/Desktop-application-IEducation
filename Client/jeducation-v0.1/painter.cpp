@@ -18,7 +18,7 @@ void Painter::mousePressEvent(QGraphicsSceneMouseEvent *event)
                    point.y(),
                    5, 5,
                    QPen(Qt::NoPen),
-                   QBrush(Qt::black));
+                   QBrush(brushColor));
         previousPoint = point;
         wrapper->sendPoint(point, 0);
     }
@@ -46,7 +46,7 @@ void Painter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 previousPoint.y(),
                 point.x(),
                 point.y(),
-                QPen(Qt::black, 5, Qt::SolidLine, Qt::RoundCap));
+                QPen(brushColor, 5, Qt::SolidLine, Qt::RoundCap));
 
         previousPoint = point;
         wrapper->sendPoint(point, 2);
@@ -69,7 +69,7 @@ void Painter::addPoint(const QPointF& point)
                point.y(),
                5, 5,
                QPen(Qt::NoPen),
-               QBrush(Qt::black));
+               QBrush(brushColor));
     previousPoint = point;
 }
 
@@ -79,7 +79,7 @@ void Painter::addLine(const QPointF& point)
             previousPoint.y(),
             point.x(),
             point.y(),
-            QPen(Qt::black, 5, Qt::SolidLine, Qt::RoundCap));
+            QPen(brushColor, 5, Qt::SolidLine, Qt::RoundCap));
 
     previousPoint = point;
 }
@@ -89,4 +89,14 @@ void Painter::removePoint(const QPointF& point)
     QGraphicsItem* item = itemAt(point, QTransform());
     if (item)
         removeItem(item);
+}
+
+void Painter::setBrushColor(QColor color)
+{
+    brushColor = color;
+}
+
+QColor Painter::getBrushColor()
+{
+    return brushColor;
 }

@@ -3,6 +3,7 @@
 #include <QLineEdit>
 #include <QString>
 #include <QMessageBox>
+#include <QColorDialog>
 #include "brainstorm.h"
 #include "ui_brainstorm.h"
 #include "Controller/controller.h"
@@ -246,5 +247,11 @@ void brainstorm::error(QAbstractSocket::SocketError socketError)
     }
 
     switchEnabled(false);
+}
+
+void brainstorm::on_changeColorButton_clicked()
+{
+    QColor newColor = QColorDialog::getColor(scene->getBrushColor(), this);
+    scene->setBrushColor(newColor);
 }
 

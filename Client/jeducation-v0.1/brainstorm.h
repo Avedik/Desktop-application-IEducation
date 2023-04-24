@@ -39,6 +39,8 @@ private slots:
     void userJoined(const QString &username, const QString &meetingID);
     void error(QAbstractSocket::SocketError socketError);
 
+    void on_changeColorButton_clicked();
+
 private:
     void switchEnabled(bool is_enabled);
 

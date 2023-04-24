@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QPointF>
+#include <QColor>
 
 class brainstorm;
 class Painter : public QGraphicsScene
@@ -17,10 +18,13 @@ public:
     void addPoint(const QPointF& point);
     void addLine(const QPointF& point);
     void removePoint(const QPointF& point);
+    void setBrushColor(QColor color);
+    QColor getBrushColor();
 
 private:
     QPointF previousPoint;
     brainstorm *wrapper;
+    QColor brushColor = QColor(Qt::black);
 
 private:
     void mousePressEvent(QGraphicsSceneMouseEvent * event);
