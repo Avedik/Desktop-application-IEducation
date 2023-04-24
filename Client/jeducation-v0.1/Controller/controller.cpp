@@ -193,71 +193,74 @@ void Controller::connectToServer(const QHostAddress &address, quint16 port)
 
 void Controller::onReadyRead()
 {
-    QDataStream socketStream(m_clientSocket);
-    socketStream.setVersion(QDataStream::Qt_5_7);
-
-    DataTypes _type = DataTypes::JSON;
-    socketStream.startTransaction();
-    socketStream >> _type;
-    if (socketStream.status() != QDataStream::Ok)
+    while (m_clientSocket->bytesAvailable())
     {
-        socketStream.commitTransaction();
-        return;
-    }
+        QDataStream socketStream(m_clientSocket);
+        socketStream.setVersion(QDataStream::Qt_5_7);
 
-    if (_type == DataTypes::FILE_SEND_CODE)
-        emit fileSentOut();
-    else if (_type == DataTypes::PDF_FILE)
-    {
-        QByteArray data;
-        socketStream >> data;
+        DataTypes _type = DataTypes::JSON;
+        socketStream.startTransaction();
+        socketStream >> _type;
         if (socketStream.status() != QDataStream::Ok)
         {
             socketStream.commitTransaction();
             return;
         }
-        socketStream.commitTransaction();
-        emit receivePDF(data);
-    }
-    else if (_type == DataTypes::JSON) {
-    QByteArray jsonData;
-    for (;;) {
-        socketStream >> jsonData;
-        if (socketStream.commitTransaction()) {
-            QJsonParseError parseError;
-            const QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
-            if (parseError.error == QJsonParseError::NoError) {
-                if (jsonDoc.isObject())
-                    jsonReceived(jsonDoc.object());
+
+        if (_type == DataTypes::FILE_SEND_CODE)
+            emit fileSentOut();
+        else if (_type == DataTypes::PDF_FILE)
+        {
+            QByteArray data;
+            socketStream >> data;
+            if (socketStream.status() != QDataStream::Ok)
+            {
+                socketStream.commitTransaction();
+                return;
             }
-            socketStream.startTransaction();
-        } else {
-            break;
+            socketStream.commitTransaction();
+            emit receivePDF(data);
         }
-    }
-    }
-    else if (_type == DataTypes::IMAGE)
-    {
-        QImage img;
-        QString source;
+        else if (_type == DataTypes::JSON) {
+            QByteArray jsonData;
+            for (;;) {
+                socketStream >> jsonData;
+                if (socketStream.commitTransaction()) {
+                    QJsonParseError parseError;
+                    const QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+                    if (parseError.error == QJsonParseError::NoError) {
+                        if (jsonDoc.isObject())
+                            jsonReceived(jsonDoc.object());
+                    }
+                    socketStream.startTransaction();
+                } else {
+                    break;
+                }
+            }
+        }
+        else if (_type == DataTypes::IMAGE)
+        {
+            QImage img;
+            QString source;
 
-        socketStream >> img >> source;
-        if (!socketStream.commitTransaction())
-            return;
-        emit receiveImage(img, source);
-    }
-    else if (_type == DataTypes::POINT)
-    {
-        qint32 operationCode;
-        QPointF point;
+            socketStream >> img >> source;
+            if (!socketStream.commitTransaction())
+                return;
+            emit receiveImage(img, source);
+        }
+        else if (_type == DataTypes::POINT)
+        {
+            qint32 operationCode;
+            QPointF point;
 
-        socketStream >> operationCode >> point;
-        if (!socketStream.commitTransaction())
-            return;
-        emit receivePoint(point, operationCode);
+            socketStream >> operationCode >> point;
+            if (!socketStream.commitTransaction())
+                return;
+            emit receivePoint(point, operationCode);
+        }
+        else
+            socketStream.commitTransaction();
     }
-    else
-        socketStream.commitTransaction();
 }
 
 void Controller::fileReceived()

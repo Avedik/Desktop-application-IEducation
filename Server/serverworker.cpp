@@ -167,30 +167,33 @@ void ServerWorker::receivePDF(QDataStream& socketStream)
 
 void ServerWorker::onReadyRead()
 {
-    QDataStream socketStream(m_serverSocket);
-    socketStream.setVersion(QDataStream::Qt_5_7);
-
-    DataTypes _type = DataTypes::JSON;
-    socketStream.startTransaction();
-    socketStream >> _type;
-    if (socketStream.status() != QDataStream::Ok)
+    while (m_serverSocket->bytesAvailable())
     {
-        socketStream.commitTransaction();
-        return;
-    }
+        QDataStream socketStream(m_serverSocket);
+        socketStream.setVersion(QDataStream::Qt_5_7);
 
-    if (_type == DataTypes::FILE_RECEIVE_CODE)
-        emit userReceiveFile();
-    else if (_type == DataTypes::PDF_FILE)
-        receivePDF(socketStream);
-    else if (_type == DataTypes::JSON)
-        receiveJson(socketStream);
-    else if (_type == DataTypes::IMAGE)
-        receiveImage(socketStream);
-    else if (_type == DataTypes::POINT)
-        receivePoint(socketStream);
-    else
-        socketStream.commitTransaction();
+        DataTypes _type = DataTypes::JSON;
+        socketStream.startTransaction();
+        socketStream >> _type;
+        if (socketStream.status() != QDataStream::Ok)
+        {
+            socketStream.commitTransaction();
+            return;
+        }
+
+        if (_type == DataTypes::FILE_RECEIVE_CODE)
+            emit userReceiveFile();
+        else if (_type == DataTypes::PDF_FILE)
+            receivePDF(socketStream);
+        else if (_type == DataTypes::JSON)
+            receiveJson(socketStream);
+        else if (_type == DataTypes::IMAGE)
+            receiveImage(socketStream);
+        else if (_type == DataTypes::POINT)
+            receivePoint(socketStream);
+        else
+            socketStream.commitTransaction();
+    }
 }
 
 
