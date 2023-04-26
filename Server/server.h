@@ -6,6 +6,7 @@
 #include <QQueue>
 #include <QList>
 #include <QPointF>
+#include <QColor>
 
 //Класс для управления потоками
 class QThread;
@@ -34,6 +35,7 @@ private slots:
     void jsonReceived(ServerWorker *sender, const QJsonObject &doc);
     void imageReceived(ServerWorker *sender, const QImage &img, const QString& source);
     void pointReceived(ServerWorker *sender, const QPointF &point, qint32 operationCode);
+    void colorReceived(ServerWorker *sender, const QColor &color);
     void pdfReceived(ServerWorker *sender, const QByteArray &data);
     ///Функция для обработки выхода пользователя
     void userDisconnected(ServerWorker *sender);

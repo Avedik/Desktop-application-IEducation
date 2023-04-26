@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QBuffer>
 #include <QImage>
+#include <QColor>
 
 ServerWorker::ServerWorker(QObject *parent)
     : QObject(parent),
@@ -71,6 +72,14 @@ void ServerWorker::sendPoint(const QPointF& point, qint32 operationCode)
     socketStream.setVersion(QDataStream::Qt_5_7);
     socketStream << DataTypes::POINT << operationCode << point;
     m_serverSocket->flush();
+}
+
+void ServerWorker::sendColor(const QColor& color)
+{
+    emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - Color"));
+    QDataStream socketStream(m_serverSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::BRUSH_COLOR << color;
 }
 
 void ServerWorker::sendPDF(const QByteArray &data)
@@ -152,6 +161,19 @@ void ServerWorker::receivePoint(QDataStream& socketStream)
     emit pointReceived(point, operationCode);
 }
 
+void ServerWorker::receiveColor(QDataStream& socketStream)
+{
+    QColor color;
+    socketStream >> color;
+    if (socketStream.status() != QDataStream::Ok)
+    {
+        socketStream.commitTransaction();
+        return;
+    }
+    socketStream.commitTransaction();
+    emit colorReceived(color);
+}
+
 void ServerWorker::receivePDF(QDataStream& socketStream)
 {
     QByteArray data;
@@ -191,6 +213,8 @@ void ServerWorker::onReadyRead()
             receiveImage(socketStream);
         else if (_type == DataTypes::POINT)
             receivePoint(socketStream);
+        else if (_type == DataTypes::BRUSH_COLOR)
+            receiveColor(socketStream);
         else
             socketStream.commitTransaction();
     }

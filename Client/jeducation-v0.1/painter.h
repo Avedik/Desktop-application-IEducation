@@ -18,13 +18,16 @@ public:
     void addPoint(const QPointF& point);
     void addLine(const QPointF& point);
     void removePoint(const QPointF& point);
-    void setBrushColor(QColor color);
-    QColor getBrushColor();
+    void setMyBrushColor(QColor color);
+    QColor getMyBrushColor();
+    void setActiveBrushColor(QColor color);
+    QColor getActiveBrushColor();
 
 private:
     QPointF previousPoint;
     brainstorm *wrapper;
-    QColor brushColor = QColor(Qt::black);
+    QColor myBrushColor = QColor(Qt::black);
+    QColor activeBrushColor = QColor(Qt::black);
 
 private:
     void mousePressEvent(QGraphicsSceneMouseEvent * event);

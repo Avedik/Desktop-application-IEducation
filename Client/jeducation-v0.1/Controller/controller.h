@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QImage>
 #include <QPointF>
+#include <QColor>
 
 class QHostAddress;
 class QJsonDocument;
@@ -22,6 +23,7 @@ public slots:
     void sendMessage(const QString &text);
     void sendImage(const QImage& image);
     void sendPoint(const QPointF& point, qint32 operationCode);
+    void sendColor(const QColor& color);
     void sendQuestion(const QString &destUser, const QString &text);
     void sendAnswer(const QString &source, const QString &question, const QString &answer);
     void sendPDF(const QByteArray &data);
@@ -45,6 +47,7 @@ signals:
     void userLeft(const QString &username);
     void receiveImage(const QImage& image, const QString& source);
     void receivePoint(const QPointF& point, qint32 operationCode);
+    void receiveColor(const QColor& color);
     void receivePDF(const QByteArray &data);
     void fileSentOut();
 private:

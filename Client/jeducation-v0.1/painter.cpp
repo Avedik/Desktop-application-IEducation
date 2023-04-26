@@ -18,7 +18,7 @@ void Painter::mousePressEvent(QGraphicsSceneMouseEvent *event)
                    point.y(),
                    5, 5,
                    QPen(Qt::NoPen),
-                   QBrush(brushColor));
+                   QBrush(myBrushColor));
         previousPoint = point;
         wrapper->sendPoint(point, 0);
     }
@@ -46,7 +46,7 @@ void Painter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 previousPoint.y(),
                 point.x(),
                 point.y(),
-                QPen(brushColor, 5, Qt::SolidLine, Qt::RoundCap));
+                QPen(myBrushColor, 5, Qt::SolidLine, Qt::RoundCap));
 
         previousPoint = point;
         wrapper->sendPoint(point, 2);
@@ -69,7 +69,7 @@ void Painter::addPoint(const QPointF& point)
                point.y(),
                5, 5,
                QPen(Qt::NoPen),
-               QBrush(brushColor));
+               QBrush(activeBrushColor));
     previousPoint = point;
 }
 
@@ -79,7 +79,7 @@ void Painter::addLine(const QPointF& point)
             previousPoint.y(),
             point.x(),
             point.y(),
-            QPen(brushColor, 5, Qt::SolidLine, Qt::RoundCap));
+            QPen(activeBrushColor, 5, Qt::SolidLine, Qt::RoundCap));
 
     previousPoint = point;
 }
@@ -91,12 +91,22 @@ void Painter::removePoint(const QPointF& point)
         removeItem(item);
 }
 
-void Painter::setBrushColor(QColor color)
+void Painter::setMyBrushColor(QColor color)
 {
-    brushColor = color;
+    myBrushColor = color;
 }
 
-QColor Painter::getBrushColor()
+QColor Painter::getMyBrushColor()
 {
-    return brushColor;
+    return myBrushColor;
+}
+
+void Painter::setActiveBrushColor(QColor color)
+{
+    activeBrushColor = color;
+}
+
+QColor Painter::getActiveBrushColor()
+{
+    return activeBrushColor;
 }

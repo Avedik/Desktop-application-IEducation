@@ -20,6 +20,7 @@ brainstorm::brainstorm(QWidget *parent) :
     switchEnabled(false);
 
     connect(m_Client, &Controller::receivePoint, this, &brainstorm::receivePoint);
+    connect(m_Client, &Controller::receiveColor, this, &brainstorm::receiveColor);
     connect(m_Client, &Controller::connected, this, &brainstorm::connectedToServer);
     connect(m_Client, &Controller::loggedIn, this, &brainstorm::loggedIn);
     connect(m_Client, &Controller::loginError, this, &brainstorm::loginFailed);
@@ -188,8 +189,14 @@ void brainstorm::receivePoint(const QPointF& point, qint32 operationCode)
     }
 }
 
+void brainstorm::receiveColor(const QColor& color)
+{
+    scene->setActiveBrushColor(color);
+}
+
 void brainstorm::sendPoint(const QPointF& point, qint32 operationCode)
 {
+    m_Client->sendColor(scene->getMyBrushColor());
     m_Client->sendPoint(point, operationCode);
 }
 
@@ -251,7 +258,8 @@ void brainstorm::error(QAbstractSocket::SocketError socketError)
 
 void brainstorm::on_changeColorButton_clicked()
 {
-    QColor newColor = QColorDialog::getColor(scene->getBrushColor(), this);
-    scene->setBrushColor(newColor);
+    QColor newColor = QColorDialog::getColor(scene->getMyBrushColor(), this);
+    scene->setMyBrushColor(newColor);
+    m_Client->sendColor(newColor);
 }
 

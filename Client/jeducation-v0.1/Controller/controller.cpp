@@ -77,6 +77,13 @@ void Controller::sendPoint(const QPointF& point, qint32 operationCode)
     m_clientSocket->flush();
 }
 
+void Controller::sendColor(const QColor& color)
+{
+    QDataStream socketStream(m_clientSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::BRUSH_COLOR << color;
+}
+
 void Controller::sendQuestion(const QString &destUser, const QString &text)
 {
     if (text.isEmpty())
@@ -257,6 +264,15 @@ void Controller::onReadyRead()
             if (!socketStream.commitTransaction())
                 return;
             emit receivePoint(point, operationCode);
+        }
+        else if (_type == DataTypes::BRUSH_COLOR)
+        {
+            QColor color;
+
+            socketStream >> color;
+            if (!socketStream.commitTransaction())
+                return;
+            emit receiveColor(color);
         }
         else
             socketStream.commitTransaction();

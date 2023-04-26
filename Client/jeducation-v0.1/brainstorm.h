@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QGraphicsView>
 #include <QPointF>
+#include <QColor>
 #include <QAbstractSocket>
 #include <painter.h>
 
@@ -30,6 +31,7 @@ private slots:
 
     void on_clearButton_clicked();
     void receivePoint(const QPointF& point, qint32 operationCode);
+    void receiveColor(const QColor& color);
     void attemptConnection();
     void connectedToServer();
     void attemptLogin(const QString &userName);

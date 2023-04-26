@@ -225,6 +225,19 @@ void Server::pointReceived(ServerWorker *sender, const QPointF &point, qint32 op
         }
 }
 
+void Server::colorReceived(ServerWorker *sender, const QColor& color)
+{
+    Q_ASSERT(sender);
+    emit logMessage(QStringLiteral("Color получен ") );
+    if (!sender->userName().isEmpty())
+        for (ServerWorker *worker : *sender->getMeeting()) {
+            Q_ASSERT(worker);
+            if (sender == worker)
+                continue;
+            worker->sendColor(color);
+        }
+}
+
 void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
 {
     Q_ASSERT(sender);
@@ -302,6 +315,7 @@ void Server::incomingConnection(qintptr socketDescriptor)
                                                                   worker, std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::pointReceived, this, std::bind(&Server::pointReceived, this,
                                                                   worker, std::placeholders::_1, std::placeholders::_2));
+    connect(worker, &ServerWorker::colorReceived, this, std::bind(&Server::colorReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::pdfReceived, this, std::bind(&Server::pdfReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
     connect(worker, &ServerWorker::userReceiveFile, this, std::bind(&Server::userReceiveFile, this, worker));
