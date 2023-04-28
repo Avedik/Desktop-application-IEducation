@@ -68,6 +68,16 @@ void Server::allocateUser(ServerWorker *sender, const QString& ID)
         sender->setMeeting(newMeeting);
         waitingUsers.removeAll(sender);
     }
+
+    if (ID.startsWith("1:"))
+    {
+        QJsonObject messageToSender;
+        messageToSender[QStringLiteral("тип")] = QStringLiteral("подключение");
+        for (ServerWorker *_worker : *sender->getMeeting())
+            messageToSender[_worker->userName()] = "";
+        sendJson(sender, messageToSender);
+    }
+
     QJsonObject connectedMessage;
     connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
     connectedMessage[QStringLiteral("имя пользователя")] = QStringLiteral("");
@@ -217,12 +227,16 @@ void Server::pointReceived(ServerWorker *sender, const QPointF &point, qint32 op
     Q_ASSERT(sender);
     emit logMessage(QStringLiteral("Point получен ") );
     if (!sender->userName().isEmpty())
+    {
+        qint32 index = -1;
         for (ServerWorker *worker : *sender->getMeeting()) {
             Q_ASSERT(worker);
+            ++index;
             if (sender == worker)
                 continue;
-            worker->sendPoint(point, operationCode);
+            worker->sendPoint(point, operationCode, index);
         }
+    }
 }
 
 void Server::colorReceived(ServerWorker *sender, const QColor& color)

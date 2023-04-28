@@ -15,7 +15,6 @@ brainstorm::brainstorm(QWidget *parent) :
     m_Client(new Controller(this))
 {
     ui->setupUi(this);
-    setAttribute(Qt::WA_DeleteOnClose);
     is_connected = false;
     switchEnabled(false);
 
@@ -28,6 +27,7 @@ brainstorm::brainstorm(QWidget *parent) :
     connect(m_Client, &Controller::error, this, &brainstorm::error);
     connect(m_Client, &Controller::userJoined, this, &brainstorm::userJoined);
     connect(ui->joinButton, &QPushButton::clicked, this, &brainstorm::attemptConnection);
+    connect(m_Client, &Controller::refreshUsersList, this, &brainstorm::refreshUsersQuantity);
 
     scene = new Painter(this);
     ui->table->setScene(scene);
@@ -166,6 +166,15 @@ void brainstorm::userJoined(const QString &username, const QString &meetingID)
         attemptLogin(newUsername);
         return;
     }
+
+    scene->addUserPreviousPoint();
+}
+
+void brainstorm::refreshUsersQuantity(const QVariantMap& users, const QString& type)
+{
+    if (scene->getPreviousPointsQuantity() == 0)
+        for (QVariantMap::const_iterator iter = users.begin(); iter != users.end(); ++iter)
+            scene->addUserPreviousPoint();
 }
 
 void brainstorm::switchEnabled(bool is_enabled)
@@ -181,7 +190,7 @@ void brainstorm::switchEnabled(bool is_enabled)
         but->setEnabled(is_enabled);
 }
 
-void brainstorm::receivePoint(const QPointF& point, qint32 operationCode)
+void brainstorm::receivePoint(const QPointF& point, qint32 operationCode, qint32 senderID)
 {
     switch (operationCode)
     {
@@ -189,13 +198,13 @@ void brainstorm::receivePoint(const QPointF& point, qint32 operationCode)
         scene->clear();
         break;
     case 0:
-        scene->addPoint(point);
+        scene->addPoint(point, senderID);
         break;
     case 1:
-        scene->removePoint(point);
+        scene->removePoint(point, senderID);
         break;
     case 2:
-        scene->addLine(point);
+        scene->addLine(point, senderID);
         break;
     }
 }

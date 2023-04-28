@@ -261,12 +261,13 @@ void Controller::onReadyRead()
         else if (_type == DataTypes::POINT)
         {
             qint32 operationCode;
+            qint32 senderID;
             QPointF point;
 
-            socketStream >> operationCode >> point;
+            socketStream >> operationCode >> senderID >> point;
             if (!socketStream.commitTransaction())
                 return;
-            emit receivePoint(point, operationCode);
+            emit receivePoint(point, operationCode, senderID);
         }
         else if (_type == DataTypes::BRUSH_COLOR)
         {

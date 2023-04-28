@@ -28,7 +28,7 @@ public:
     void setUserName(const QString &userName);
     void sendJson(const QJsonObject &jsonData);
     void sendImage(const QImage& image, const QString& source);
-    void sendPoint(const QPointF& point, qint32 operationCode);
+    void sendPoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void sendColor(const QColor& color);
     void sendPDF(const QByteArray &data);
     void sendServiceInfo();

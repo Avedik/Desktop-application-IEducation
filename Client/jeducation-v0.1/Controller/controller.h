@@ -46,7 +46,7 @@ signals:
     void userJoined(const QString &username, const QString &meetingID);
     void userLeft(const QString &username);
     void receiveImage(const QImage& image, const QString& source);
-    void receivePoint(const QPointF& point, qint32 operationCode);
+    void receivePoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void receiveColor(const QColor& color);
     void receivePDF(const QByteArray &data);
     void fileSentOut();

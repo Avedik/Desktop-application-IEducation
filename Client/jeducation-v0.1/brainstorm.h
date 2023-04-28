@@ -33,7 +33,7 @@ private slots:
     void on_eraserButton_clicked();
 
     void on_clearButton_clicked();
-    void receivePoint(const QPointF& point, qint32 operationCode);
+    void receivePoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void receiveColor(const QColor& color);
     void attemptConnection();
     void connectedToServer();
@@ -43,6 +43,7 @@ private slots:
     void disconnectedFromServer();
     void userJoined(const QString &username, const QString &meetingID);
     void error(QAbstractSocket::SocketError socketError);
+    void refreshUsersQuantity(const QVariantMap& users, const QString& type);
 
     void on_changeColorButton_clicked();
 

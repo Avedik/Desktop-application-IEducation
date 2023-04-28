@@ -65,12 +65,12 @@ void ServerWorker::sendImage(const QImage& image, const QString& source)
     socketStream << DataTypes::IMAGE << image << source;
 }
 
-void ServerWorker::sendPoint(const QPointF& point, qint32 operationCode)
+void ServerWorker::sendPoint(const QPointF& point, qint32 operationCode, qint32 senderID)
 {
     emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - Point"));
     QDataStream socketStream(m_serverSocket);
     socketStream.setVersion(QDataStream::Qt_5_7);
-    socketStream << DataTypes::POINT << operationCode << point;
+    socketStream << DataTypes::POINT << operationCode << senderID << point;
     m_serverSocket->flush();
 }
 
