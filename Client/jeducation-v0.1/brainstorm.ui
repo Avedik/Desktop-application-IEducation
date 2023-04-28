@@ -344,6 +344,9 @@ color: rgb(179, 179, 179);
       </spacer>
      </item>
      <item>
+      <widget class="QComboBox" name="audioInputBox"/>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QPushButton" name="sendButton">
@@ -397,6 +400,14 @@ color: rgb(179, 179, 179);
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="stopRecordButton">
+         <property name="text">
+          <string>Остановить
+запись</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
@@ -417,7 +428,7 @@ color: rgb(179, 179, 179);
      </property>
     </spacer>
    </item>
-   <item row="2" column="2">
+   <item row="3" column="7">
     <widget class="QPushButton" name="changeColorButton">
      <property name="text">
       <string>Изменить цвет пера</string>

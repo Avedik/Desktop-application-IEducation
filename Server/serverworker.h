@@ -15,11 +15,11 @@ class ServerWorker : public QObject
     Q_DISABLE_COPY(ServerWorker)
 
     //Метод по чтению входящих сообщений из сети и отправке на главный серверный объект
-    void receiveJson(QDataStream& socketStream);
-    void receiveImage(QDataStream& socketStream);
-    void receivePoint(QDataStream& socketStream);
-    void receivePDF(QDataStream& socketStream);
-    void receiveColor(QDataStream& socketStream);
+    bool receiveJson(QDataStream& socketStream);
+    bool receiveImage(QDataStream& socketStream);
+    bool receivePoint(QDataStream& socketStream);
+    bool receivePDF(QDataStream& socketStream);
+    bool receiveColor(QDataStream& socketStream);
 public:
     explicit ServerWorker(QObject *parent = nullptr);
     virtual bool setSocketDescriptor(qintptr socketDescriptor);

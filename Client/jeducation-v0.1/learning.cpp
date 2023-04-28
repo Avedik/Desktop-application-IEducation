@@ -236,7 +236,7 @@ void learning::attemptConnection()
       return m_Client->disconnectFromHost();
     }
 
-    m_Client->connectToServer(QHostAddress(QString("46.29.115.42")), 1967);
+    m_Client->connectToServer(QHostAddress(QString("46.29.115.42")), 1967);//
 }
 
 void learning::connectedToServer()

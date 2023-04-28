@@ -215,7 +215,10 @@ void Controller::onReadyRead()
         }
 
         if (_type == DataTypes::FILE_SEND_CODE)
+        {
             emit fileSentOut();
+            return;
+        }
         else if (_type == DataTypes::PDF_FILE)
         {
             QByteArray data;
@@ -241,7 +244,7 @@ void Controller::onReadyRead()
                     }
                     socketStream.startTransaction();
                 } else {
-                    break;
+                    return;
                 }
             }
         }

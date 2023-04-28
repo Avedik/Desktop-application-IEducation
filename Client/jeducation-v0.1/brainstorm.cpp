@@ -33,10 +33,21 @@ brainstorm::brainstorm(QWidget *parent) :
     ui->table->setScene(scene);
     ui->table->setBackgroundBrush(QColor("white"));
     setAttribute(Qt::WA_DeleteOnClose);
+
+//    audioSession = new QMediaCaptureSession();
+//    audioInput = new QAudioInput();
+//    audioSession->setAudioInput(audioInput);
+
+//    recorder = new QMediaRecorder();
+//    audioSession->setRecorder(recorder);
+//    recorder->setQuality(QMediaRecorder::HighQuality);
 }
 
 brainstorm::~brainstorm()
 {
+//    delete audioSession;
+//    delete audioInput;
+//    delete recorder;
     if (is_connected)
         m_Client->disconnectFromHost();
     delete ui;
@@ -261,5 +272,19 @@ void brainstorm::on_changeColorButton_clicked()
     QColor newColor = QColorDialog::getColor(scene->getMyBrushColor(), this);
     scene->setMyBrushColor(newColor);
     m_Client->sendColor(newColor);
+}
+
+void brainstorm::on_recordButton_clicked()
+{
+
+//    recorder->setOutputLocation(QUrl::fromLocalFile("test.mp3"));
+//    recorder->record();
+}
+
+void brainstorm::on_stopRecordButton_clicked()
+{
+//    recorder->stop();
+
+
 }
 

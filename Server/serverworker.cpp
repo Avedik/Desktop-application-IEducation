@@ -112,7 +112,7 @@ void ServerWorker::setUserName(const QString &userName)
     m_userName = userName;
 }
 
-void ServerWorker::receiveJson(QDataStream& socketStream)
+bool ServerWorker::receiveJson(QDataStream& socketStream)
 {
     QByteArray jsonData;
     socketStream >> jsonData;
@@ -131,23 +131,27 @@ void ServerWorker::receiveJson(QDataStream& socketStream)
 
         socketStream.startTransaction();
     }
+    else
+        return false;
 
+    return true;
 }
 
-void ServerWorker::receiveImage(QDataStream& socketStream)
+bool ServerWorker::receiveImage(QDataStream& socketStream)
 {
     QImage img;
     socketStream >> img;
     if (socketStream.status() != QDataStream::Ok)
     {
         socketStream.commitTransaction();
-        return;
+        return false;
     }
     socketStream.commitTransaction();
     emit imageReceived(img, userName());
+    return true;
 }
 
-void ServerWorker::receivePoint(QDataStream& socketStream)
+bool ServerWorker::receivePoint(QDataStream& socketStream)
 {
     qint32 operationCode;
     QPointF point;
@@ -155,36 +159,39 @@ void ServerWorker::receivePoint(QDataStream& socketStream)
     if (socketStream.status() != QDataStream::Ok)
     {
         socketStream.commitTransaction();
-        return;
+        return false;
     }
     socketStream.commitTransaction();
     emit pointReceived(point, operationCode);
+    return true;
 }
 
-void ServerWorker::receiveColor(QDataStream& socketStream)
+bool ServerWorker::receiveColor(QDataStream& socketStream)
 {
     QColor color;
     socketStream >> color;
     if (socketStream.status() != QDataStream::Ok)
     {
         socketStream.commitTransaction();
-        return;
+        return false;
     }
     socketStream.commitTransaction();
     emit colorReceived(color);
+    return true;
 }
 
-void ServerWorker::receivePDF(QDataStream& socketStream)
+bool ServerWorker::receivePDF(QDataStream& socketStream)
 {
     QByteArray data;
     socketStream >> data;
     if (socketStream.status() != QDataStream::Ok)
     {
         socketStream.commitTransaction();
-        return;
+        return false;
     }
     socketStream.commitTransaction();
     emit pdfReceived(data);
+    return true;
 }
 
 void ServerWorker::onReadyRead()
@@ -203,20 +210,27 @@ void ServerWorker::onReadyRead()
             return;
         }
 
+        bool good = true;
         if (_type == DataTypes::FILE_RECEIVE_CODE)
+        {
             emit userReceiveFile();
+            return;
+        }
         else if (_type == DataTypes::PDF_FILE)
-            receivePDF(socketStream);
+            good = receivePDF(socketStream);
         else if (_type == DataTypes::JSON)
-            receiveJson(socketStream);
+            good = receiveJson(socketStream);
         else if (_type == DataTypes::IMAGE)
-            receiveImage(socketStream);
+            good = receiveImage(socketStream);
         else if (_type == DataTypes::POINT)
-            receivePoint(socketStream);
+            good = receivePoint(socketStream);
         else if (_type == DataTypes::BRUSH_COLOR)
-            receiveColor(socketStream);
+            good = receiveColor(socketStream);
         else
             socketStream.commitTransaction();
+
+        if (!good)
+            return;
     }
 }
 
