@@ -88,6 +88,12 @@ color: rgb(30, 30, 30);
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -103,8 +109,23 @@ color: rgb(30, 30, 30);
        <property name="mouseTracking">
         <bool>false</bool>
        </property>
+       <property name="dragEnabled">
+        <bool>false</bool>
+       </property>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>30</number>
+       </attribute>
        <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>250</number>
+        <number>406</number>
+       </attribute>
+       <attribute name="verticalHeaderMinimumSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+        <bool>false</bool>
        </attribute>
        <row>
         <property name="text">
