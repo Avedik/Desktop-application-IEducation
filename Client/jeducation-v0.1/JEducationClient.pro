@@ -59,7 +59,8 @@ DISTFILES += \
     pdfViewer/viewer.qml
 
 RESOURCES += \
-    pdfViewer/viewer.qrc
+    pdfViewer/viewer.qrc \
+    res.qrc
 
 macos:QMAKE_INFO_PLIST = pdfViewer/resources/macos/Info.plist
 macos:ICON = pdfViewer/resources/multipage.icns

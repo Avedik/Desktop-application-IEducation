@@ -26,7 +26,8 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(125, 185, 217);</string>
+   <string notr="true">background:transparent;
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(230, 160, 65, 255), stop:1 rgba(255, 189, 255, 255));</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="5">
@@ -299,6 +300,11 @@ color: rgb(179, 179, 179);
            <width>16777215</width>
            <height>200</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background:transparent;
+color: rgb(30, 30, 30);
+</string>
          </property>
          <property name="text">
           <string>Фото</string>

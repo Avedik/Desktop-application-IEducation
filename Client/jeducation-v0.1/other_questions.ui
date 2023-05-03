@@ -20,7 +20,8 @@
    <string>Ответы остальных участников</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(125, 185, 217);</string>
+   <string notr="true">background:transparent;
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(230, 160, 65, 255), stop:1 rgba(255, 189, 255, 255));</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -35,7 +36,9 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(25, 25, 25);</string>
+      <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(29, 29, 29);
+</string>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
