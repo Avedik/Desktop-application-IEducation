@@ -3,7 +3,11 @@
 #include <QLineEdit>
 #include <QString>
 #include <QMessageBox>
+#include <QMediaFormat>
 #include <QColorDialog>
+#include <QFileDialog>
+#include <QAudioDevice>
+#include <QMediaDevices>
 #include "brainstorm.h"
 #include "ui_brainstorm.h"
 #include "Controller/controller.h"
@@ -34,20 +38,27 @@ brainstorm::brainstorm(QWidget *parent) :
     ui->table->setBackgroundBrush(QColor("white"));
     setAttribute(Qt::WA_DeleteOnClose);
 
-//    audioSession = new QMediaCaptureSession();
-//    audioInput = new QAudioInput();
-//    audioSession->setAudioInput(audioInput);
+    audioSession = new QMediaCaptureSession();
+    audioInput = new QAudioInput(this);
+    audioSession->setAudioInput(audioInput);
 
-//    recorder = new QMediaRecorder();
-//    audioSession->setRecorder(recorder);
-//    recorder->setQuality(QMediaRecorder::HighQuality);
+    recorder = new QMediaRecorder(this);
+    audioSession->setRecorder(recorder);
+    recorder->setQuality(QMediaRecorder::HighQuality);
+    recorder->setOutputLocation(QUrl::fromLocalFile(QApplication::applicationDirPath() + "/audio"));
+
+    for (auto input : QMediaDevices::audioInputs()) {
+        auto name = input.description();
+        ui->audioInputBox->addItem(name, QVariant::fromValue(input));
+    }
 }
 
 brainstorm::~brainstorm()
 {
-//    delete audioSession;
-//    delete audioInput;
-//    delete recorder;
+    delete audioSession;
+    delete audioInput;
+    delete recorder;
+
     if (is_connected)
         m_Client->disconnectFromHost();
     delete ui;
@@ -285,15 +296,26 @@ void brainstorm::on_changeColorButton_clicked()
 
 void brainstorm::on_recordButton_clicked()
 {
+    if (recorder->recorderState() == QMediaRecorder::StoppedState) {
+        ui->recordButton->setText(QString("Остановить\nзапись"));
 
-//    recorder->setOutputLocation(QUrl::fromLocalFile("test.mp3"));
-//    recorder->record();
+        int index = ui->audioInputBox->currentIndex();
+        audioSession->audioInput()->setDevice((index == -1 ?
+                                                   QVariant() : ui->audioInputBox->itemData(index)).value<QAudioDevice>());
+
+        QMediaFormat format;
+        format.setAudioCodec(QMediaFormat::AudioCodec::MP3);
+        recorder->setMediaFormat(format);
+
+        recorder->record();
+    } else {
+        ui->recordButton->setText(QString("Записать\nголосовое\nсообщение"));
+        recorder->stop();
+    }
 }
 
-void brainstorm::on_stopRecordButton_clicked()
+void brainstorm::on_sendButton_clicked()
 {
-//    recorder->stop();
-
 
 }
 

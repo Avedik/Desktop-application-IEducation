@@ -1,4 +1,4 @@
-QT       += core gui network widgets qml quick pdf svg
+QT       += core gui network widgets qml quick pdf svg multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17

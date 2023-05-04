@@ -6,9 +6,9 @@
 #include <QPointF>
 #include <QColor>
 #include <QAbstractSocket>
-//#include <QMediaCaptureSession>
-//#include <QAudioInput>
-//#include <QMediaRecorder>
+#include <QMediaCaptureSession>
+#include <QAudioInput>
+#include <QMediaRecorder>
 #include <painter.h>
 
 namespace Ui {
@@ -46,10 +46,9 @@ private slots:
     void refreshUsersQuantity(const QVariantMap& users, const QString& type);
 
     void on_changeColorButton_clicked();
-
     void on_recordButton_clicked();
 
-    void on_stopRecordButton_clicked();
+    void on_sendButton_clicked();
 
 private:
     void switchEnabled(bool is_enabled);
@@ -60,9 +59,9 @@ private:
     Painter *scene;
     Controller *m_Client;
     QString *meetingID = nullptr;
-//    QMediaCaptureSession *audioSession;
-//    QAudioInput *audioInput;
-//    QMediaRecorder *recorder;
+    QMediaCaptureSession *audioSession;
+    QAudioInput *audioInput;
+    QMediaRecorder *recorder;
 };
 
 #endif // BRAINSTORM_H

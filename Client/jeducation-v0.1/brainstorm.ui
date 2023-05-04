@@ -400,14 +400,6 @@ color: rgb(179, 179, 179);
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="stopRecordButton">
-         <property name="text">
-          <string>Остановить
-запись</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
     </layout>
