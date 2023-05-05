@@ -1,5 +1,4 @@
 #include "serverworker.h"
-#include "dataTypes.h"
 #include <QDataStream>
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -82,12 +81,13 @@ void ServerWorker::sendColor(const QColor& color)
     socketStream << DataTypes::BRUSH_COLOR << color;
 }
 
-void ServerWorker::sendPDF(const QByteArray &data)
+void ServerWorker::sendFile(DataTypes dataType, const QByteArray &data)
 {
-    emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - PDF"));
+    QString _type = dataType == DataTypes::PDF_FILE ? "PDF" : "AUDIO";
+    emit logMessage(QStringLiteral("Отправка ") + userName() + QLatin1String(" - ") + _type);
     QDataStream socketStream(m_serverSocket);
     socketStream.setVersion(QDataStream::Qt_5_7);
-    socketStream << DataTypes::PDF_FILE << data;
+    socketStream << dataType << data;
 }
 
 void ServerWorker::sendServiceInfo()
@@ -180,7 +180,7 @@ bool ServerWorker::receiveColor(QDataStream& socketStream)
     return true;
 }
 
-bool ServerWorker::receivePDF(QDataStream& socketStream)
+bool ServerWorker::receiveFile(DataTypes dataType, QDataStream& socketStream)
 {
     QByteArray data;
     socketStream >> data;
@@ -190,7 +190,7 @@ bool ServerWorker::receivePDF(QDataStream& socketStream)
         return false;
     }
     socketStream.commitTransaction();
-    emit pdfReceived(data);
+    emit fileReceived(dataType, data);
     return true;
 }
 
@@ -216,8 +216,8 @@ void ServerWorker::onReadyRead()
             emit userReceiveFile();
             return;
         }
-        else if (_type == DataTypes::PDF_FILE)
-            good = receivePDF(socketStream);
+        else if (_type == DataTypes::PDF_FILE || _type == DataTypes::AUDIO_FILE)
+            good = receiveFile(_type, socketStream);
         else if (_type == DataTypes::JSON)
             good = receiveJson(socketStream);
         else if (_type == DataTypes::IMAGE)

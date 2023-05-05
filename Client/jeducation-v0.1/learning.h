@@ -10,6 +10,7 @@
 #include "dialog.h"
 #include "ask.h"
 #include "other_questions.h"
+#include "dataTypes.h"
 
 namespace Ui {
 class learning;
@@ -77,7 +78,7 @@ private slots:
     void on_answerButton_clicked();
     void on_allAnswersButton_clicked();
     void receiveImage(const QImage& image, const QString& source);
-    void receivePDF(const QByteArray &data);
+    void receiveFile(DataTypes dataType, const QByteArray &data);
     void on_importPdfButton_clicked();
 
     bool timerEditFinished();

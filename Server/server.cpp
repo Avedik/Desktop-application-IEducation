@@ -1,5 +1,4 @@
 #include "server.h"
-#include "serverworker.h"
 #include "meeting.h"
 #include <QThread>
 #include <functional>
@@ -252,14 +251,15 @@ void Server::colorReceived(ServerWorker *sender, const QColor& color)
         }
 }
 
-void Server::pdfReceived(ServerWorker *sender, const QByteArray &data)
+void Server::fileReceived(ServerWorker *sender, DataTypes dataType, const QByteArray &data)
 {
     Q_ASSERT(sender);
-    emit logMessage(QStringLiteral("PDF получен ") );
+    QString _type = dataType == DataTypes::PDF_FILE ? "PDF" : "AUDIO";
+    emit logMessage(_type + QStringLiteral(" получен ") );
     if (!sender->userName().isEmpty())
         for (ServerWorker *worker : *sender->getMeeting()) {
             Q_ASSERT(worker);
-            worker->sendPDF(data);
+            worker->sendFile(dataType, data);
         }
 }
 
@@ -330,7 +330,8 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::pointReceived, this, std::bind(&Server::pointReceived, this,
                                                                   worker, std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::colorReceived, this, std::bind(&Server::colorReceived, this, worker, std::placeholders::_1));
-    connect(worker, &ServerWorker::pdfReceived, this, std::bind(&Server::pdfReceived, this, worker, std::placeholders::_1));
+    connect(worker, &ServerWorker::fileReceived, this, std::bind(&Server::fileReceived, this, worker,
+                                                                 std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
     connect(worker, &ServerWorker::userReceiveFile, this, std::bind(&Server::userReceiveFile, this, worker));
 

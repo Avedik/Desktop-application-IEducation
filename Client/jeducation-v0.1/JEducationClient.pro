@@ -12,6 +12,7 @@ SOURCES += \
     ask.cpp \
     brainstorm.cpp \
     choosemode.cpp \
+    dataTypes.cpp \
     dialog.cpp \
     info.cpp \
     learning.cpp \

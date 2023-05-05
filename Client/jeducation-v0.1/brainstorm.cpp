@@ -16,14 +16,25 @@ brainstorm::brainstorm(QWidget *parent) :
     QDialog(parent),
     currentInstrument(Instruments::Stylet),
     ui(new Ui::brainstorm),
-    m_Client(new Controller(this))
+    m_Client(new Controller(this)),
+    audioFilesCount(0)
 {
+    setWindowState(Qt::WindowFullScreen);
     ui->setupUi(this);
     is_connected = false;
     switchEnabled(false);
 
+    ui->audioFilesBox->setColumnCount(1);
+    ui->audioFilesBox->setShowGrid(true);
+
+    ui->audioFilesBox->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->audioFilesBox->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->audioFilesBox->setHorizontalHeaderLabels(QStringList() << "Принятые аудио");
+    ui->audioFilesBox->horizontalHeader()->setStretchLastSection(true);
+
     connect(m_Client, &Controller::receivePoint, this, &brainstorm::receivePoint);
     connect(m_Client, &Controller::receiveColor, this, &brainstorm::receiveColor);
+    connect(m_Client, &Controller::receiveFile, this, &brainstorm::receiveFile);
     connect(m_Client, &Controller::connected, this, &brainstorm::connectedToServer);
     connect(m_Client, &Controller::loggedIn, this, &brainstorm::loggedIn);
     connect(m_Client, &Controller::loginError, this, &brainstorm::loginFailed);
@@ -51,6 +62,10 @@ brainstorm::brainstorm(QWidget *parent) :
         auto name = input.description();
         ui->audioInputBox->addItem(name, QVariant::fromValue(input));
     }
+
+    player = new QMediaPlayer;
+    audioOutput = new QAudioOutput;
+    player->setAudioOutput(audioOutput);
 }
 
 brainstorm::~brainstorm()
@@ -58,6 +73,9 @@ brainstorm::~brainstorm()
     delete audioSession;
     delete audioInput;
     delete recorder;
+
+    delete player;
+    delete audioOutput;
 
     if (is_connected)
         m_Client->disconnectFromHost();
@@ -316,6 +334,52 @@ void brainstorm::on_recordButton_clicked()
 
 void brainstorm::on_sendButton_clicked()
 {
+    QFile file(QApplication::applicationDirPath() + "/audio.m4a");
+    if (!file.open(QFile::ReadOnly))
+    {
+        QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
+        return;
+    }
 
+    QByteArray data;
+    data = file.readAll();
+    file.close();
+
+    m_Client->sendFile(DataTypes::AUDIO_FILE, data);
+}
+
+void brainstorm::receiveFile(DataTypes dataType, const QByteArray &data)
+{
+    if (dataType == DataTypes::AUDIO_FILE)
+    {
+        QString path = QApplication::applicationDirPath() + "/audio_" + QString::number(audioFilesCount++) + ".m4a";
+        QFile file(path);
+        if (!file.open(QFile::WriteOnly))
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
+            return;
+        }
+
+        file.write(data);
+        file.close();
+
+        auto table = ui->audioFilesBox;
+        table->insertRow(0);
+
+        QTableWidgetItem *item = new QTableWidgetItem(path);
+        item->setFlags(item->flags() & (~Qt::ItemIsEditable));
+        table->setItem(0, 0, item);
+
+        player->setSource(QUrl::fromLocalFile(path));
+        audioOutput->setVolume(50);
+        player->play();
+    }
+}
+
+void brainstorm::on_audioFilesBox_cellPressed(int row, int column)
+{
+    player->setSource(QUrl::fromLocalFile(ui->audioFilesBox->item(row, column)->text()));
+    audioOutput->setVolume(50);
+    player->play();
 }
 

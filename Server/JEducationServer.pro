@@ -15,6 +15,7 @@ HEADERS += \
     serverWindow.h
 
 SOURCES += \
+    dataTypes.cpp \
     meeting.cpp \
     server.cpp \
     servermain.cpp \

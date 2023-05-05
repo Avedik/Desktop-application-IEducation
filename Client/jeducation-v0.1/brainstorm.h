@@ -9,7 +9,11 @@
 #include <QMediaCaptureSession>
 #include <QAudioInput>
 #include <QMediaRecorder>
-#include <painter.h>
+#include <QTableWidgetItem>
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include "painter.h"
+#include "dataTypes.h"
 
 namespace Ui {
 class brainstorm;
@@ -44,11 +48,14 @@ private slots:
     void userJoined(const QString &username, const QString &meetingID);
     void error(QAbstractSocket::SocketError socketError);
     void refreshUsersQuantity(const QVariantMap& users, const QString& type);
+    void receiveFile(DataTypes dataType, const QByteArray &data);
 
     void on_changeColorButton_clicked();
     void on_recordButton_clicked();
 
     void on_sendButton_clicked();
+
+    void on_audioFilesBox_cellPressed(int row, int column);
 
 private:
     void switchEnabled(bool is_enabled);
@@ -62,6 +69,9 @@ private:
     QMediaCaptureSession *audioSession;
     QAudioInput *audioInput;
     QMediaRecorder *recorder;
+    qint32 audioFilesCount;
+    QMediaPlayer *player;
+    QAudioOutput *audioOutput;
 };
 
 #endif // BRAINSTORM_H

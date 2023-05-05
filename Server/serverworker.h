@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QColor>
 #include <QPointF>
+#include "dataTypes.h"
 
 class QJsonObject;
 class Meeting;
@@ -18,7 +19,7 @@ class ServerWorker : public QObject
     bool receiveJson(QDataStream& socketStream);
     bool receiveImage(QDataStream& socketStream);
     bool receivePoint(QDataStream& socketStream);
-    bool receivePDF(QDataStream& socketStream);
+    bool receiveFile(DataTypes dataType, QDataStream& socketStream);
     bool receiveColor(QDataStream& socketStream);
 public:
     explicit ServerWorker(QObject *parent = nullptr);
@@ -30,7 +31,7 @@ public:
     void sendImage(const QImage& image, const QString& source);
     void sendPoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void sendColor(const QColor& color);
-    void sendPDF(const QByteArray &data);
+    void sendFile(DataTypes dataType, const QByteArray &data);
     void sendServiceInfo();
     void setMeeting(Meeting* meeting);
     Meeting* getMeeting();
@@ -42,7 +43,7 @@ signals:
     void imageReceived(const QImage &image, const QString& source);
     void pointReceived(const QPointF& point, qint32 operationCode);
     void colorReceived(const QColor& color);
-    void pdfReceived(const QByteArray &data);
+    void fileReceived(DataTypes dataType, const QByteArray &data);
     void userReceiveFile();
     //Выдается, когда клиент закрывает соединение
     void disconnectedFromClient();

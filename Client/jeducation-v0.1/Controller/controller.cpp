@@ -1,5 +1,4 @@
 #include "Controller/controller.h"
-#include "dataTypes.h"
 #include <QTcpSocket>
 #include <QDataStream>
 #include <QJsonParseError>
@@ -111,11 +110,11 @@ void Controller::sendAnswer(const QString &source, const QString &question, cons
     clientStream << DataTypes::JSON << QJsonDocument(message).toJson();
 }
 
-void Controller::sendPDF(const QByteArray &data)
+void Controller::sendFile(DataTypes dataType, const QByteArray &data)
 {
     QDataStream socketStream(m_clientSocket);
     socketStream.setVersion(QDataStream::Qt_5_7);
-    socketStream << DataTypes::PDF_FILE << data;
+    socketStream << dataType << data;
 }
 
 void Controller::disconnectFromHost()
@@ -219,7 +218,7 @@ void Controller::onReadyRead()
             emit fileSentOut();
             return;
         }
-        else if (_type == DataTypes::PDF_FILE)
+        else if (_type == DataTypes::PDF_FILE || _type == DataTypes::AUDIO_FILE)
         {
             QByteArray data;
             socketStream >> data;
@@ -229,7 +228,7 @@ void Controller::onReadyRead()
                 return;
             }
             socketStream.commitTransaction();
-            emit receivePDF(data);
+            emit receiveFile(_type, data);
         }
         else if (_type == DataTypes::JSON) {
             QByteArray jsonData;

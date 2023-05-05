@@ -7,6 +7,7 @@
 #include <QList>
 #include <QPointF>
 #include <QColor>
+#include "serverworker.h"
 
 //Класс для управления потоками
 class QThread;
@@ -36,7 +37,7 @@ private slots:
     void imageReceived(ServerWorker *sender, const QImage &img, const QString& source);
     void pointReceived(ServerWorker *sender, const QPointF &point, qint32 operationCode);
     void colorReceived(ServerWorker *sender, const QColor &color);
-    void pdfReceived(ServerWorker *sender, const QByteArray &data);
+    void fileReceived(ServerWorker *sender, DataTypes dataType, const QByteArray &data);
     ///Функция для обработки выхода пользователя
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя

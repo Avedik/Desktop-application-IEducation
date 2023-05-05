@@ -45,7 +45,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::userJoined, this, &learning::userJoined);
     connect(m_Client, &Controller::userLeft, this, &learning::userLeft);
     connect(m_Client, &Controller::receiveImage, this, &learning::receiveImage);
-    connect(m_Client, &Controller::receivePDF, this, &learning::receivePDF);
+    connect(m_Client, &Controller::receiveFile, this, &learning::receiveFile);
     connect(m_Client, &Controller::fileSentOut, this, &learning::fileSentOut);
 
     connect(ui->connectButton, &QPushButton::clicked, this, &learning::attemptConnection);
@@ -596,18 +596,21 @@ void learning::receiveImage(const QImage& image, const QString& source)
     table->setCellWidget(item->row(), 0, _label);
 }
 
-void learning::receivePDF(const QByteArray &data)
+void learning::receiveFile(DataTypes dataType, const QByteArray &data)
 {
-    QFile file(QApplication::applicationDirPath() + "/JDocument.pdf");
-    if (!file.open(QFile::WriteOnly))
+    if (dataType == DataTypes::PDF_FILE)
     {
-        QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
-        return;
-    }
-    file.write(data);
-    file.close();
+        QFile file(QApplication::applicationDirPath() + "/JDocument.pdf");
+        if (!file.open(QFile::WriteOnly))
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
+            return;
+        }
+        file.write(data);
+        file.close();
 
-    m_Client->fileReceived();
+        m_Client->fileReceived();
+    }
 }
 
 void learning::on_importPdfButton_clicked()
@@ -621,7 +624,7 @@ void learning::on_importPdfButton_clicked()
     QFile file(docPath);
     if (file.open(QFile::ReadOnly))
     {
-        m_Client->sendPDF(file.readAll());
+        m_Client->sendFile(DataTypes::PDF_FILE, file.readAll());
         file.close();
     }
     else

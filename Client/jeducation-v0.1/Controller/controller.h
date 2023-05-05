@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QPointF>
 #include <QColor>
+#include "dataTypes.h"
 
 class QHostAddress;
 class QJsonDocument;
@@ -26,7 +27,7 @@ public slots:
     void sendColor(const QColor& color);
     void sendQuestion(const QString &destUser, const QString &text);
     void sendAnswer(const QString &source, const QString &question, const QString &answer);
-    void sendPDF(const QByteArray &data);
+    void sendFile(DataTypes dataType, const QByteArray &data);
     void disconnectFromHost();
     void fileReceived();
 
@@ -48,7 +49,7 @@ signals:
     void receiveImage(const QImage& image, const QString& source);
     void receivePoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void receiveColor(const QColor& color);
-    void receivePDF(const QByteArray &data);
+    void receiveFile(DataTypes dataType, const QByteArray &data);
     void fileSentOut();
 private:
     QTcpSocket *m_clientSocket;
