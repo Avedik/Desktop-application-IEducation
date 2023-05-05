@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QAudioDevice>
 #include <QMediaDevices>
+#include <QDesktopServices>
 #include "brainstorm.h"
 #include "ui_brainstorm.h"
 #include "Controller/controller.h"
@@ -321,13 +322,11 @@ void brainstorm::on_recordButton_clicked()
         audioSession->audioInput()->setDevice((index == -1 ?
                                                    QVariant() : ui->audioInputBox->itemData(index)).value<QAudioDevice>());
 
-        QMediaFormat format;
-        format.setAudioCodec(QMediaFormat::AudioCodec::MP3);
-        recorder->setMediaFormat(format);
-
         recorder->record();
+        ui->sendButton->setEnabled(false);
     } else {
         ui->recordButton->setText(QString("Записать\nголосовое\nсообщение"));
+        ui->sendButton->setEnabled(true);
         recorder->stop();
     }
 }
