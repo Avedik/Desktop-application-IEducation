@@ -25,7 +25,7 @@
    <string>JEducation v0.1</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(34, 34, 34);</string>
+   <string notr="true">background-color: rgb(125, 185, 217);</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -77,6 +77,7 @@
         <string>Jeducation
 Десктоп приложение, главной идеей которого является 
 командное изучение определенного материала из предложенных.
+
 Интерактивная форма обучения позволяет быстро 
 усваивать новый материал вне зависимости от сложности
 
