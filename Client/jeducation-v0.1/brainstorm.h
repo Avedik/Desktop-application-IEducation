@@ -9,6 +9,7 @@
 #include <QMediaCaptureSession>
 #include <QAudioInput>
 #include <QMediaRecorder>
+#include <QTemporaryDir>
 #include <QTableWidgetItem>
 #include <QMediaPlayer>
 #include <QAudioOutput>
@@ -72,6 +73,7 @@ private:
     qint32 audioFilesCount;
     QMediaPlayer *player;
     QAudioOutput *audioOutput;
+    QTemporaryDir *temporaryDir;
 };
 
 #endif // BRAINSTORM_H

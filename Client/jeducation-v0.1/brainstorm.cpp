@@ -20,7 +20,6 @@ brainstorm::brainstorm(QWidget *parent) :
     m_Client(new Controller(this)),
     audioFilesCount(0)
 {
-    setWindowState(Qt::WindowFullScreen);
     ui->setupUi(this);
     is_connected = false;
     switchEnabled(false);
@@ -57,7 +56,15 @@ brainstorm::brainstorm(QWidget *parent) :
     recorder = new QMediaRecorder(this);
     audioSession->setRecorder(recorder);
     recorder->setQuality(QMediaRecorder::HighQuality);
-    recorder->setOutputLocation(QUrl::fromLocalFile(QApplication::applicationDirPath() + "/audio"));
+
+    QMediaFormat format;
+    format.setAudioCodec(QMediaFormat::AudioCodec::MP3);
+    recorder->setMediaFormat(format);
+
+    QString diskName = QApplication::applicationDirPath().split(QRegularExpression(":")).first();
+    temporaryDir = new QTemporaryDir(diskName + ":/");
+    recorder->setOutputLocation(QUrl::fromLocalFile(temporaryDir->path() + "/audio"));
+    ui->label_3->setText(temporaryDir->path() + "/audio");
 
     for (auto input : QMediaDevices::audioInputs()) {
         auto name = input.description();
@@ -333,8 +340,8 @@ void brainstorm::on_recordButton_clicked()
 
 void brainstorm::on_sendButton_clicked()
 {
-    QFile file(QApplication::applicationDirPath() + "/audio.m4a");
-    if (!file.open(QFile::ReadOnly))
+    QFile file(recorder->outputLocation().toString().remove("file:///") + ".m4a");
+    if (!file.open(QFile::ReadWrite))
     {
         QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
         return;
@@ -351,9 +358,9 @@ void brainstorm::receiveFile(DataTypes dataType, const QByteArray &data)
 {
     if (dataType == DataTypes::AUDIO_FILE)
     {
-        QString path = QApplication::applicationDirPath() + "/audio_" + QString::number(audioFilesCount++) + ".m4a";
-        QFile file(path);
-        if (!file.open(QFile::WriteOnly))
+        QString fileName = "audio_" + QString::number(++audioFilesCount) + ".m4a";
+        QFile file(fileName);
+        if (!file.open(QFile::ReadWrite))
         {
             QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
             return;
@@ -365,11 +372,11 @@ void brainstorm::receiveFile(DataTypes dataType, const QByteArray &data)
         auto table = ui->audioFilesBox;
         table->insertRow(0);
 
-        QTableWidgetItem *item = new QTableWidgetItem(path);
+        QTableWidgetItem *item = new QTableWidgetItem(fileName);
         item->setFlags(item->flags() & (~Qt::ItemIsEditable));
         table->setItem(0, 0, item);
 
-        player->setSource(QUrl::fromLocalFile(path));
+        player->setSource(QUrl::fromLocalFile(fileName));
         audioOutput->setVolume(50);
         player->play();
     }
