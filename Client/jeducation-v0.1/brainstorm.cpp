@@ -64,7 +64,6 @@ brainstorm::brainstorm(QWidget *parent) :
     QString diskName = QApplication::applicationDirPath().split(QRegularExpression(":")).first();
     temporaryDir = new QTemporaryDir(diskName + ":/");
     recorder->setOutputLocation(QUrl::fromLocalFile(temporaryDir->path() + "/audio"));
-    ui->label_3->setText(temporaryDir->path() + "/audio");
 
     for (auto input : QMediaDevices::audioInputs()) {
         auto name = input.description();
@@ -82,8 +81,10 @@ brainstorm::~brainstorm()
     delete audioInput;
     delete recorder;
 
+    player->setSource(QUrl());
     delete player;
     delete audioOutput;
+    delete temporaryDir;
 
     if (is_connected)
         m_Client->disconnectFromHost();
@@ -359,7 +360,7 @@ void brainstorm::receiveFile(DataTypes dataType, const QByteArray &data)
     if (dataType == DataTypes::AUDIO_FILE)
     {
         QString fileName = "audio_" + QString::number(++audioFilesCount) + ".m4a";
-        QFile file(fileName);
+        QFile file(temporaryDir->path() + "/" + fileName);
         if (!file.open(QFile::ReadWrite))
         {
             QMessageBox::critical(this,"Ошибка","Не удалось открыть файл");
@@ -376,7 +377,7 @@ void brainstorm::receiveFile(DataTypes dataType, const QByteArray &data)
         item->setFlags(item->flags() & (~Qt::ItemIsEditable));
         table->setItem(0, 0, item);
 
-        player->setSource(QUrl::fromLocalFile(fileName));
+        player->setSource(QUrl::fromLocalFile(temporaryDir->path() + "/" + fileName));
         audioOutput->setVolume(50);
         player->play();
     }
@@ -384,7 +385,7 @@ void brainstorm::receiveFile(DataTypes dataType, const QByteArray &data)
 
 void brainstorm::on_audioFilesBox_cellPressed(int row, int column)
 {
-    player->setSource(QUrl::fromLocalFile(ui->audioFilesBox->item(row, column)->text()));
+    player->setSource(QUrl::fromLocalFile(temporaryDir->path() + "/" + ui->audioFilesBox->item(row, column)->text()));
     audioOutput->setVolume(50);
     player->play();
 }
