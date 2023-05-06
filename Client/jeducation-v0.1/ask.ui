@@ -20,8 +20,8 @@
    <string>Задать вопрос</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(125, 185, 217);
-</string>
+   <string notr="true">background:transparent;
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(230, 160, 65, 255), stop:1 rgba(255, 189, 255, 255));</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
@@ -33,7 +33,9 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(26, 26, 26);</string>
+      <string notr="true">background:transparent;
+color: rgb(30, 30, 30);
+</string>
      </property>
      <property name="text">
       <string>Выберите участника, которому хотите задать вопрос</string>
@@ -99,8 +101,9 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
-color: rgb(27, 27, 27);
+          <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(29, 29, 29);
+
 </string>
          </property>
          <property name="orientation">

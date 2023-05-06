@@ -48,6 +48,8 @@ FORMS += \
     other_questions.ui \
     rating.ui
 
+win32:RC_FILE = appLogo.rc
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
@@ -59,7 +61,8 @@ DISTFILES += \
     pdfViewer/viewer.qml
 
 RESOURCES += \
-    pdfViewer/viewer.qrc
+    pdfViewer/viewer.qrc \
+    res.qrc
 
 macos:QMAKE_INFO_PLIST = pdfViewer/resources/macos/Info.plist
 macos:ICON = pdfViewer/resources/multipage.icns

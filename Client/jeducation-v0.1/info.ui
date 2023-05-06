@@ -25,7 +25,8 @@
    <string>JEducation v0.1</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(125, 185, 217);</string>
+   <string notr="true">background:transparent;
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(230, 160, 65, 255), stop:1 rgba(255, 189, 255, 255));</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -63,19 +64,58 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label">
-       <property name="font">
-        <font>
-         <family>Bahnschrift</family>
-         <pointsize>15</pointsize>
-        </font>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>6</number>
        </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(27, 27, 27)</string>
-       </property>
-       <property name="text">
-        <string>Jeducation
-Десктоп приложение, главной идеей которого является 
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <family>Bahnschrift</family>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background:transparent;
+color: rgb(30, 30, 30);</string>
+         </property>
+         <property name="text">
+          <string>JEducation</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <family>Bahnschrift</family>
+           <pointsize>15</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background:transparent;
+color: rgb(30, 30, 30);</string>
+         </property>
+         <property name="text">
+          <string>Десктоп приложение, главной идеей которого является 
 командное изучение определенного материала из предложенных.
 
 Интерактивная форма обучения позволяет быстро 
@@ -91,8 +131,10 @@
 а это именно то, что мы хотим вам дать.
 
 2022, ЮФУ</string>
-       </property>
-      </widget>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -148,10 +190,11 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
+        <string notr="true">background-color: rgb(255, 255, 255);
 color: rgb(29, 29, 29);
 border:2px;
-border-radius:7;</string>
+border-radius:10;
+</string>
        </property>
        <property name="text">
         <string>Понятно</string>
