@@ -86,8 +86,8 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(29, 29, 29);
+            <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
 border:2px;
 border-radius:10;
 </string>
@@ -177,6 +177,39 @@ color: rgb(45, 45, 45);</string>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
+          <widget class="QPushButton" name="newMeetingButton">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>65</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Bahnschrift</family>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(29, 29, 29);
+border:2px;
+border-radius:10;
+</string>
+           </property>
+           <property name="text">
+            <string>Создать новое
+ собрание</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="connectButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
@@ -186,7 +219,7 @@ color: rgb(45, 45, 45);</string>
            </property>
            <property name="minimumSize">
             <size>
-             <width>300</width>
+             <width>150</width>
              <height>65</height>
             </size>
            </property>
@@ -199,7 +232,7 @@ color: rgb(45, 45, 45);</string>
            <property name="font">
             <font>
              <family>Bahnschrift</family>
-             <pointsize>14</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="styleSheet">
@@ -210,7 +243,8 @@ border-radius:10;
 </string>
            </property>
            <property name="text">
-            <string>Присоединиться к команде</string>
+            <string>Присоединиться 
+к команде</string>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -262,7 +296,7 @@ border:0px;
 </string>
            </property>
            <property name="text">
-            <string>00:20</string>
+            <string>00:00</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -311,8 +345,8 @@ border:0px;
               </font>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(29, 29, 29);
+              <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
 border:2px;
 border-radius:10;
 </string>
@@ -434,8 +468,8 @@ border:0px;</string>
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(29, 29, 29);
+               <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
 border:2px;
 border-radius:10;
 </string>
@@ -472,8 +506,8 @@ border-radius:10;
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(29, 29, 29);
+               <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
 border:2px;
 border-radius:10;
 </string>
@@ -510,8 +544,8 @@ border-radius:10;
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(29, 29, 29);
+               <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
 border:2px;
 border-radius:10;
 </string>
@@ -636,8 +670,8 @@ border:0</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(29, 29, 29);
+          <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
 border:2px;
 border-radius:10;
 </string>
@@ -676,13 +710,6 @@ border-radius:10;
        <property name="topMargin">
         <number>10</number>
        </property>
-       <item>
-        <widget class="QLabel" name="infoLabel">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
        <item>
         <spacer name="verticalSpacer_9">
          <property name="orientation">
@@ -728,7 +755,7 @@ border-radius:10;
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 255, 255);
+            <string notr="true">background-color: rgb(200, 255, 255);
 color: rgb(27, 27, 27);
 </string>
            </property>
@@ -874,12 +901,12 @@ color: rgb(30, 30, 30);
            <property name="font">
             <font>
              <family>Bahnschrift</family>
-             <pointsize>15</pointsize>
+             <pointsize>12</pointsize>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(29, 29, 29);
+            <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
 border:2px;
 border-radius:10;
 </string>
@@ -889,6 +916,36 @@ border-radius:10;
            </property>
            <property name="autoDefault">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="deletePhoto">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Bahnschrift</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(200, 200, 200);
+color: rgb(150, 150, 150);
+border:2px;
+border-radius:10;
+
+</string>
+           </property>
+           <property name="text">
+            <string>Удалить фото</string>
            </property>
           </widget>
          </item>

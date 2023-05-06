@@ -20,10 +20,7 @@ learning::learning(QWidget *parent) :
     answer = new Dialog(this);
     other_quest = new other_questions(this);
     question = new ask(this);
-
     ui->setupUi(this);
-    setStyleSheet("QPushButton { background-color: rgb(100,100,100); }");
-    setStyleSheet(styleSheet() + "QLabel, QLineEdit, QListView { color: black; } QPushButton { color: white; }");
 
     m_Model->insertColumn(0);
     is_connected = false;
@@ -48,7 +45,6 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::receiveFile, this, &learning::receiveFile);
     connect(m_Client, &Controller::fileSentOut, this, &learning::fileSentOut);
 
-    connect(ui->connectButton, &QPushButton::clicked, this, &learning::attemptConnection);
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
     connect(ui->messageEdit, &QLineEdit::returnPressed, this, &learning::sendMessage);
 
@@ -137,28 +133,8 @@ void learning::startTimer()
         cnt_timer->start();
         timer->start();
         switchButtonEnabled(ui->pushButton, false);
-        ui->timerEdit->setReadOnly(true);
-    }
-}
-
-void learning::goToNextStep()
-{
-    if (m_step == 0)
         switchButtonEnabled(ui->importPdfButton, true);
-    else if (m_step == 1)
-    {
-        switchButtonEnabled(ui->askButton, true);
-        on_askButton_clicked();
-    }
-    else if (m_step == 2)
-    {
-        switchButtonEnabled(ui->answerButton, true);
-        on_answerButton_clicked();
-    }
-    else if (m_step == 3)
-    {
-        switchButtonEnabled(ui->allAnswersButton, true);
-        on_allAnswersButton_clicked();
+        ui->timerEdit->setReadOnly(true);
     }
 }
 
@@ -168,7 +144,6 @@ void learning::on_pushButton_clicked()
         return;
     m_Client->sendMessage(QString("startTimer") + ui->timerEdit->text());
     startTimer();
-    goToNextStep();
 }
 
 void learning::paintEvent(QPaintEvent *)
@@ -187,38 +162,15 @@ void learning::countTimer()
         cnt_timer->stop();
         tic = cnt = 0;
         ui->timerEdit->setReadOnly(false);
+        disconnect(m_Client, &Controller::fileSentOut, 0, 0);
+        switchButtonEnabled(ui->pushButton, false);
 
-        switchButtonEnabled(ui->pushButton, true);
-        if (m_step == 0)
+        if (engine)
         {
             QMetaObject::invokeMethod(engine->rootObjects().first(), "close");
             delete engine;
             engine = nullptr;
-
-            ui->infoLabel->setText("Задайте время в таймере для составления вопросов.");
         }
-        else if (m_step == 1)
-        {
-            question->close();
-            switchButtonEnabled(ui->askButton, false);
-
-            ui->infoLabel->setText("Задайте время в таймере для ответов на вопросы.");
-        }
-        else if (m_step == 2)
-        {
-            answer->close();
-            switchButtonEnabled(ui->answerButton, false);
-
-            ui->infoLabel->setText("Задайте время в таймере для оценки ответов других участников.");
-        }
-        else if (m_step == 3)
-        {
-            other_quest->close();
-            switchButtonEnabled(ui->allAnswersButton, false);
-            ui->infoLabel->setText("Вы прошли все этапы!");
-            switchButtonEnabled(ui->pushButton, false);
-        }
-        ++m_step;
     }
 }
 
@@ -249,13 +201,13 @@ void learning::connectedToServer()
                                         , tr("Выбор собрания")
                                         , tr("ID собрания")
                                         , QLineEdit::Normal
-                                        , QStringLiteral("Новое собрание")
+                                        , QStringLiteral("")
                                         , &ok
                                         ));
             bool isNum = true;
             int ID = meetingID->toInt(&isNum);
 
-            if (ok && *meetingID != QString("Новое собрание") && (meetingID->isEmpty() || !isNum || ID < 0))
+            if (ok && (meetingID->isEmpty() || !isNum || ID < 0))
             {
                 QMessageBox::critical(this,"Ошибка","Введите корректное ID");
                 continue;
@@ -265,13 +217,14 @@ void learning::connectedToServer()
         } while (true);
         m_Client->chooseMeeting("0:" + *meetingID);
     }
-    
     is_connected = true;
-    ui->connectButton->setText(tr("Отключиться"));
-    setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(20,20,20); }");
 
     switchEnabled(true);
-    switchButtonEnabled(ui->importPdfButton, false);
+    for (auto but : {ui->importPdfButton,
+         ui->allAnswersButton,
+         ui->answerButton,
+         ui->askButton })
+        switchButtonEnabled(but, false);
 }
 
 void learning::switchEnabled(bool is_enabled)
@@ -281,9 +234,13 @@ void learning::switchEnabled(bool is_enabled)
     ui->timerEdit->setEnabled(is_enabled);
 
     for (auto but : {ui->importPdfButton,
-            ui->pushButton,
-            ui->chooseButton,
-            ui->sendButton })
+         ui->pushButton,
+         ui->chooseButton,
+         ui->deletePhoto,
+         ui->sendButton,
+         ui->allAnswersButton,
+         ui->answerButton,
+         ui->askButton })
         switchButtonEnabled(but, is_enabled);
 }
 
@@ -291,9 +248,9 @@ void learning::switchButtonEnabled(QPushButton* button, bool is_enabled)
 {
     button->setEnabled(is_enabled);
     if (is_enabled)
-        button->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));color: rgb(27, 27, 27);border:2px;border-radius:10;");
+        button->setStyleSheet("background-color: rgb(255, 255, 255);\ncolor: rgb(29, 29, 29);\nborder:2px;\nborder-radius:10;\n");
     else
-        button->setStyleSheet("background-color: rgb(184, 184, 184)");
+        button->setStyleSheet("background-color: rgb(200, 200, 200);\ncolor: rgb(150, 150, 150);\nborder:2px;\nborder-radius:10;");
 }
 
 void learning::attemptLogin(const QString &userName)
@@ -324,10 +281,7 @@ void learning::messageReceived(const QString &sender, const QString &text)
     {
         ui->timerEdit->setText(text.mid(10, text.size() - 1));
         if (timerEditFinished())
-        {
             startTimer();
-            goToNextStep();
-        }
         return;
     }
     else if (text == QString("on_importPdfButton_clicked"))
@@ -447,9 +401,10 @@ void learning::sendMessage()
 void learning::disconnectedFromServer()
 {
     QMessageBox::warning(this, tr("Отсоединено"), tr("Соединение прервано"));
-
-    ui->connectButton->setText(tr("Присоединиться к команде"));
-    setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
+    ui->connectButton->setText(tr("Присоединиться \nк команде"));
+    ui->newMeetingButton->setText(tr("Создать новое\n собрание"));
+    ui->connectButton->setEnabled(true);
+    ui->newMeetingButton->setEnabled(true);
 
     switchEnabled(false);
     switchButtonEnabled(ui->allAnswersButton, false);
@@ -659,3 +614,28 @@ void learning::fileSentOut()
     switchButtonEnabled(ui->importPdfButton, false);
     openPDFViewer(QApplication::applicationDirPath() + "/JDocument.pdf");
 }
+
+void learning::on_deletePhoto_clicked()
+{
+    ui->label_2->setPixmap(QPixmap());
+    ui->label_2->setText(QString("Фото"));
+    m_Client->sendImage(QImage());
+}
+
+void learning::on_newMeetingButton_clicked()
+{
+    meetingID = new QString("Новое собрание");
+    attemptConnection();
+
+    m_Client->chooseMeeting("0:" + *meetingID);
+    ui->connectButton->setEnabled(false);
+    ui->newMeetingButton->setText(tr("Отключиться"));
+}
+
+void learning::on_connectButton_clicked()
+{
+    attemptConnection();
+    ui->newMeetingButton->setEnabled(false);
+    ui->connectButton->setText(tr("Отключиться"));
+}
+

@@ -48,12 +48,10 @@ private:
 
     int tic = 0;
     int cnt = 0;
-    int m_step = 0;
 private:
     void startTimer();
     void switchEnabled(bool is_enabled);
     void switchButtonEnabled(QPushButton* button, bool is_enabled);
-    void goToNextStep();
 private slots:
     void on_pushButton_clicked();
     void countTimer();
@@ -84,6 +82,12 @@ private slots:
     bool timerEditFinished();
     void openPDFViewer(const QString& docPath);
     void fileSentOut();
+
+    void on_deletePhoto_clicked();
+
+    void on_newMeetingButton_clicked();
+
+    void on_connectButton_clicked();
 
 private:
     class keyEnterReceiver : public QObject
