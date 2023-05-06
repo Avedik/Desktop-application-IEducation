@@ -16,15 +16,16 @@
     <height>500</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>JEducation v0.1</string>
   </property>
   <property name="styleSheet">
-<<<<<<< HEAD
    <string notr="true">background-color: rgb(34, 34, 34);</string>
-=======
-   <string notr="true">background-color: rgb(101, 154, 169);</string>
->>>>>>> 626d935df064c83ee4d421eb7996b2e0611789c4
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -66,28 +67,26 @@
        <property name="font">
         <font>
          <family>Bahnschrift</family>
-         <pointsize>12</pointsize>
+         <pointsize>15</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(207, 207, 207);</string>
+        <string notr="true">color: rgb(27, 27, 27)</string>
        </property>
        <property name="text">
-        <string>jeducation
-десктоп приложение, главной идеей которого является 
+        <string>Jeducation
+Десктоп приложение, главной идеей которого является 
 командное изучение определенного материала из предложенных.
+Интерактивная форма обучения позволяет быстро 
+усваивать новый материал вне зависимости от сложности
 
-интерактивная форма обучения 
-позволяет быстро усваивать новый материал вне зависимости от сложности
-
-в приложении пользователю доступен выбор режима,
+В приложении пользователю доступен выбор режима,
 и каждый может подобрать что-то для себя.
 
-приложение могут использовать все желающие узнать что-то новое
+Приложение могут использовать все желающие узнать что-то новое
 или просто закрепить материал.
 
-главное - приятная атмосфера и создание хороших условий,
-
+Главное - приятная атмосфера и создание хороших условий,
 а это именно то, что мы хотим вам дать.
 
 2022, ЮФУ</string>
@@ -111,6 +110,15 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="rightMargin">
+      <number>9</number>
+     </property>
+     <property name="bottomMargin">
+      <number>9</number>
+     </property>
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
@@ -132,8 +140,14 @@
          <height>40</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <family>Bahnschrift</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(184, 184, 184);
+        <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));
 color: rgb(29, 29, 29);
 border:2px;
 border-radius:7;</string>
