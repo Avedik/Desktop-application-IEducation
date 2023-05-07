@@ -25,6 +25,26 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QPushButton" name="trueButton">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(0, 255, 0);</string>
+     </property>
+     <property name="text">
+      <string>Верно</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="falseButton">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 82, 52)</string>
+     </property>
+     <property name="text">
+      <string>Неверно</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTableWidget" name="answerTable"/>
    </item>
    <item>

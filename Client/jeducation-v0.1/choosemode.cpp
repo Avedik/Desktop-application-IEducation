@@ -4,9 +4,10 @@
 #include "mainwindow.h"
 #include "brainstorm.h"
 
-ChooseMode::ChooseMode(QWidget *parent) :
+ChooseMode::ChooseMode(rating *table, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ChooseMode)
+    ui(new Ui::ChooseMode),
+    ratingTable(table)
 {
     ui->setupUi(this);
 }
@@ -18,7 +19,7 @@ ChooseMode::~ChooseMode()
 
 void ChooseMode::on_pushButton_clicked()
 {
-    mode1 = new learning(this);
+    mode1 = new learning(ratingTable, this);
     mode1 -> show();
 }
 

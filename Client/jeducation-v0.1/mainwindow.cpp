@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    window = new ChooseMode();
+    window2 = new rating(this);
+    window = new ChooseMode(window2);
     connect(window, &ChooseMode::firstWindow, this, &MainWindow::show);
 }
 
@@ -37,8 +38,6 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-
-    window2 = new rating(this);
     window2 -> show();
 }
 

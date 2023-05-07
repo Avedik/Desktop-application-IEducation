@@ -2,6 +2,7 @@
 #include "ui_learning.h"
 #include "ui_dialog.h"
 #include "ui_ask.h"
+#include "rating.h"
 #include "ui_other_questions.h"
 #include <QtWidgets>
 #include "Controller/controller.h"
@@ -11,11 +12,12 @@
 #include <QHostAddress>
 #include <QVariant>
 
-learning::learning(QWidget *parent) :
+learning::learning(rating *table, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::learning)
-  , m_Client(new Controller(this))
-  , m_Model(new QStandardItemModel(this))
+    ui(new Ui::learning),
+    m_Client(new Controller(this)),
+    m_Model(new QStandardItemModel(this)),
+    ratingTable(table)
 {
     answer = new Dialog(this);
     other_quest = new other_questions(this);
@@ -34,6 +36,7 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::loggedIn, this, &learning::loggedIn);
     connect(m_Client, &Controller::loginError, this, &learning::loginFailed);
     connect(m_Client, &Controller::messageReceived, this, &learning::messageReceived);
+    connect(m_Client, &Controller::scoreReceived, this, &learning::scoreReceived);
     connect(m_Client, &Controller::questionReceived, this, &learning::questionReceived);
     connect(m_Client, &Controller::answerReceived, this, &learning::answerReceived);
     connect(m_Client, &Controller::refreshUsersList, this, &learning::refreshUsersList);
@@ -282,6 +285,11 @@ void learning::loginFailed(const QString &reason)
         userJoined("", "");
 }
 
+void learning::scoreReceived(const QString &destUser, qint32 score)
+{
+    ratingTable->refreshRating(destUser, score);
+}
+
 void learning::messageReceived(const QString &sender, const QString &text)
 {
     if (text.startsWith(QString("startTimer")))
@@ -359,6 +367,8 @@ void learning::refreshUsersList(const QVariantMap& users, const QString& type)
 {
     auto table = question->ui->usersTable;
 
+    QString labelText = ui->label_3->text();
+    QString userName = labelText.mid(labelText.indexOf(QString("Имя: ")) + 5, labelText.size());
     for (QVariantMap::const_iterator iter = users.begin(); iter != users.end(); ++iter)
     {
         if (iter.key().compare(QStringLiteral("тип")) == 0)
@@ -373,7 +383,7 @@ void learning::refreshUsersList(const QVariantMap& users, const QString& type)
         else {
             table->insertRow(0);
             QTableWidgetItem *item = new QTableWidgetItem(iter.key());
-            if (iter.key() == ui->label_3->text())
+            if (iter.key() == userName)
             {
                 item->setBackground(QBrush(QColor(Qt::red)));
                 item->setFlags(item->flags() & (~Qt::ItemIsSelectable) & (~Qt::ItemIsEditable));

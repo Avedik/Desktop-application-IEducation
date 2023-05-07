@@ -18,16 +18,18 @@ class learning;
 
 class Controller;
 class QStandardItemModel;
+class rating;
 
 class learning : public QDialog
 {
     Q_OBJECT
     Q_DISABLE_COPY(learning)
     friend ask;
+    friend other_questions;
     friend Dialog;
 
 public:
-    explicit learning(QWidget *parent = nullptr);
+    explicit learning(rating *table, QWidget *parent = nullptr);
     ~learning();
 
 private:
@@ -45,6 +47,7 @@ private:
     QString picturePath;
     QQmlApplicationEngine *engine = nullptr;
     QString *meetingID = nullptr;
+    rating *ratingTable;
 
     int tic = 0;
     int cnt = 0;
@@ -63,8 +66,10 @@ private slots:
     void loggedIn(const QString& userName);
     void loginFailed(const QString &reason);
     void messageReceived(const QString &sender, const QString &text);
+    void scoreReceived(const QString &destUser, qint32 score);
     void questionReceived(const QString &sender, const QString &text);
     void answerReceived(const QString &from, const QString &to, const QString &ques, const QString &ans);
+
     void refreshUsersList(const QVariantMap& users, const QString& type);
     void sendMessage();
     void disconnectedFromServer();

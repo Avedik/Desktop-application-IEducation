@@ -96,6 +96,17 @@ void Controller::sendQuestion(const QString &destUser, const QString &text)
     clientStream << DataTypes::JSON << QJsonDocument(message).toJson();
 }
 
+void Controller::sendScore(const QString &destUser, qint32 score)
+{
+    QDataStream clientStream(m_clientSocket);
+    clientStream.setVersion(QDataStream::Qt_5_7);
+    QJsonObject message;
+    message[QStringLiteral("тип")] = QStringLiteral("оценка");
+    message[QStringLiteral("баллы")] = QString::number(score);
+    message[QStringLiteral("получатель")] = destUser;
+    clientStream << DataTypes::JSON << QJsonDocument(message).toJson();
+}
+
 void Controller::sendAnswer(const QString &source, const QString &question, const QString &answer)
 {
     if (answer.isEmpty())
@@ -150,6 +161,15 @@ void Controller::jsonReceived(const QJsonObject &docObj)
             return;
 
         emit messageReceived(senderVal.toString(), textVal.toString());
+    } else if (typeVal.toString().compare(QStringLiteral("оценка"), Qt::CaseInsensitive) == 0) {
+        const QJsonValue scoreVal = docObj.value(QStringLiteral("баллы"));
+        const QJsonValue destUser = docObj.value(QStringLiteral("получатель"));
+        if (scoreVal.isNull() || !scoreVal.isString())
+            return;
+        if (destUser.isNull() || !destUser.isString())
+            return;
+
+        emit scoreReceived(destUser.toString(), scoreVal.toString().toInt());
     } else if (typeVal.toString().compare(QStringLiteral("вопрос"), Qt::CaseInsensitive) == 0) {
 
         const QJsonValue textVal = docObj.value(QStringLiteral("текст"));

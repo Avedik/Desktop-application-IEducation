@@ -17,6 +17,11 @@ public:
     explicit other_questions(QWidget *parent = nullptr);
     ~other_questions();
 
+private slots:
+    void on_trueButton_clicked();
+
+    void on_falseButton_clicked();
+
 private:
     Ui::other_questions *ui;
 };

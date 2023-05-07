@@ -2,6 +2,7 @@
 #define RATING_H
 
 #include <QDialog>
+#include <QString>
 
 namespace Ui {
 class rating;
@@ -14,6 +15,7 @@ class rating : public QDialog
 public:
     explicit rating(QWidget *parent = nullptr);
     ~rating();
+    void refreshRating(const QString &destUser, qint32 score);
 
 signals:
     void firstWindow1();
