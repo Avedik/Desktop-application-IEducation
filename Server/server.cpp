@@ -163,7 +163,7 @@ void Server::jsonFromLoggedIn(ServerWorker *sender, const QJsonObject &docObj)
     if (typeVal.isNull() || !typeVal.isString())
         return;
     const QJsonValue receiverVal = docObj.value(QStringLiteral("получатель"));
-    if (!receiverVal.isNull() && !receiverVal.isString() && sender->userName().compare(receiverVal.toString()) == 0)
+    if (!receiverVal.isNull() && receiverVal.isString() && sender->userName().compare(receiverVal.toString()) == 0)
         return;
 
     QJsonObject message;
