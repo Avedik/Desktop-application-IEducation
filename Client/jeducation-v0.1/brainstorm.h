@@ -58,8 +58,13 @@ private slots:
 
     void on_audioFilesBox_cellPressed(int row, int column);
 
+    void on_newMeetingButton_clicked();
+
+    void on_joinButton_clicked();
+
 private:
     void switchEnabled(bool is_enabled);
+    void switchButtonEnabled(QPushButton* button, bool is_enabled);
 
     bool is_connected;
     Instruments currentInstrument;

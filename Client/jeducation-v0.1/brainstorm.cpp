@@ -41,7 +41,6 @@ brainstorm::brainstorm(QWidget *parent) :
     connect(m_Client, &Controller::disconnected, this, &brainstorm::disconnectedFromServer);
     connect(m_Client, &Controller::error, this, &brainstorm::error);
     connect(m_Client, &Controller::userJoined, this, &brainstorm::userJoined);
-    connect(ui->joinButton, &QPushButton::clicked, this, &brainstorm::attemptConnection);
     connect(m_Client, &Controller::refreshUsersList, this, &brainstorm::refreshUsersQuantity);
 
     scene = new Painter(this);
@@ -136,13 +135,13 @@ void brainstorm::connectedToServer()
                                         , tr("Выбор собрания")
                                         , tr("ID собрания")
                                         , QLineEdit::Normal
-                                        , QStringLiteral("Новое собрание")
+                                        , QStringLiteral("")
                                         , &ok
                                         ));
             bool isNum = true;
             int ID = meetingID->toInt(&isNum);
 
-            if (ok && *meetingID != QString("Новое собрание") && (meetingID->isEmpty() || !isNum || ID < 0))
+            if (ok && (meetingID->isEmpty() || !isNum || ID < 0))
             {
                 QMessageBox::critical(this,"Ошибка","Введите корректное ID");
                 continue;
@@ -150,12 +149,29 @@ void brainstorm::connectedToServer()
                 return;
             break;
         } while (true);
+
         m_Client->chooseMeeting("1:" + *meetingID);
+        switchButtonEnabled(ui->newMeetingButton, false);
+        ui->joinButton->setText(tr("Отключиться"));
+    } else if (!is_connected)
+    {
+        m_Client->chooseMeeting("1:" + *meetingID);
+        switchButtonEnabled(ui->joinButton, false);
+        ui->newMeetingButton->setText(tr("Отключиться"));
     }
 
     is_connected = true;
-    ui->joinButton->setText(tr("Отключиться"));
-    setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(20,20,20); }");
+
+    switchEnabled(true);
+}
+
+void brainstorm::switchButtonEnabled(QPushButton* button, bool is_enabled)
+{
+    button->setEnabled(is_enabled);
+    if (is_enabled)
+        button->setStyleSheet("background-color: rgb(255, 255, 255);\ncolor: rgb(29, 29, 29);\nborder:2px;\nborder-radius:10;\n");
+    else
+        button->setStyleSheet("background-color: rgb(200, 200, 200);\ncolor: rgb(150, 150, 150);\nborder:2px;\nborder-radius:10;");
 }
 
 void brainstorm::attemptLogin(const QString &userName)
@@ -183,9 +199,10 @@ void brainstorm::loginFailed(const QString &reason)
 void brainstorm::disconnectedFromServer()
 {
     QMessageBox::warning(this, tr("Отсоединено"), tr("Соединение прервано"));
-
-    ui->joinButton->setText(tr("Присоединиться к команде"));
-    setStyleSheet(styleSheet() + "QPushButton { background-color: rgb(100,100,100); }");
+    ui->joinButton->setText(tr("Присоединиться \nк команде"));
+    ui->newMeetingButton->setText(tr("Создать новое\n собрание"));
+    ui->joinButton->setEnabled(true);
+    ui->newMeetingButton->setEnabled(true);
 
     switchEnabled(false);
     hide();
@@ -230,7 +247,7 @@ void brainstorm::switchEnabled(bool is_enabled)
          ui->recordButton,
          ui->sendButton
 })
-        but->setEnabled(is_enabled);
+        switchButtonEnabled(but, is_enabled);
 }
 
 void brainstorm::receivePoint(const QPointF& point, qint32 operationCode, qint32 senderID)
@@ -393,5 +410,16 @@ void brainstorm::on_audioFilesBox_cellPressed(int row, int column)
     player->setSource(QUrl::fromLocalFile(temporaryDir->path() + "/" + ui->audioFilesBox->item(row, column)->text()));
     audioOutput->setVolume(50);
     player->play();
+}
+
+void brainstorm::on_newMeetingButton_clicked()
+{
+    meetingID = new QString("Новое собрание");
+    attemptConnection();
+}
+
+void brainstorm::on_joinButton_clicked()
+{
+    attemptConnection();
 }
 

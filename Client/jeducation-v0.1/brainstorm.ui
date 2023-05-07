@@ -95,8 +95,16 @@ color: rgb(179, 179, 179);
         <string notr="true">background-color: qlineargradient(spread:pad, x1:0.652, y1:0.67, x2:0.096, y2:0.136227, stop:0 rgba(41, 114, 136, 255), stop:1 rgba(255, 255, 255, 255));</string>
        </property>
        <property name="text">
-        <string>Присоединиться
- к команде</string>
+        <string>Присоединиться 
+к команде</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="newMeetingButton">
+       <property name="text">
+        <string>Создать новое
+ собрание</string>
        </property>
       </widget>
      </item>
