@@ -215,7 +215,15 @@ void learning::connectedToServer()
                 return;
             break;
         } while (true);
+
         m_Client->chooseMeeting("0:" + *meetingID);
+        switchButtonEnabled(ui->newMeetingButton, false);
+        ui->connectButton->setText(tr("Отключиться"));
+    } else if (!is_connected)
+    {
+        m_Client->chooseMeeting("0:" + *meetingID);
+        switchButtonEnabled(ui->connectButton, false);
+        ui->newMeetingButton->setText(tr("Отключиться"));
     }
     is_connected = true;
 
@@ -626,16 +634,10 @@ void learning::on_newMeetingButton_clicked()
 {
     meetingID = new QString("Новое собрание");
     attemptConnection();
-
-    m_Client->chooseMeeting("0:" + *meetingID);
-    ui->connectButton->setEnabled(false);
-    ui->newMeetingButton->setText(tr("Отключиться"));
 }
 
 void learning::on_connectButton_clicked()
 {
     attemptConnection();
-    ui->newMeetingButton->setEnabled(false);
-    ui->connectButton->setText(tr("Отключиться"));
 }
 
