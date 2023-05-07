@@ -37,11 +37,11 @@ void rating::refreshRating(const QString &destUser, qint32 score)
     {
         table->insertRow(0);
         QTableWidgetItem *name = new QTableWidgetItem(destUser);
-        name->setFlags(name->flags() & (~Qt::ItemIsSelectable) & (~Qt::ItemIsEditable));
+        name->setFlags(name->flags() & (~Qt::ItemIsSelectable) & (~Qt::ItemIsEditable) & Qt::AlignCenter);
         table->setItem(0, 0, name);
 
         QTableWidgetItem *val = new QTableWidgetItem(QString::number(score));
-        val->setFlags(val->flags() & (~Qt::ItemIsSelectable) & (~Qt::ItemIsEditable));
+        val->setFlags(val->flags() & (~Qt::ItemIsSelectable) & (~Qt::ItemIsEditable) & Qt::AlignCenter);
         table->setItem(0, 1, val);
     }
 }

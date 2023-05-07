@@ -39,11 +39,13 @@ void other_questions::on_trueButton_clicked()
     }
 
     auto selectedItem = ui->answerTable->selectedItems().first();
-    QString destName = ui->answerTable->item(selectedItem->row(), 1)->text();
+    qint32 rowIndex = selectedItem->row();
+    QString destName = ui->answerTable->item(rowIndex, 1)->text();
 
     learning *wrapper = static_cast<learning*>(parentWidget());
     wrapper->m_Client->sendScore(destName, 1);
     wrapper->ratingTable->refreshRating(destName, 1);
+    ui->answerTable->removeRow(rowIndex);
 }
 
 void other_questions::on_falseButton_clicked()
@@ -55,10 +57,12 @@ void other_questions::on_falseButton_clicked()
     }
 
     auto selectedItem = ui->answerTable->selectedItems().first();
-    QString destName = ui->answerTable->item(selectedItem->row(), 1)->text();
+    qint32 rowIndex = selectedItem->row();
+    QString destName = ui->answerTable->item(rowIndex, 1)->text();
 
     learning *wrapper = static_cast<learning*>(parentWidget());
     wrapper->m_Client->sendScore(destName, -1);
     wrapper->ratingTable->refreshRating(destName, -1);
+    ui->answerTable->removeRow(rowIndex);
 }
 

@@ -29,7 +29,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>JEducation</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background:transparent;

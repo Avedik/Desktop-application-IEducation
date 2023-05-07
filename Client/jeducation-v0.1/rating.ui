@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>JEducation</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background:transparent;
@@ -112,6 +112,9 @@ color: rgb(30, 30, 30);
        <property name="dragEnabled">
         <bool>false</bool>
        </property>
+       <property name="rowCount">
+        <number>0</number>
+       </property>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>30</number>
        </attribute>
@@ -127,21 +130,6 @@ color: rgb(30, 30, 30);
        <attribute name="verticalHeaderShowSortIndicator" stdset="0">
         <bool>false</bool>
        </attribute>
-       <row>
-        <property name="text">
-         <string/>
-        </property>
-       </row>
-       <row>
-        <property name="text">
-         <string/>
-        </property>
-       </row>
-       <row>
-        <property name="text">
-         <string/>
-        </property>
-       </row>
        <column>
         <property name="text">
          <string>Имя участника</string>
