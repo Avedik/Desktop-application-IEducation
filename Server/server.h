@@ -38,6 +38,8 @@ private slots:
     void pointReceived(ServerWorker *sender, const QPointF &point, qint32 operationCode);
     void colorReceived(ServerWorker *sender, const QColor &color);
     void fileReceived(ServerWorker *sender, DataTypes dataType, const QByteArray &data);
+    void ratingReceived(ServerWorker *sender, const QJsonObject &rating);
+
     ///Функция для обработки выхода пользователя
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя
