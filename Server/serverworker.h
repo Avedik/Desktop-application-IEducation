@@ -21,6 +21,8 @@ class ServerWorker : public QObject
     bool receivePoint(QDataStream& socketStream);
     bool receiveFile(DataTypes dataType, QDataStream& socketStream);
     bool receiveColor(QDataStream& socketStream);
+    bool receiveRating(QDataStream& socketStream);
+
 public:
     explicit ServerWorker(QObject *parent = nullptr);
     virtual bool setSocketDescriptor(qintptr socketDescriptor);
@@ -32,6 +34,7 @@ public:
     void sendPoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void sendColor(const QColor& color);
     void sendFile(DataTypes dataType, const QByteArray &data);
+    void sendRating(const QJsonObject &rating);
     void setMeeting(Meeting* meeting);
     Meeting* getMeeting();
     void setMode(qint32 mode);
@@ -43,6 +46,7 @@ signals:
     void pointReceived(const QPointF& point, qint32 operationCode);
     void colorReceived(const QColor& color);
     void fileReceived(DataTypes dataType, const QByteArray &data);
+    void ratingReceived(const QJsonObject& rating);
     //Выдается, когда клиент закрывает соединение
     void disconnectedFromClient();
     //Используется для уведомления об ошибке
