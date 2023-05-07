@@ -1,6 +1,7 @@
 #include "other_questions.h"
 #include "ui_other_questions.h"
 #include "learning.h"
+#include "rating.h"
 #include "Controller/controller.h"
 #include <QMessageBox>
 #include <QString>
@@ -39,7 +40,10 @@ void other_questions::on_trueButton_clicked()
 
     auto selectedItem = ui->answerTable->selectedItems().first();
     QString destName = ui->answerTable->item(selectedItem->row(), 1)->text();
-    static_cast<learning*>(parentWidget())->m_Client->sendScore(destName, 1);
+
+    learning *wrapper = static_cast<learning*>(parentWidget());
+    wrapper->m_Client->sendScore(destName, 1);
+    wrapper->ratingTable->refreshRating(destName, 1);
 }
 
 void other_questions::on_falseButton_clicked()
@@ -52,6 +56,9 @@ void other_questions::on_falseButton_clicked()
 
     auto selectedItem = ui->answerTable->selectedItems().first();
     QString destName = ui->answerTable->item(selectedItem->row(), 1)->text();
-    static_cast<learning*>(parentWidget())->m_Client->sendScore(destName, -1);
+
+    learning *wrapper = static_cast<learning*>(parentWidget());
+    wrapper->m_Client->sendScore(destName, -1);
+    wrapper->ratingTable->refreshRating(destName, -1);
 }
 

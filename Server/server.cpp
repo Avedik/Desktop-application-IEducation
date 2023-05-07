@@ -255,6 +255,9 @@ void Server::fileReceived(ServerWorker *sender, DataTypes dataType, const QByteA
 {
     Q_ASSERT(sender);
     QString _type = dataType == DataTypes::PDF_FILE ? "PDF" : "AUDIO";
+    if (dataType == DataTypes::PDF_FILE)
+        sender->getMeeting()->setStatus(false);
+
     emit logMessage(_type + QStringLiteral(" получен ") );
     if (!sender->userName().isEmpty())
         for (ServerWorker *worker : *sender->getMeeting()) {
