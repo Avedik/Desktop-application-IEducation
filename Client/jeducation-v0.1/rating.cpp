@@ -26,7 +26,7 @@ void rating::refreshRating(const QString &destUser, qint32 score)
 
     bool found = false;
     for(int i = 0; i < table->rowCount(); ++i)
-        if(table->item(i, 0)->text() == destUser)
+        if (table->item(i, 0) != nullptr && table->item(i, 0)->text() == destUser)
         {
             table->item(i, 1)->setText(QString::number(table->item(i, 1)->text().toInt() + score));
             found = true;
