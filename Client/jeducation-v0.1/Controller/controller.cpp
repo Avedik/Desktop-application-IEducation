@@ -213,12 +213,7 @@ void Controller::onReadyRead()
             return;
         }
 
-        if (_type == DataTypes::FILE_SEND_CODE)
-        {
-            emit fileSentOut();
-            return;
-        }
-        else if (_type == DataTypes::PDF_FILE || _type == DataTypes::AUDIO_FILE)
+        if (_type == DataTypes::PDF_FILE || _type == DataTypes::AUDIO_FILE)
         {
             QByteArray data;
             socketStream >> data;
@@ -280,11 +275,4 @@ void Controller::onReadyRead()
         else
             socketStream.commitTransaction();
     }
-}
-
-void Controller::fileReceived()
-{
-    QDataStream socketStream(m_clientSocket);
-    socketStream.setVersion(QDataStream::Qt_5_7);
-    socketStream << DataTypes::FILE_RECEIVE_CODE;
 }

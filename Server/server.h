@@ -42,7 +42,6 @@ private slots:
     void userDisconnected(ServerWorker *sender);
     ///Функция для обработки ошибки пользователя
     void userError(ServerWorker *sender);
-    void userReceiveFile(ServerWorker *sender);
 
 public:
     ///Конструктор Server

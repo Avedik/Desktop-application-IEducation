@@ -53,16 +53,6 @@ bool Meeting::isDeleted()
     return deleting;
 }
 
-void Meeting::increaseCountOfUsersWithFile()
-{
-    ++numberOfUsersWithFile;
-}
-
-qint32 Meeting::getCountOfUsersWithFile()
-{
-    return numberOfUsersWithFile;
-}
-
 QVector<ServerWorker*>::iterator Meeting::begin()
 {
     return clients->begin();

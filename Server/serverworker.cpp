@@ -90,13 +90,6 @@ void ServerWorker::sendFile(DataTypes dataType, const QByteArray &data)
     socketStream << dataType << data;
 }
 
-void ServerWorker::sendServiceInfo()
-{
-    QDataStream socketStream(m_serverSocket);
-    socketStream.setVersion(QDataStream::Qt_5_7);
-    socketStream << DataTypes::FILE_SEND_CODE;
-}
-
 void ServerWorker::disconnectFromClient()
 {
     m_serverSocket->abort();
@@ -211,12 +204,7 @@ void ServerWorker::onReadyRead()
         }
 
         bool good = true;
-        if (_type == DataTypes::FILE_RECEIVE_CODE)
-        {
-            emit userReceiveFile();
-            return;
-        }
-        else if (_type == DataTypes::PDF_FILE || _type == DataTypes::AUDIO_FILE)
+        if (_type == DataTypes::PDF_FILE || _type == DataTypes::AUDIO_FILE)
             good = receiveFile(_type, socketStream);
         else if (_type == DataTypes::JSON)
             good = receiveJson(socketStream);

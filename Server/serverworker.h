@@ -32,7 +32,6 @@ public:
     void sendPoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void sendColor(const QColor& color);
     void sendFile(DataTypes dataType, const QByteArray &data);
-    void sendServiceInfo();
     void setMeeting(Meeting* meeting);
     Meeting* getMeeting();
     void setMode(qint32 mode);
@@ -44,7 +43,6 @@ signals:
     void pointReceived(const QPointF& point, qint32 operationCode);
     void colorReceived(const QColor& color);
     void fileReceived(DataTypes dataType, const QByteArray &data);
-    void userReceiveFile();
     //Выдается, когда клиент закрывает соединение
     void disconnectedFromClient();
     //Используется для уведомления об ошибке

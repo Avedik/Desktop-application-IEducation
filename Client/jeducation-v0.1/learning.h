@@ -81,7 +81,6 @@ private slots:
 
     bool timerEditFinished();
     void openPDFViewer(const QString& docPath);
-    void fileSentOut();
 
     void on_deletePhoto_clicked();
 

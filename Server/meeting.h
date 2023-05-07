@@ -18,10 +18,7 @@ public:
     void setStatus(bool status);
     bool getStatus();
     bool isDeleted();
-    void increaseCountOfUsersWithFile();
-    qint32 getCountOfUsersWithFile();
     qint32 size();
-
 
     QVector<ServerWorker*>::iterator begin();
     QVector<ServerWorker*>::iterator end();
@@ -29,7 +26,6 @@ public:
 private:
     bool status;
     bool deleting;
-    qint32 numberOfUsersWithFile = 0;
     QVector<ServerWorker *>* clients;
 };
 

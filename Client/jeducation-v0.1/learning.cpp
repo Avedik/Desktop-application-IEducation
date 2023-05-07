@@ -43,7 +43,6 @@ learning::learning(QWidget *parent) :
     connect(m_Client, &Controller::userLeft, this, &learning::userLeft);
     connect(m_Client, &Controller::receiveImage, this, &learning::receiveImage);
     connect(m_Client, &Controller::receiveFile, this, &learning::receiveFile);
-    connect(m_Client, &Controller::fileSentOut, this, &learning::fileSentOut);
 
     connect(ui->sendButton, &QPushButton::clicked, this, &learning::sendMessage);
     connect(ui->messageEdit, &QLineEdit::returnPressed, this, &learning::sendMessage);
@@ -162,7 +161,7 @@ void learning::countTimer()
         cnt_timer->stop();
         tic = cnt = 0;
         ui->timerEdit->setReadOnly(false);
-        disconnect(m_Client, &Controller::fileSentOut, 0, 0);
+        disconnect(m_Client, &Controller::receiveFile, 0, 0);
         switchButtonEnabled(ui->pushButton, false);
 
         if (engine)
@@ -188,7 +187,7 @@ void learning::attemptConnection()
       return m_Client->disconnectFromHost();
     }
 
-    m_Client->connectToServer(QHostAddress(QString("46.29.115.42")), 1967);//
+    m_Client->connectToServer(QHostAddress(QString("46.29.115.42")), 1967);
 }
 
 void learning::connectedToServer()
@@ -423,7 +422,12 @@ void learning::disconnectedFromServer()
 
 void learning::userJoined(const QString &username, const QString &meetingID)
 {
-    if (username.isEmpty()) {
+    if (!username.isEmpty() && !meetingID.isEmpty())
+    {
+        ui->label_3->setText(QStringLiteral("ID собрания: ") + meetingID + QString(", Имя: ") + username);
+        return;
+    }
+    else if (username.isEmpty()) {
         if (!meetingID.isEmpty())
             ui->label_3->setText(QStringLiteral("ID собрания: ") + meetingID);
         const QString newUsername = QInputDialog::getText(this, tr("Выбор пользователя"), tr("Имя пользователя"));
@@ -444,6 +448,7 @@ void learning::userJoined(const QString &username, const QString &meetingID)
     ui->chatView->scrollToBottom();
     m_lastUserName.clear();
 }
+
 void learning::userLeft(const QString &username)
 {
 
@@ -572,7 +577,12 @@ void learning::receiveFile(DataTypes dataType, const QByteArray &data)
         file.write(data);
         file.close();
 
-        m_Client->fileReceived();
+        ui->progressBar->setMaximum(100);
+        ui->progressBar->setValue(100);
+        switchEnabled(true);
+        switchButtonEnabled(ui->pushButton, false);
+        switchButtonEnabled(ui->importPdfButton, false);
+        openPDFViewer(QApplication::applicationDirPath() + "/JDocument.pdf");
     }
 }
 
@@ -611,16 +621,6 @@ void learning::openPDFViewer(const QString& docPath)
     engine = new QQmlApplicationEngine();
     engine->load(QUrl(QStringLiteral("qrc:///pdfviewer/viewer.qml")));
     engine->rootObjects().constFirst()->setProperty("source", QUrl::fromUserInput(docPath));
-}
-
-void learning::fileSentOut()
-{
-    ui->progressBar->setMaximum(100);
-    ui->progressBar->setValue(100);
-    switchEnabled(true);
-    switchButtonEnabled(ui->pushButton, false);
-    switchButtonEnabled(ui->importPdfButton, false);
-    openPDFViewer(QApplication::applicationDirPath() + "/JDocument.pdf");
 }
 
 void learning::on_deletePhoto_clicked()

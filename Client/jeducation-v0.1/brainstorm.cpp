@@ -193,7 +193,12 @@ void brainstorm::disconnectedFromServer()
 
 void brainstorm::userJoined(const QString &username, const QString &meetingID)
 {
-    if (username.isEmpty()) {
+    if (!username.isEmpty() && !meetingID.isEmpty())
+    {
+        ui->label_3->setText(QStringLiteral("ID собрания: ") + meetingID + QString(", Имя: ") + username);
+        return;
+    }
+    else if (username.isEmpty()) {
         if (!meetingID.isEmpty())
             ui->label_3->setText(QStringLiteral("ID собрания: ") + meetingID);
         const QString newUsername = QInputDialog::getText(this, tr("Выбор пользователя"), tr("Имя пользователя"));

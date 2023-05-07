@@ -290,9 +290,21 @@ void Server::userDisconnected(ServerWorker *sender)
         meeting->removeClient(sender);
         if (meeting->size() == 0)
         {
-            m_modes.at(sender->getMode())->removeAll(meeting);
+            QVector<Meeting *>* meetings = m_modes.at(sender->getMode());
+            qint32 meetingID = meetings->indexOf(meeting);
+            meetings->removeAll(meeting);
             if (!meeting->isDeleted())
                 delete meeting;
+
+            for (; meetingID < meetings->size(); ++meetingID)
+                for (ServerWorker *worker : *meetings->at(meetingID)) {
+                    Q_ASSERT(worker);
+                    QJsonObject connectedMessage;
+                    connectedMessage[QStringLiteral("тип")] = QStringLiteral("новый пользователь");
+                    connectedMessage[QStringLiteral("имя пользователя")] = worker->userName();
+                    connectedMessage[QStringLiteral("ID собрания")] = QString::number(meetingID);
+                    sendJson(worker, connectedMessage);
+                }
         }
     }
 }
@@ -301,18 +313,6 @@ void Server::userError(ServerWorker *sender)
 {
     Q_UNUSED(sender)
     emit logMessage(QStringLiteral("Ошибка от ") + sender->userName());
-}
-
-void Server::userReceiveFile(ServerWorker *sender)
-{
-    Meeting *meeting = sender->getMeeting();
-    meeting->increaseCountOfUsersWithFile();
-    if (meeting->getCountOfUsersWithFile() == meeting->size())
-    {
-        meeting->setStatus(false);
-        for (ServerWorker *worker : *meeting)
-            worker->sendServiceInfo();
-    }
 }
 
 void Server::incomingConnection(qintptr socketDescriptor)
@@ -333,7 +333,6 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::fileReceived, this, std::bind(&Server::fileReceived, this, worker,
                                                                  std::placeholders::_1, std::placeholders::_2));
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
-    connect(worker, &ServerWorker::userReceiveFile, this, std::bind(&Server::userReceiveFile, this, worker));
 
     waitingUsers.push_back(worker);
     emit logMessage(QStringLiteral("Новый клиент подключился"));

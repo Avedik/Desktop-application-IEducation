@@ -29,7 +29,6 @@ public slots:
     void sendAnswer(const QString &source, const QString &question, const QString &answer);
     void sendFile(DataTypes dataType, const QByteArray &data);
     void disconnectFromHost();
-    void fileReceived();
 
 private slots:
     void onReadyRead();
@@ -50,7 +49,6 @@ signals:
     void receivePoint(const QPointF& point, qint32 operationCode, qint32 senderID);
     void receiveColor(const QColor& color);
     void receiveFile(DataTypes dataType, const QByteArray &data);
-    void fileSentOut();
 private:
     QTcpSocket *m_clientSocket;
     bool m_loggedIn;
