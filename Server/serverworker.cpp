@@ -90,6 +90,14 @@ void ServerWorker::sendFile(DataTypes dataType, const QByteArray &data)
     socketStream << dataType << data;
 }
 
+void ServerWorker::sendRating(const QJsonObject &rating)
+{
+    QDataStream socketStream(m_serverSocket);
+    socketStream.setVersion(QDataStream::Qt_5_7);
+    socketStream << DataTypes::RATING <<rating;
+}
+
+
 void ServerWorker::disconnectFromClient()
 {
     m_serverSocket->abort();
@@ -187,6 +195,30 @@ bool ServerWorker::receiveFile(DataTypes dataType, QDataStream& socketStream)
     return true;
 }
 
+bool ServerWorker::receiveRating(QDataStream& socketStream)
+{
+     QByteArray rating;
+    socketStream>>rating;
+    if (socketStream.commitTransaction()) {
+            QJsonParseError parseError;
+            const QJsonDocument jsonDoc = QJsonDocument::fromJson(rating, &parseError);
+            if (parseError.error == QJsonParseError::NoError) {
+                if (jsonDoc.isObject())
+                    emit jsonReceived(jsonDoc.object());
+                else
+                    emit logMessage(QStringLiteral("Неверный рейтинг: ") + QString::fromUtf8(rating));
+            } else {
+                emit logMessage(QStringLiteral("Неверный рейтинг: ") + QString::fromUtf8(rating));
+            }
+
+            socketStream.startTransaction();
+        }
+        else
+            return false;
+    return true;
+}
+
+
 void ServerWorker::onReadyRead()
 {
     while (m_serverSocket->bytesAvailable())
@@ -214,6 +246,8 @@ void ServerWorker::onReadyRead()
             good = receivePoint(socketStream);
         else if (_type == DataTypes::BRUSH_COLOR)
             good = receiveColor(socketStream);
+        else if (_type == DataTypes::RATING)
+                 good = receiveRating(socketStream);
         else
             socketStream.commitTransaction();
 
