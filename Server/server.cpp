@@ -266,6 +266,18 @@ void Server::fileReceived(ServerWorker *sender, DataTypes dataType, const QByteA
         }
 }
 
+void Server::ratingReceived(ServerWorker *sender, const QJsonObject &rating)
+{
+    Q_ASSERT(sender);
+    emit logMessage("Рейтинг" + QStringLiteral(" получен ") );
+    if (!sender->userName().isEmpty())
+        for (ServerWorker *worker : *sender->getMeeting()) {
+            Q_ASSERT(worker);
+            worker->sendRating(rating);
+        }
+}
+
+
 void Server::userDisconnected(ServerWorker *sender)
 {
     const QString userName = sender->userName();
@@ -335,6 +347,8 @@ void Server::incomingConnection(qintptr socketDescriptor)
     connect(worker, &ServerWorker::colorReceived, this, std::bind(&Server::colorReceived, this, worker, std::placeholders::_1));
     connect(worker, &ServerWorker::fileReceived, this, std::bind(&Server::fileReceived, this, worker,
                                                                  std::placeholders::_1, std::placeholders::_2));
+    connect(worker, &ServerWorker::ratingReceived, this, std::bind(&Server::ratingReceived, this, worker, std::placeholders::_1));
+
     connect(worker, &ServerWorker::logMessage, this, &Server::logMessage);
 
     waitingUsers.push_back(worker);
