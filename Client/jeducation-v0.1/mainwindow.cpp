@@ -26,7 +26,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     window->show();
-    this->close();
+    this->hide();
 }
 
 
@@ -39,5 +39,6 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_pushButton_3_clicked()
 {
     window2 -> show();
+
 }
 
