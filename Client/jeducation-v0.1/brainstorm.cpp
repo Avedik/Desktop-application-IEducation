@@ -131,7 +131,9 @@ void brainstorm::connectedToServer()
     if (!meetingID) {
         do {
             bool ok;
-            meetingID = new QString(QInputDialog::getText(
+            QInputDialog input;
+            input.setCancelButtonText(QString("Отменить"));
+            meetingID = new QString(input.getText(
                                         this
                                         , tr("Выбор собрания")
                                         , tr("ID собрания")
@@ -202,11 +204,10 @@ void brainstorm::disconnectedFromServer()
     QMessageBox::warning(this, tr("Отсоединено"), tr("Соединение прервано"));
     ui->joinButton->setText(tr("Присоединиться \nк команде"));
     ui->newMeetingButton->setText(tr("Создать новое\n собрание"));
-    ui->joinButton->setEnabled(true);
-    ui->newMeetingButton->setEnabled(true);
+    switchButtonEnabled(ui->joinButton, true);
+    switchButtonEnabled(ui->newMeetingButton, true);
 
     switchEnabled(false);
-    hide();
 }
 
 void brainstorm::userJoined(const QString &username, const QString &meetingID)

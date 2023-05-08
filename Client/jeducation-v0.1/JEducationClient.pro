@@ -58,11 +58,14 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     pdfViewer/resources/zoom-in.svg \
     pdfViewer/resources/zoom-out.svg \
+    img/logo.png \
     pdfViewer/viewer.qml
 
 RESOURCES += \
+    Logo.qrc \
     pdfViewer/viewer.qrc \
     res.qrc
+
 
 macos:QMAKE_INFO_PLIST = pdfViewer/resources/macos/Info.plist
 macos:ICON = pdfViewer/resources/multipage.icns

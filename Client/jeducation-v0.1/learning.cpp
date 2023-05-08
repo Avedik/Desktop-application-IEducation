@@ -421,14 +421,13 @@ void learning::disconnectedFromServer()
     QMessageBox::warning(this, tr("Отсоединено"), tr("Соединение прервано"));
     ui->connectButton->setText(tr("Присоединиться \nк команде"));
     ui->newMeetingButton->setText(tr("Создать новое\n собрание"));
-    ui->connectButton->setEnabled(true);
-    ui->newMeetingButton->setEnabled(true);
+    switchButtonEnabled(ui->connectButton, true);
+    switchButtonEnabled(ui->newMeetingButton, true);
 
     switchEnabled(false);
     switchButtonEnabled(ui->allAnswersButton, false);
     switchButtonEnabled(ui->answerButton, false);
     m_lastUserName.clear();
-    hide();
 }
 
 void learning::userJoined(const QString &username, const QString &meetingID)

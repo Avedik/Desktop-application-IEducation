@@ -16,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
     window = new ChooseMode(window2);
     connect(window, &ChooseMode::firstWindow, this, &MainWindow::show);
     connect(window2, &rating::firstWindow1, this, &MainWindow::show);
+
+    QPixmap img = QPixmap::fromImage(QImage(":/img/img/logo.png"));
+    QSize sz(500,500);
+    img = img.scaled(sz, Qt::KeepAspectRatio);
+    ui->title->setPixmap(img);
 }
 
 
