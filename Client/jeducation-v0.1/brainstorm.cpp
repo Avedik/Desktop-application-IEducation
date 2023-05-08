@@ -91,6 +91,7 @@ brainstorm::~brainstorm()
     delete scene;
     if (meetingID)
         delete meetingID;
+    static_cast<QDialog*>(parent())->show();
 }
 
 brainstorm::Instruments brainstorm::getCurrentInstrument()
@@ -245,7 +246,8 @@ void brainstorm::switchEnabled(bool is_enabled)
          ui->eraserButton,
          ui->styletButton,
          ui->recordButton,
-         ui->sendButton
+         ui->sendButton,
+         ui->changeColorButton
 })
         switchButtonEnabled(but, is_enabled);
 }

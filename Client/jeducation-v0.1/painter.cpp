@@ -5,6 +5,7 @@ Painter::Painter(brainstorm *wrapper, QObject *parent) : QGraphicsScene(parent)
 {
     this->wrapper = wrapper;
     previousPoints = new QVector<QPointF*>();
+    setSceneRect(0, 0, 0, 0);
 }
 
 Painter::~Painter()

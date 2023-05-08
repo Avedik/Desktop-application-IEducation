@@ -46,5 +46,8 @@ void rating::refreshRating(const QString &destUser, qint32 score)
     }
 }
 
-
+void rating::on_rating_rejected()
+{
+    emit firstWindow1();
+}
 

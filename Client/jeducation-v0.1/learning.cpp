@@ -93,6 +93,7 @@ learning::~learning()
     if (is_connected)
         m_Client->disconnectFromHost();
     delete ui;
+    static_cast<QDialog*>(parent())->show();
 }
 
 bool learning::timerEditFinished()

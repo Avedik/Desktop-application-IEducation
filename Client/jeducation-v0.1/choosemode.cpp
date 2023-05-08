@@ -21,6 +21,7 @@ void ChooseMode::on_pushButton_clicked()
 {
     mode1 = new learning(ratingTable, this);
     mode1 -> show();
+    hide();
 }
 
 void ChooseMode::on_pushButton_2_clicked()
@@ -32,6 +33,7 @@ void ChooseMode::on_pushButton_2_clicked()
 void ChooseMode::on_pushButton_3_clicked()
 {
     mode2 = new brainstorm(this);
-    mode2 -> show();
+    mode2 -> showMaximized();
+    hide();
 }
 
